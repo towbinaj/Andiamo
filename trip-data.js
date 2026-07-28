@@ -16,6 +16,10 @@
      address   street address (also used for the map link); optional
      qty       number of people this booking covers; optional
      booking   { label, value, source }  -> makes it appear in the Wallet
+               NOTE: real confirmation codes were deliberately left OUT of this
+               public file. They live in CONFIRMATIONS-private.md (git-ignored,
+               on your computer only). The Wallet shows "Confirmed" + which app
+               or email to open for the actual number.
      headsup   [ "short note", ... ]  -> the fine-print reminders
      meet      { name, address, look } -> meeting point for guided tours
      note      one line of extra context; optional
@@ -70,7 +74,7 @@ const TRIP = {
     {
       date: "2026-08-01", start: "11:25", title: "Land in Rome — FCO", type: "flight", fixed: true,
       note: "Cincinnati → Paris → Rome · Delta / Air France",
-      booking: { label: "Confirmation", value: "HT9OEP", source: "Delta / Air France" },
+      booking: { label: "Status", value: "Confirmed", source: "Delta / Air France email" },
       qty: 4,
     },
     { date: "2026-08-01", start: null, title: "Check in — The Hive Hotel", type: "sight", fixed: false,
@@ -84,7 +88,7 @@ const TRIP = {
     {
       date: "2026-08-02", start: "09:00", title: "Borghese Gallery", type: "tour", fixed: true, qty: 4,
       note: "Small-group guided tour (Viator)",
-      booking: { label: "Reference", value: "#1428545619", source: "Viator" },
+      booking: { label: "Status", value: "Confirmed", source: "Viator app" },
       meet: {
         name: "Galleria Borghese",
         address: "Piazzale Scipione Borghese 5, Rome",
@@ -102,7 +106,7 @@ const TRIP = {
     {
       date: "2026-08-02", start: "19:00", title: "Il Marchese", type: "meal", fixed: true, qty: 4,
       address: "Via di Ripetta 162, Rome 00186",
-      booking: { label: "Booking", value: "TheFork · confirmed", source: "TheFork" },
+      booking: { label: "Status", value: "Confirmed", source: "TheFork app" },
     },
 
     /* ---------------------------- Mon, Aug 3 ---------------------------- */
@@ -114,7 +118,7 @@ const TRIP = {
       date: "2026-08-03", start: "15:00", title: "Vatican Museums", type: "ticket", fixed: true, qty: 4,
       address: "Viale Vaticano, Vatican City",
       note: "Entrance: Corridoio 1 / Passageway 1, from Viale Vaticano.",
-      booking: { label: "Code", value: "2L2NFGK50000002CJ", source: "Vatican Museums" },
+      booking: { label: "Status", value: "Confirmed", source: "Vatican Museums email" },
       headsup: ["Photo ID required", "Validate ticket at the turnstile", "👕 Shoulders & knees covered"],
     },
     { date: "2026-08-03", start: null, title: "Sistine Chapel", type: "sight", fixed: false,
@@ -126,14 +130,14 @@ const TRIP = {
     {
       date: "2026-08-03", start: "21:00", title: "Hosteria Grappolo d'Oro", type: "meal", fixed: true, qty: 4,
       address: "Piazza della Cancelleria 80, Rome",
-      booking: { label: "Booking", value: "QEUM8m", source: "Restaurant site" },
+      booking: { label: "Status", value: "Confirmed", source: "Restaurant email" },
     },
 
     /* ---------------------------- Tue, Aug 4 ---------------------------- */
     {
       date: "2026-08-04", start: "08:30", title: "Colosseum — Arena Floor, Forum & Palatine", type: "tour", fixed: true, qty: 4,
       note: "Small-group guided tour (Viator) · includes Roman Forum & Palatine Hill.",
-      booking: { label: "Reference", value: "#1428539671", source: "Viator" },
+      booking: { label: "Status", value: "Confirmed", source: "Viator app" },
       meet: {
         name: "Basilica SS. Cosma e Damiano",
         address: "Via dei Fori Imperiali, Rome",
@@ -159,7 +163,7 @@ const TRIP = {
       date: "2026-08-05", start: "14:15", title: "Giotto's Bell Tower", type: "ticket", fixed: true, qty: 4,
       address: "Piazza del Duomo, Florence",
       note: "Giotto Pass — valid Aug 5–7. Also covers the Baptistery, Opera del Duomo Museum & Santa Reparata.",
-      booking: { label: "Order", value: "87-DWQGWHL", source: "Giotto Pass" },
+      booking: { label: "Status", value: "Confirmed", source: "Giotto Pass email" },
       headsup: ["Climb time 2:15 PM sharp — not modifiable", "414 steps · no lift", "No backpacks — storage at Piazza Duomo 38/r"],
     },
     { date: "2026-08-05", start: null, title: "Duomo (Cathedral)", type: "sight", fixed: false,
@@ -175,7 +179,7 @@ const TRIP = {
       date: "2026-08-05", start: "21:30", title: "Borgo San Jacopo", type: "meal", fixed: true, qty: 4,
       address: "Borgo San Jacopo 62/r, Florence",
       note: "Fixed summer tasting menu — €185 per person.",
-      booking: { label: "Booking", value: "TheFork · confirmed", source: "TheFork" },
+      booking: { label: "Status", value: "Confirmed", source: "TheFork app" },
     },
 
     /* ---------------------------- Thu, Aug 6 ---------------------------- */
@@ -183,7 +187,7 @@ const TRIP = {
       date: "2026-08-06", start: "08:15", title: "Uffizi Gallery", type: "ticket", fixed: true, qty: 4,
       address: "Piazzale degli Uffizi 6, Florence",
       note: "Firenze Card holder reservation — show the booking together with your Firenze Card.",
-      booking: { label: "PNR", value: "EXCAPY5V", source: "Uffizi / CoopCulture" },
+      booking: { label: "Status", value: "Confirmed", source: "Uffizi / CoopCulture email" },
       headsup: ["Bring your Firenze Card"],
     },
     { date: "2026-08-06", start: null, title: "Gucci Garden", type: "sight", fixed: false, optional: true, address: "Piazza della Signoria 10, Florence" },
@@ -194,7 +198,7 @@ const TRIP = {
     {
       date: "2026-08-06", start: "19:30", title: "Il Santo Bevitore", type: "meal", fixed: true, qty: 4,
       address: "Via Santo Spirito 64/66R, Florence",
-      booking: { label: "Reference", value: "BMW2MNFY", source: "ResDiary" },
+      booking: { label: "Status", value: "Confirmed", source: "ResDiary email" },
     },
 
     /* ---------------------------- Fri, Aug 7 ---------------------------- */
@@ -204,7 +208,7 @@ const TRIP = {
       date: "2026-08-07", start: "13:15", title: "Galleria dell'Accademia", type: "ticket", fixed: true, qty: 4,
       address: "Via Ricasoli 58/60, Florence",
       note: "Home of Michelangelo's David. (Ticket PDF not added yet — from the itinerary.)",
-      booking: { label: "Confirmation", value: "#23808308", source: "Accademia" },
+      booking: { label: "Status", value: "Confirmed", source: "Accademia email" },
       headsup: ["Timed entry — arrive ~15 min early"],
     },
     { date: "2026-08-07", start: null, title: "Bargello", type: "sight", fixed: false, address: "Museo Nazionale del Bargello, Florence" },
@@ -221,7 +225,7 @@ const TRIP = {
     {
       date: "2026-08-08", start: "06:55", title: "Depart Florence — FLR", type: "flight", fixed: true, qty: 4,
       note: "Florence → Paris → Cincinnati · Air France / Delta",
-      booking: { label: "Confirmation", value: "HT9OEP", source: "Air France / Delta" },
+      booking: { label: "Status", value: "Confirmed", source: "Air France / Delta email" },
       headsup: ["Early start — pre-book a taxi the night before"],
     },
   ],

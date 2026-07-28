@@ -9,6 +9,7 @@
 *.docx
 *.doc
 out.txt
+CONFIRMATIONS-private.md
 
 # Local tooling
 .claude/
