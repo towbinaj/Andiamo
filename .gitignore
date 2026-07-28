@@ -1,0 +1,17 @@
+# Personal source documents — DO NOT publish (contain names, codes, contact info)
+*.pdf
+*.PDF
+*.png
+*.PNG
+*.jpg
+*.jpeg
+*.JPG
+*.docx
+*.doc
+out.txt
+
+# Local tooling
+.claude/
+scratchpad/
+.DS_Store
+Thumbs.db
