@@ -10,6 +10,8 @@
 *.doc
 out.txt
 CONFIRMATIONS-private.md
+encrypt.html
+secrets.test.js
 
 # Local tooling
 .claude/

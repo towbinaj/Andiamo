@@ -74,7 +74,7 @@ const TRIP = {
     {
       date: "2026-08-01", start: "11:25", title: "Land in Rome — FCO", type: "flight", fixed: true,
       note: "Cincinnati → Paris → Rome · Delta / Air France",
-      booking: { label: "Status", value: "Confirmed", source: "Delta / Air France email" },
+      booking: { label: "Status", value: "Confirmed", source: "Delta / Air France email" }, codeKey: "flights",
       qty: 4,
     },
     { date: "2026-08-01", start: null, title: "Check in — The Hive Hotel", type: "sight", fixed: false,
@@ -88,7 +88,7 @@ const TRIP = {
     {
       date: "2026-08-02", start: "09:00", title: "Borghese Gallery", type: "tour", fixed: true, qty: 4,
       note: "Small-group guided tour (Viator)",
-      booking: { label: "Status", value: "Confirmed", source: "Viator app" },
+      booking: { label: "Status", value: "Confirmed", source: "Viator app" }, codeKey: "borghese",
       meet: {
         name: "Galleria Borghese",
         address: "Piazzale Scipione Borghese 5, Rome",
@@ -118,7 +118,7 @@ const TRIP = {
       date: "2026-08-03", start: "15:00", title: "Vatican Museums", type: "ticket", fixed: true, qty: 4,
       address: "Viale Vaticano, Vatican City",
       note: "Entrance: Corridoio 1 / Passageway 1, from Viale Vaticano.",
-      booking: { label: "Status", value: "Confirmed", source: "Vatican Museums email" },
+      booking: { label: "Status", value: "Confirmed", source: "Vatican Museums email" }, codeKey: "vatican",
       headsup: ["Photo ID required", "Validate ticket at the turnstile", "👕 Shoulders & knees covered"],
     },
     { date: "2026-08-03", start: null, title: "Sistine Chapel", type: "sight", fixed: false,
@@ -130,14 +130,14 @@ const TRIP = {
     {
       date: "2026-08-03", start: "21:00", title: "Hosteria Grappolo d'Oro", type: "meal", fixed: true, qty: 4,
       address: "Piazza della Cancelleria 80, Rome",
-      booking: { label: "Status", value: "Confirmed", source: "Restaurant email" },
+      booking: { label: "Status", value: "Confirmed", source: "Restaurant email" }, codeKey: "grappolo",
     },
 
     /* ---------------------------- Tue, Aug 4 ---------------------------- */
     {
       date: "2026-08-04", start: "08:30", title: "Colosseum — Arena Floor, Forum & Palatine", type: "tour", fixed: true, qty: 4,
       note: "Small-group guided tour (Viator) · includes Roman Forum & Palatine Hill.",
-      booking: { label: "Status", value: "Confirmed", source: "Viator app" },
+      booking: { label: "Status", value: "Confirmed", source: "Viator app" }, codeKey: "colosseum",
       meet: {
         name: "Basilica SS. Cosma e Damiano",
         address: "Via dei Fori Imperiali, Rome",
@@ -163,7 +163,7 @@ const TRIP = {
       date: "2026-08-05", start: "14:15", title: "Giotto's Bell Tower", type: "ticket", fixed: true, qty: 4,
       address: "Piazza del Duomo, Florence",
       note: "Giotto Pass — valid Aug 5–7. Also covers the Baptistery, Opera del Duomo Museum & Santa Reparata.",
-      booking: { label: "Status", value: "Confirmed", source: "Giotto Pass email" },
+      booking: { label: "Status", value: "Confirmed", source: "Giotto Pass email" }, codeKey: "giotto",
       headsup: ["Climb time 2:15 PM sharp — not modifiable", "414 steps · no lift", "No backpacks — storage at Piazza Duomo 38/r"],
     },
     { date: "2026-08-05", start: null, title: "Duomo (Cathedral)", type: "sight", fixed: false,
@@ -187,7 +187,7 @@ const TRIP = {
       date: "2026-08-06", start: "08:15", title: "Uffizi Gallery", type: "ticket", fixed: true, qty: 4,
       address: "Piazzale degli Uffizi 6, Florence",
       note: "Firenze Card holder reservation — show the booking together with your Firenze Card.",
-      booking: { label: "Status", value: "Confirmed", source: "Uffizi / CoopCulture email" },
+      booking: { label: "Status", value: "Confirmed", source: "Uffizi / CoopCulture email" }, codeKey: "uffizi",
       headsup: ["Bring your Firenze Card"],
     },
     { date: "2026-08-06", start: null, title: "Gucci Garden", type: "sight", fixed: false, optional: true, address: "Piazza della Signoria 10, Florence" },
@@ -198,7 +198,7 @@ const TRIP = {
     {
       date: "2026-08-06", start: "19:30", title: "Il Santo Bevitore", type: "meal", fixed: true, qty: 4,
       address: "Via Santo Spirito 64/66R, Florence",
-      booking: { label: "Status", value: "Confirmed", source: "ResDiary email" },
+      booking: { label: "Status", value: "Confirmed", source: "ResDiary email" }, codeKey: "santobevitore",
     },
 
     /* ---------------------------- Fri, Aug 7 ---------------------------- */
@@ -208,7 +208,7 @@ const TRIP = {
       date: "2026-08-07", start: "13:15", title: "Galleria dell'Accademia", type: "ticket", fixed: true, qty: 4,
       address: "Via Ricasoli 58/60, Florence",
       note: "Home of Michelangelo's David. (Ticket PDF not added yet — from the itinerary.)",
-      booking: { label: "Status", value: "Confirmed", source: "Accademia email" },
+      booking: { label: "Status", value: "Confirmed", source: "Accademia email" }, codeKey: "accademia",
       headsup: ["Timed entry — arrive ~15 min early"],
     },
     { date: "2026-08-07", start: null, title: "Bargello", type: "sight", fixed: false, address: "Museo Nazionale del Bargello, Florence" },
@@ -225,7 +225,7 @@ const TRIP = {
     {
       date: "2026-08-08", start: "06:55", title: "Depart Florence — FLR", type: "flight", fixed: true, qty: 4,
       note: "Florence → Paris → Cincinnati · Air France / Delta",
-      booking: { label: "Status", value: "Confirmed", source: "Air France / Delta email" },
+      booking: { label: "Status", value: "Confirmed", source: "Air France / Delta email" }, codeKey: "flights",
       headsup: ["Early start — pre-book a taxi the night before"],
     },
   ],

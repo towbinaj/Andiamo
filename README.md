@@ -27,6 +27,25 @@ The app re-reads the data every time it loads — no rebuild needed.
 3. After a minute it's live at `https://<your-username>.github.io/italy-trip/`.
 4. Open that link on your phone and **Add to Home Screen** for an app-like icon.
 
+## Showing the real confirmation codes (optional, encrypted)
+
+By default the app shows "Confirmed" + which app/email to check. If you want the
+actual codes *in* the app — safely — they can be encrypted behind a family
+passphrase. What gets published is only ciphertext; the passphrase never leaves
+your device, and nobody can read the codes without it.
+
+1. Open **`encrypt.html`** on your computer (double-click it). It's pre-filled with
+   your codes and is **git-ignored**, so it never gets published.
+2. Type a **strong passphrase** (a few words, e.g. `rome-gelato-medici-2026` —
+   not a 4-digit PIN, because the encrypted file is public and a weak passphrase
+   could be brute-forced).
+3. Click **Encrypt → Download secrets.enc.js**, put that file in this folder, and push it.
+4. In the app's **Wallet**, tap **Unlock**, enter the same passphrase — the real
+   codes appear (just for that session). **Lock** hides them again.
+
+To change the passphrase later, re-run `encrypt.html` and replace `secrets.enc.js`.
+Your plaintext codes always stay in `CONFIRMATIONS-private.md` (git-ignored) as a backup.
+
 ## Handy tricks
 
 - Preview any day as if it were "today": add `?date=2026-08-04` to the URL.

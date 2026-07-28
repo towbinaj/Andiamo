@@ -121,6 +121,16 @@
   .pass .hu.info { color:var(--lapis); background:var(--lapis-soft); }
   .pass .foot { padding:0 15px 13px; }
 
+  /* unlock */
+  .lockbar { display:flex; gap:10px; align-items:center; justify-content:space-between; background:var(--surface); border:1px solid var(--hairline); border-radius:12px; padding:11px 13px; margin-top:6px; }
+  .lockbar .lk { font-size:12.5px; color:var(--muted); }
+  .lockrow button, .lockbar button { font:inherit; font-size:12px; font-weight:600; border:1px solid var(--lapis); color:var(--lapis); background:none; border-radius:9px; padding:8px 13px; cursor:pointer; white-space:nowrap; }
+  .lockrow { display:flex; gap:8px; margin-top:8px; }
+  .lockrow input { flex:1; min-width:0; font:inherit; font-size:14px; padding:9px 12px; border:1px solid var(--hairline); border-radius:9px; background:var(--surface); color:var(--ink); }
+  .lockrow input:focus { outline:2px solid var(--lapis); outline-offset:0; border-color:var(--lapis); }
+  .lockhint { font-size:11px; color:var(--faint); margin:8px 0 0; }
+  .lockerr { font-size:11.5px; color:var(--vermilion); font-weight:600; margin:8px 0 0; }
+
   /* trip tab */
   .card { background:var(--surface); border:1px solid var(--hairline); border-radius:13px; padding:15px; margin-top:12px; }
   .card h3 { font-size:14px; margin:0 0 8px; }
@@ -153,6 +163,21 @@
   const esc = (s) => String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const params = new URLSearchParams(location.search);
 
+  // ---- confirmation-code unlock (client-side AES-GCM) ----
+  let CODES = null;
+  try { const s = sessionStorage.getItem('andiamo-codes'); if (s) CODES = JSON.parse(s); } catch(e){}
+  const b64d = (s) => Uint8Array.from(atob(s), c=>c.charCodeAt(0));
+  async function decryptSecrets(pass){
+    const s = window.SECRETS; if(!s) throw new Error('no secrets');
+    const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey({name:'PBKDF2', salt:b64d(s.salt), iterations:s.iter, hash:s.hash}, km, {name:'AES-GCM', length:256}, false, ['decrypt']);
+    const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64d(s.iv)}, key, b64d(s.ct));
+    return JSON.parse(new TextDecoder().decode(pt));
+  }
+  const codeFor = (e) => (e && e.codeKey && CODES && CODES[e.codeKey]) ? CODES[e.codeKey] : null;
+  const bookVal = (e) => codeFor(e) || (e.booking ? e.booking.value : '');
+  const bookLabel = (e) => codeFor(e) ? 'Confirmation' : (e.booking ? e.booking.label : '');
+
   // ---- date helpers ----
   const WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -180,7 +205,7 @@
       const cls = /👕|ID|passport|backpack|steps|early|sharp|Firenze|Check in/i.test(h) ? (/👕/.test(h)?'info':'warn') : 'info';
       badges.push('<span class="badge '+cls+'">'+esc(h)+'</span>');
     });
-    if (e.booking) badges.push('<span class="badge book">🎟 '+esc(e.booking.value)+'</span>');
+    if (e.booking) badges.push('<span class="badge book">🎟 '+esc(bookVal(e))+'</span>');
 
     const actions = [];
     if (e.address || e.type==='sight' || e.type==='meal' || e.type==='ticket' || e.type==='tour')
@@ -260,7 +285,7 @@
     if (isReal){ const now=new Date(); const hm=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'); up = fixed.find(e=>e.start>=hm) || null; }
     else up = fixed[0] || null;
     if (up){
-      host.appendChild($('<div class="upnext"><p class="k">'+(isReal?'Up next':'First fixed time')+'</p><p class="n">'+esc(up.title)+'</p><p class="t">'+esc(fmtTime(up.start))+(up.booking?' · '+esc(up.booking.value):'')+'</p></div>'));
+      host.appendChild($('<div class="upnext"><p class="k">'+(isReal?'Up next':'First fixed time')+'</p><p class="n">'+esc(up.title)+'</p><p class="t">'+esc(fmtTime(up.start))+(up.booking?' · '+esc(bookVal(up)):'')+'</p></div>'));
     }
     host.appendChild($('<hr class="rule">'));
     renderDay(cur, host);
@@ -307,6 +332,27 @@
     renderDay(iso, host);
   }
 
+  // ---- unlock UI ----
+  function renderLock(host){
+    if (!window.SECRETS) return;
+    if (CODES){
+      const bar = $('<div class="lockbar"><span class="lk">🔓 Codes unlocked for this session</span><button>Lock</button></div>');
+      bar.querySelector('button').addEventListener('click', ()=>{ CODES=null; try{sessionStorage.removeItem('andiamo-codes');}catch(e){} render(); });
+      host.appendChild(bar);
+    } else {
+      const wrap = $('<div><div class="lockbar"><span class="lk">🔒 Confirmation codes are locked</span></div><div class="lockrow"><input type="password" inputmode="text" autocomplete="off" placeholder="Family passphrase"><button>Unlock</button></div><p class="lockhint">Codes are encrypted on the page — the passphrase never leaves this device.</p></div>');
+      const input = wrap.querySelector('input'), btn = wrap.querySelector('button');
+      const go = async ()=>{
+        wrap.querySelectorAll('.lockerr').forEach(n=>n.remove());
+        try { const map = await decryptSecrets(input.value); CODES = map; try{sessionStorage.setItem('andiamo-codes', JSON.stringify(map));}catch(e){} render(); }
+        catch(e){ wrap.appendChild($('<p class="lockerr">That passphrase didn’t work — try again.</p>')); }
+      };
+      btn.addEventListener('click', go);
+      input.addEventListener('keydown', (e)=>{ if(e.key==='Enter') go(); });
+      host.appendChild(wrap);
+    }
+  }
+
   // ---- WALLET ----
   function viewWallet(host){
     const booked = TRIP.events.filter(e=>e.booking).slice().sort((a,b)=> (a.date+ (a.start||'')).localeCompare(b.date+(b.start||'')));
@@ -314,6 +360,7 @@
     host.appendChild($('<h1 class="title">Wallet</h1>'));
     host.appendChild($('<p class="sub">'+booked.length+' bookings · '+TRIP.travelers.length+' travelers</p>'));
     host.appendChild($('<div class="travelers">'+TRIP.travelers.map(t=>'<span class="tv">'+esc(t)+'</span>').join('')+'</div>'));
+    renderLock(host);
     host.appendChild($('<hr class="rule">'));
     booked.forEach(e=>{
       const heads = (e.headsup||[]).map(h=>'<span class="hu'+(/👕|Firenze|access|Guided|Includes/i.test(h)?' info':'')+'">'+esc(h)+'</span>').join('');
@@ -325,7 +372,7 @@
             '<div><p class="pn">'+esc(e.title)+'</p><p class="pv">'+esc(cityForDate(e.date))+(e.booking.source?' · '+esc(e.booking.source):'')+'</p></div>'+
             '<div class="pw"><p class="d">'+dow(e.date)+' '+MO[asDate(e.date).getMonth()]+' '+asDate(e.date).getDate()+'</p>'+(e.start?'<p class="t">'+esc(fmtTime(e.start))+'</p>':'')+'</div>'+
           '</div>'+
-          '<div class="stub"><span class="code">'+esc(e.booking.label)+' <b>'+esc(e.booking.value)+'</b></span>'+(e.qty?'<span class="qty">🎟 ×'+e.qty+'</span>':'')+'</div>'+
+          '<div class="stub"><span class="code">'+esc(bookLabel(e))+' <b>'+esc(bookVal(e))+'</b></span>'+(e.qty?'<span class="qty">🎟 ×'+e.qty+'</span>':'')+'</div>'+
           (heads?'<div class="heads">'+heads+'</div>':'')+
           meetLine+
         '</div>'
@@ -385,6 +432,15 @@
   }
   window.addEventListener('hashchange', render);
   render();
+
+  // ---- load encrypted confirmation codes if present (safe: ciphertext only) ----
+  (function(){
+    const s = document.createElement('script');
+    s.src = 'secrets.enc.js';
+    s.onload = ()=>{ if (currentTab()==='wallet') render(); };
+    s.onerror = ()=>{};
+    document.head.appendChild(s);
+  })();
 
   // ---- offline support ----
   if ('serviceWorker' in navigator) {
