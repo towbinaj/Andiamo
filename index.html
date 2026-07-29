@@ -689,6 +689,7 @@
     host.appendChild($('<hr class="rule">'));
     renderDay(cur, host);
     host.appendChild(addStopButton(cur));
+    host.appendChild(arrangeButton(cur));
   }
 
   // ---- DAYS ----
@@ -867,9 +868,11 @@
   }
 
   // ---- add a stop (opens a pre-filled GitHub issue you submit; an Action adds it) ----
+  // where an Add/Rearrange screen should return to (the tab you launched it from)
+  let subReturn = null;
   function addStopButton(date){
     const b = $('<button class="addbtn">＋ Add a stop</button>');
-    b.addEventListener('click', ()=>{ location.hash = '#add/'+date; });
+    b.addEventListener('click', ()=>{ subReturn = location.hash || '#today'; location.hash = '#add/'+date; });
     return b;
   }
   function mapDayButton(iso){
@@ -891,7 +894,7 @@
   }
   function arrangeButton(date){
     const b = $('<button class="addbtn">↕ Rearrange this day</button>');
-    b.addEventListener('click', ()=>{ location.hash = '#arrange/'+date; });
+    b.addEventListener('click', ()=>{ subReturn = location.hash || '#today'; location.hash = '#arrange/'+date; });
     return b;
   }
   function publishArrangement(){
@@ -927,7 +930,7 @@
   }
   function viewArrange(host, date){
     const back = $('<button class="backbtn">‹ '+fmtDate(date)+'</button>');
-    back.addEventListener('click', ()=>{ location.hash = '#day/'+date; });
+    back.addEventListener('click', ()=>{ location.hash = subReturn || ('#day/'+date); });
     host.appendChild(back);
     host.appendChild($('<p class="eyebrow" style="color:'+cityAccent(date)+'">Rearrange</p>'));
     host.appendChild($('<h1 class="title">'+fmtDate(date)+'</h1>'));
@@ -973,13 +976,13 @@
     disc.addEventListener('click', ()=>{
       OVER = normOver(null); OVER_DIRTY = false;
       try { localStorage.removeItem('andiamo-over'); localStorage.removeItem('andiamo-over-dirty'); } catch(e){}
-      loadRemoteOver(); location.hash = '#day/'+date;
+      loadRemoteOver(); location.hash = subReturn || ('#day/'+date);
     });
     host.appendChild(disc);
   }
   function viewAdd(host, date){
     const back = $('<button class="backbtn">‹ Back</button>');
-    back.addEventListener('click', ()=>{ location.hash = '#day/'+date; });
+    back.addEventListener('click', ()=>{ location.hash = subReturn || ('#day/'+date); });
     host.appendChild(back);
     host.appendChild($('<p class="eyebrow" style="color:var(--lapis)">Send to trip</p>'));
     host.appendChild($('<h1 class="title">Add a stop</h1>'));
