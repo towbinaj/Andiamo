@@ -42,89 +42,121 @@
 
   .eyebrow { font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--lapis); font-weight:700; display:flex; gap:7px; align-items:center; margin:0; }
   .eyebrow .live { width:7px; height:7px; border-radius:50%; background:var(--vermilion); box-shadow:0 0 0 3px color-mix(in srgb, var(--vermilion) 24%, transparent); }
-  h1.title { font-family:var(--serif); font-size:30px; line-height:1.03; margin:7px 0 3px; letter-spacing:-.01em; }
-  .sub { font-size:13.5px; color:var(--muted); margin:0; }
-  .rule { height:1px; background:var(--hairline); border:0; margin:16px 0 13px; }
-  .sect-label { font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); font-weight:700; margin:0 0 10px; }
+  h1.title { font-family:var(--serif); font-size:33px; line-height:1.03; margin:8px 0 3px; letter-spacing:-.01em; }
+  .sub { font-size:15.5px; color:var(--muted); margin:0; }
+  .rule { height:1px; background:var(--hairline); border:0; margin:18px 0 15px; }
+  .sect-label { font-size:12px; letter-spacing:.15em; text-transform:uppercase; color:var(--faint); font-weight:700; margin:0 0 11px; }
 
   /* hero / countdown */
-  .hero { background:var(--surface); border:1px solid var(--hairline); border-radius:16px; padding:20px; text-align:center; margin-bottom:8px; }
-  .hero .big { font-family:var(--serif); font-size:44px; line-height:1; color:var(--lapis); margin:6px 0; font-variant-numeric:tabular-nums; }
-  .hero .cap { font-size:13px; color:var(--muted); margin:0; }
+  .hero { background:var(--surface); border:1px solid var(--hairline); border-radius:16px; padding:24px; text-align:center; margin-bottom:8px; }
+  .hero .big { font-family:var(--serif); font-size:52px; line-height:1; color:var(--lapis); margin:6px 0; font-variant-numeric:tabular-nums; }
+  .hero .cap { font-size:15.5px; color:var(--muted); margin:0; }
 
   /* up-next highlight */
-  .upnext { background:color-mix(in srgb, var(--vermilion) 8%, var(--surface)); border:1px solid color-mix(in srgb, var(--vermilion) 30%, var(--hairline)); border-radius:14px; padding:13px 15px; margin-bottom:14px; }
-  .upnext .k { font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--vermilion); font-weight:700; margin:0 0 4px; }
-  .upnext .n { font-size:16px; font-weight:600; margin:0; }
-  .upnext .t { font-family:var(--mono); font-size:12px; color:var(--muted); margin:3px 0 0; }
+  .upnext { background:color-mix(in srgb, var(--vermilion) 8%, var(--surface)); border:1px solid color-mix(in srgb, var(--vermilion) 30%, var(--hairline)); border-radius:14px; padding:16px 17px; margin-bottom:14px; width:100%; text-align:left; font:inherit; color:inherit; display:block; }
+  .upnext.tap { cursor:pointer; display:grid; grid-template-columns:1fr 18px; align-items:center; gap:8px; }
+  .upnext .k { font-size:12px; letter-spacing:.13em; text-transform:uppercase; color:var(--vermilion); font-weight:700; margin:0 0 5px; }
+  .upnext .n { font-size:19px; font-weight:600; margin:0; }
+  .upnext .t { font-family:var(--mono); font-size:14px; color:var(--muted); margin:4px 0 0; }
+  .upnext .chev { color:var(--vermilion); font-size:22px; }
 
-  /* event card */
-  .ev { display:grid; grid-template-columns:52px 1fr; gap:11px; padding:12px 0; border-top:1px solid var(--hairline); }
+  /* event row */
+  .ev { display:grid; grid-template-columns:60px 1fr; gap:13px; padding:14px 0; border-top:1px solid var(--hairline); }
   .ev:first-of-type { border-top:0; }
-  .ev .time { font-family:var(--mono); font-size:12px; color:var(--ink); font-variant-numeric:tabular-nums; padding-top:2px; font-weight:600; }
+  .ev .time { font-family:var(--mono); font-size:14.5px; color:var(--ink); font-variant-numeric:tabular-nums; padding-top:2px; font-weight:600; }
   .ev .time.flex { color:var(--faint); font-weight:400; }
-  .ev .name { font-size:15px; font-weight:600; margin:0; line-height:1.25; }
-  .ev .meta { font-size:12px; color:var(--muted); margin:4px 0 0; }
-  .badges { display:flex; gap:6px; flex-wrap:wrap; margin-top:7px; }
-  .badge { font-size:10.5px; font-weight:600; padding:3px 8px; border-radius:6px; display:inline-flex; gap:4px; align-items:center; }
+  .ev .name { font-size:17.5px; font-weight:600; margin:0; line-height:1.25; }
+  .ev .meta { font-size:14.5px; color:var(--muted); margin:5px 0 0; }
+  .badges { display:flex; gap:7px; flex-wrap:wrap; margin-top:10px; }
+  .badge { font-size:13px; font-weight:600; padding:5px 11px; border-radius:8px; display:inline-flex; gap:5px; align-items:center; }
   .badge.info { background:var(--lapis-soft); color:var(--lapis); }
   .badge.warn { background:color-mix(in srgb, var(--vermilion) 12%, transparent); color:var(--vermilion); }
   .badge.opt { background:var(--surface-2); color:var(--faint); border:1px solid var(--hairline); }
   .badge.book { background:var(--gold-soft); color:var(--gold); }
-  .actions { display:flex; gap:8px; margin-top:9px; flex-wrap:wrap; }
-  a.act { font-size:11.5px; font-weight:600; text-decoration:none; color:var(--lapis); border:1px solid var(--hairline); background:var(--surface); padding:6px 11px; border-radius:8px; display:inline-flex; gap:5px; align-items:center; }
+  .actions { display:flex; gap:9px; margin-top:12px; flex-wrap:wrap; }
+  a.act { font-size:14.5px; font-weight:600; text-decoration:none; color:var(--lapis); border:1px solid var(--hairline); background:var(--surface); padding:10px 15px; border-radius:9px; display:inline-flex; gap:6px; align-items:center; }
   a.act:active { transform:translateY(1px); }
-  .meet { margin-top:9px; background:var(--surface-2); border:1px solid var(--hairline); border-radius:10px; padding:10px 11px; }
-  .meet .mk { font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--lapis); font-weight:700; margin:0 0 4px; }
-  .meet p { font-size:11.5px; color:var(--ink); margin:0; }
-  .meet .look { color:var(--muted); margin-top:4px; }
-  .note { font-size:11.5px; color:var(--muted); margin:6px 0 0; font-style:italic; }
+  .meet { margin-top:12px; background:var(--surface-2); border:1px solid var(--hairline); border-radius:11px; padding:13px 14px; }
+  .meet .mk { font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--lapis); font-weight:700; margin:0 0 6px; }
+  .meet p { font-size:14.5px; color:var(--ink); margin:0; line-height:1.5; }
+  .meet .look { color:var(--muted); margin-top:6px; }
+  .note { font-size:14px; color:var(--muted); margin:9px 0 0; font-style:italic; }
+
+  /* tappable booking row — opens the pass */
+  .ev.bkrow { grid-template-columns:60px 1fr 18px; align-items:center; border:1px solid var(--hairline); border-left:4px solid var(--lapis); border-radius:12px; padding:14px 15px; margin:12px 0; background:var(--surface); width:100%; text-align:left; font:inherit; color:inherit; cursor:pointer; }
+  .ev.bkrow:hover { border-color:var(--lapis); }
+  .ev.bkrow:focus-visible { outline:2px solid var(--lapis); outline-offset:2px; }
+  .ev.bkrow.t-flight { border-left-color:#40596B; }
+  .ev.bkrow.t-tour { border-left-color:#566B3E; }
+  .ev.bkrow.t-ticket { border-left-color:var(--gold); }
+  .ev.bkrow.t-meal { border-left-color:#833E4E; }
+  .ev.bkrow.t-transit { border-left-color:#564a5f; }
+  .ev.bkrow .bksub { font-size:14px; color:var(--muted); margin:5px 0 0; font-family:var(--mono); }
+  .ev.bkrow .chev { color:var(--faint); font-size:23px; align-self:center; justify-self:end; }
 
   /* day list */
   .leg-head { display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin:2px 0 3px; }
-  .leg-city { font-family:var(--serif); font-size:20px; margin:0; }
-  .leg-dates { font-family:var(--mono); font-size:11px; color:var(--muted); }
-  .leg-hotel { font-size:11.5px; color:var(--muted); margin:0 0 6px; }
-  .bookend { text-align:center; font-family:var(--mono); font-size:11px; letter-spacing:.03em; color:var(--faint); padding:12px 0 4px; }
-  .bookend span { background:var(--surface); border:1px solid var(--hairline); padding:6px 12px; border-radius:999px; }
-  .daycard { width:100%; text-align:left; background:var(--surface); border:1px solid var(--hairline); border-radius:13px; padding:13px 14px; margin-top:9px; display:grid; grid-template-columns:44px 1fr auto; gap:11px; align-items:center; cursor:pointer; font:inherit; color:inherit; }
+  .leg-city { font-family:var(--serif); font-size:24px; margin:0; }
+  .leg-dates { font-family:var(--mono); font-size:13px; color:var(--muted); }
+  .leg-hotel { font-size:14px; color:var(--muted); margin:0 0 7px; }
+  .bookend { text-align:center; font-family:var(--mono); font-size:13px; letter-spacing:.03em; color:var(--faint); padding:13px 0 5px; }
+  .bookend span { background:var(--surface); border:1px solid var(--hairline); padding:7px 13px; border-radius:999px; }
+  .daycard { width:100%; text-align:left; background:var(--surface); border:1px solid var(--hairline); border-radius:13px; padding:15px 16px; margin-top:10px; display:grid; grid-template-columns:48px 1fr auto; gap:13px; align-items:center; cursor:pointer; font:inherit; color:inherit; }
   .daycard:hover { border-color:var(--lapis); }
-  .daycard .dn { font-family:var(--serif); font-size:17px; color:var(--lapis); text-align:center; line-height:1; }
-  .daycard .dn small { display:block; font-family:var(--mono); font-size:9px; letter-spacing:.08em; color:var(--faint); text-transform:uppercase; margin-top:3px; }
-  .daycard .dt { font-size:13.5px; font-weight:600; margin:0; }
-  .daycard .dm { font-size:11.5px; color:var(--muted); margin:2px 0 0; }
-  .daycard .chev { color:var(--faint); font-size:18px; }
-  .dots { display:flex; gap:3px; }
-  .dot { width:6px; height:6px; border-radius:50%; }
+  .daycard .dn { font-family:var(--serif); font-size:21px; color:var(--lapis); text-align:center; line-height:1; }
+  .daycard .dn small { display:block; font-family:var(--mono); font-size:10px; letter-spacing:.08em; color:var(--faint); text-transform:uppercase; margin-top:4px; }
+  .daycard .dt { font-size:16.5px; font-weight:600; margin:0; }
+  .daycard .dm { font-size:14px; color:var(--muted); margin:3px 0 0; }
+  .daycard .chev { color:var(--faint); font-size:23px; }
+  .dots { display:flex; gap:4px; margin-top:7px; }
+  .dot { width:7px; height:7px; border-radius:50%; }
+
+  /* booking pass (tapped from the itinerary) */
+  .pass { border:1px solid var(--hairline); border-radius:16px; overflow:hidden; background:var(--surface); margin-top:6px; box-shadow:0 12px 28px -18px rgba(var(--shadow),.55); }
+  .pass .band { padding:18px; color:#fff; }
+  .pass .band.t-flight { background:linear-gradient(135deg,#2B3A46,#40596B); }
+  .pass .band.t-tour { background:linear-gradient(135deg,#3B4A2E,#566B3E); }
+  .pass .band.t-ticket { background:linear-gradient(135deg,#6E5A17,#8C7320); }
+  .pass .band.t-meal { background:linear-gradient(135deg,#5A2733,#833E4E); }
+  .pass .band.t-transit { background:linear-gradient(135deg,#3a3340,#564a5f); }
+  .pass .pn { font-family:var(--serif); font-size:24px; margin:0; line-height:1.08; }
+  .pass .pv { font-size:14px; opacity:.92; margin:6px 0 0; }
+  .pass .pw { font-family:var(--mono); font-size:14px; opacity:.95; margin:10px 0 0; }
+  .pass .stub { padding:16px 18px; border-top:1px dashed var(--hairline); display:flex; justify-content:space-between; align-items:flex-end; gap:12px; }
+  .pass .stub .lbl { font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); font-weight:700; margin:0 0 6px; }
+  .pass .stub .val { font-family:var(--mono); font-size:20px; font-weight:700; color:var(--gold); margin:0; }
+  .pass .stub .qty { font-size:14px; font-weight:700; color:var(--muted); white-space:nowrap; }
+  .pass .pbody { padding:16px 18px; }
+  .pass .pbody > *:first-child { margin-top:0; }
 
   /* unlock */
   .lockbar { display:flex; gap:10px; align-items:center; justify-content:space-between; background:var(--surface); border:1px solid var(--hairline); border-radius:12px; padding:11px 13px; margin-top:6px; }
-  .lockbar .lk { font-size:12.5px; color:var(--muted); }
-  .lockrow button, .lockbar button { font:inherit; font-size:12px; font-weight:600; border:1px solid var(--lapis); color:var(--lapis); background:none; border-radius:9px; padding:8px 13px; cursor:pointer; white-space:nowrap; }
-  .lockrow { display:flex; gap:8px; margin-top:8px; }
-  .lockrow input { flex:1; min-width:0; font:inherit; font-size:14px; padding:9px 12px; border:1px solid var(--hairline); border-radius:9px; background:var(--surface); color:var(--ink); }
+  .lockbar .lk { font-size:14px; color:var(--muted); }
+  .lockrow button, .lockbar button { font:inherit; font-size:14px; font-weight:600; border:1px solid var(--lapis); color:var(--lapis); background:none; border-radius:9px; padding:10px 15px; cursor:pointer; white-space:nowrap; }
+  .lockrow { display:flex; gap:8px; margin-top:9px; }
+  .lockrow input { flex:1; min-width:0; font:inherit; font-size:16px; padding:11px 13px; border:1px solid var(--hairline); border-radius:9px; background:var(--surface); color:var(--ink); }
   .lockrow input:focus { outline:2px solid var(--lapis); outline-offset:0; border-color:var(--lapis); }
-  .lockhint { font-size:11px; color:var(--faint); margin:8px 0 0; }
-  .lockerr { font-size:11.5px; color:var(--vermilion); font-weight:600; margin:8px 0 0; }
+  .lockhint { font-size:13px; color:var(--faint); margin:9px 0 0; }
+  .lockerr { font-size:13.5px; color:var(--vermilion); font-weight:600; margin:9px 0 0; }
 
   /* trip tab */
-  .card { background:var(--surface); border:1px solid var(--hairline); border-radius:13px; padding:15px; margin-top:12px; }
-  .card h3 { font-size:14px; margin:0 0 8px; }
-  .card p { font-size:12.5px; color:var(--muted); margin:5px 0; }
+  .card { background:var(--surface); border:1px solid var(--hairline); border-radius:13px; padding:16px; margin-top:13px; }
+  .card h3 { font-size:16px; margin:0 0 9px; }
+  .card p { font-size:14.5px; color:var(--muted); margin:5px 0; }
   .card p b { color:var(--ink); }
-  ul.plain { margin:6px 0 0; padding-left:18px; }
-  ul.plain li { font-size:12.5px; color:var(--muted); margin:5px 0; }
+  ul.plain { margin:7px 0 0; padding-left:19px; }
+  ul.plain li { font-size:14.5px; color:var(--muted); margin:6px 0; }
 
-  .backbtn { background:none; border:0; color:var(--lapis); font:inherit; font-size:13px; font-weight:600; padding:0 0 8px; cursor:pointer; display:inline-flex; gap:5px; align-items:center; }
+  .backbtn { background:none; border:0; color:var(--lapis); font:inherit; font-size:15px; font-weight:600; padding:0 0 10px; cursor:pointer; display:inline-flex; gap:5px; align-items:center; }
 
   /* tab bar */
   .tabbar { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:520px;
-    display:grid; grid-template-columns:repeat(4,1fr); background:var(--surface); border-top:1px solid var(--hairline);
-    padding:9px 8px calc(9px + env(safe-area-inset-bottom,0px)); z-index:20; }
-  .tab { border:0; background:none; font:inherit; cursor:pointer; text-align:center; font-size:10px; font-weight:600; color:var(--faint); display:flex; flex-direction:column; align-items:center; gap:4px; }
+    display:grid; grid-template-columns:repeat(3,1fr); background:var(--surface); border-top:1px solid var(--hairline);
+    padding:10px 8px calc(10px + env(safe-area-inset-bottom,0px)); z-index:20; }
+  .tab { border:0; background:none; font:inherit; cursor:pointer; text-align:center; font-size:11.5px; font-weight:600; color:var(--faint); display:flex; flex-direction:column; align-items:center; gap:4px; }
   .tab.on { color:var(--lapis); }
-  .tab svg { width:20px; height:20px; }
-  .foot-note { text-align:center; font-size:11px; color:var(--faint); padding:18px; }
+  .tab svg { width:23px; height:23px; }
+  .foot-note { text-align:center; font-size:12.5px; color:var(--faint); padding:18px; }
 </style>
 </head>
 <body>
@@ -172,32 +204,41 @@
 
   const sortFixed = (a,b) => (a.start||'').localeCompare(b.start||'');
 
+  const badgeCls = (h) => /👕/.test(h) ? 'info' : (/ID|passport|backpack|steps|early|sharp|Firenze|Check in/i.test(h) ? 'warn' : 'info');
+
   // ---- render one event ----
+  // A booked event becomes a tappable row that opens its pass (see viewBooking).
   function renderEvent(e){
     const t = e.start ? fmtTime(e.start) : (e.type==='meal'?'dinner':'○');
+
+    if (e.booking){
+      const idx = TRIP.events.indexOf(e);
+      const sub = '🎟 ' + esc(bookVal(e)) + (e.booking.source ? ' · ' + esc(e.booking.source) : '');
+      const node = $(
+        '<button class="ev bkrow t-'+e.type+'">'+
+          '<div class="time'+(e.start?'':' flex')+'">'+esc(t)+'</div>'+
+          '<div class="body"><p class="name">'+esc(e.title)+'</p><p class="bksub">'+sub+'</p></div>'+
+          '<div class="chev">›</div>'+
+        '</button>'
+      );
+      node.addEventListener('click', ()=>{ location.hash = '#booking/'+idx; });
+      return node;
+    }
+
     const badges = [];
     if (e.optional) badges.push('<span class="badge opt">optional</span>');
-    (e.headsup||[]).forEach(h=>{
-      const cls = /👕|ID|passport|backpack|steps|early|sharp|Firenze|Check in/i.test(h) ? (/👕/.test(h)?'info':'warn') : 'info';
-      badges.push('<span class="badge '+cls+'">'+esc(h)+'</span>');
-    });
-    if (e.booking) badges.push('<span class="badge book">🎟 '+esc(bookVal(e))+'</span>');
+    (e.headsup||[]).forEach(h=> badges.push('<span class="badge '+badgeCls(h)+'">'+esc(h)+'</span>'));
 
     const actions = [];
-    if (e.address || e.type==='sight' || e.type==='meal' || e.type==='ticket' || e.type==='tour')
+    if (e.address || e.type==='sight' || e.type==='meal')
       actions.push('<a class="act" target="_blank" rel="noopener" href="'+mapURL(e)+'">📍 Directions</a>');
-
-    let meet = '';
-    if (e.meet) meet = '<div class="meet"><p class="mk">Meeting point</p><p><b>'+esc(e.meet.name)+'</b> · '+esc(e.meet.address)+'</p>'+(e.meet.look?'<p class="look">'+esc(e.meet.look)+'</p>':'')+'</div>';
 
     return $(
       '<div class="ev">'+
         '<div class="time'+(e.start?'':' flex')+'">'+esc(t)+'</div>'+
         '<div class="body">'+
           '<p class="name">'+esc(e.title)+'</p>'+
-          (e.qty?'<p class="meta">'+e.qty+' travelers'+(e.booking?' · '+esc(e.booking.source):'')+'</p>':'')+
           (badges.length?'<div class="badges">'+badges.join('')+'</div>':'')+
-          meet+
           (e.note?'<p class="note">'+esc(e.note)+'</p>':'')+
           (actions.length?'<div class="actions">'+actions.join('')+'</div>':'')+
         '</div>'+
@@ -261,7 +302,11 @@
     if (isReal){ const now=new Date(); const hm=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'); up = fixed.find(e=>e.start>=hm) || null; }
     else up = fixed[0] || null;
     if (up){
-      host.appendChild($('<div class="upnext"><p class="k">'+(isReal?'Up next':'First fixed time')+'</p><p class="n">'+esc(up.title)+'</p><p class="t">'+esc(fmtTime(up.start))+(up.booking?' · '+esc(bookVal(up)):'')+'</p></div>'));
+      const tap = up.booking ? ' tap' : '';
+      const chev = up.booking ? '<div class="chev">›</div>' : '';
+      const un = $('<'+(up.booking?'button':'div')+' class="upnext'+tap+'"><div><p class="k">'+(isReal?'Up next':'First fixed time')+'</p><p class="n">'+esc(up.title)+'</p><p class="t">'+esc(fmtTime(up.start))+(up.booking?' · '+esc(bookVal(up)):'')+'</p></div>'+chev+'</'+(up.booking?'button':'div')+'>');
+      if (up.booking) un.addEventListener('click', ()=>{ location.hash='#booking/'+TRIP.events.indexOf(up); });
+      host.appendChild(un);
     }
     host.appendChild($('<hr class="rule">'));
     renderDay(cur, host);
@@ -306,6 +351,43 @@
     host.appendChild($('<p class="sub">'+esc(dayTitle(iso))+'</p>'));
     host.appendChild($('<hr class="rule">'));
     renderDay(iso, host);
+  }
+
+  // ---- BOOKING pass (tapped from a day / today) ----
+  function viewBooking(host, idx){
+    const e = TRIP.events[idx];
+    if (!e || !e.booking){ location.hash='#days'; return; }
+    const back = $('<button class="backbtn">‹ '+fmtDate(e.date)+'</button>');
+    back.addEventListener('click', ()=>{ location.hash='#day/'+e.date; });
+    host.appendChild(back);
+
+    const pw = dow(e.date)+' '+MO[asDate(e.date).getMonth()]+' '+asDate(e.date).getDate()+(e.start?' · '+fmtTime(e.start):'');
+    const pass = $(
+      '<div class="pass">'+
+        '<div class="band t-'+e.type+'">'+
+          '<p class="pn">'+esc(e.title)+'</p>'+
+          '<p class="pv">'+esc(cityForDate(e.date))+(e.booking.source?' · '+esc(e.booking.source):'')+'</p>'+
+          '<p class="pw">'+esc(pw)+'</p>'+
+        '</div>'+
+        '<div class="stub"><div><p class="lbl">'+esc(bookLabel(e))+'</p><p class="val">'+esc(bookVal(e))+'</p></div>'+(e.qty?'<span class="qty">🎟 ×'+e.qty+'</span>':'')+'</div>'+
+        '<div class="pbody"></div>'+
+      '</div>'
+    );
+    host.appendChild(pass);
+    const pb = pass.querySelector('.pbody');
+    if (e.headsup && e.headsup.length)
+      pb.appendChild($('<div class="badges">'+e.headsup.map(h=>'<span class="badge '+badgeCls(h)+'">'+esc(h)+'</span>').join('')+'</div>'));
+    if (e.meet)
+      pb.appendChild($('<div class="meet"><p class="mk">Meeting point</p><p><b>'+esc(e.meet.name)+'</b> · '+esc(e.meet.address)+'</p>'+(e.meet.look?'<p class="look">'+esc(e.meet.look)+'</p>':'')+'</div>'));
+    if (e.note) pb.appendChild($('<p class="note">'+esc(e.note)+'</p>'));
+    pb.appendChild($('<div class="actions"><a class="act" target="_blank" rel="noopener" href="'+mapURL(e)+'">📍 Directions</a></div>'));
+
+    // if this booking has a hidden code and we're locked, offer to unlock right here
+    if (window.SECRETS && !CODES && e.codeKey){
+      host.appendChild($('<hr class="rule">'));
+      host.appendChild($('<p class="sect-label">Reveal confirmation code</p>'));
+      renderLock(host);
+    }
   }
 
   // ---- unlock UI ----
@@ -364,8 +446,9 @@
   function renderTabs(){
     const bar = document.getElementById('tabbar'); bar.innerHTML='';
     const cur = currentTab();
+    const active = (cur==='day' || cur==='booking') ? 'days' : cur;
     TABS.forEach(t=>{
-      const b = $('<button class="tab'+(cur===t.id?' on':'')+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+t.icon+'</svg>'+t.label+'</button>');
+      const b = $('<button class="tab'+(active===t.id?' on':'')+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+t.icon+'</svg>'+t.label+'</button>');
       b.addEventListener('click', ()=>{ location.hash='#'+t.id; });
       bar.appendChild(b);
     });
@@ -374,6 +457,7 @@
     const host = document.getElementById('view'); host.innerHTML='';
     const h = (location.hash||'#today').slice(1);
     if (h.startsWith('day/')) viewDayDetail(host, h.slice(4));
+    else if (h.startsWith('booking/')) viewBooking(host, parseInt(h.slice(8),10));
     else if (h==='days') viewDays(host);
     else if (h==='trip') viewTrip(host);
     else viewToday(host);
