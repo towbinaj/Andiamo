@@ -13,6 +13,35 @@ in light and dark mode, and offline once loaded.
 | `sw.js` | Service worker for offline support. |
 | `manifest.webmanifest` | Lets you "Add to Home Screen" as an app. |
 
+## Working from another computer (or on the fly)
+
+**Everything to run/edit/deploy the app is in this repo.** On any machine:
+
+```bash
+git clone https://github.com/towbinaj/Andiamo
+# edit trip-data.js (or anything), then:
+git add -A && git commit -m "update" && git push
+```
+
+Pushing to `main` auto-deploys (~1 min). No build step, no server.
+
+**No computer at all?** Use the app itself: **Send to trip** (add a stop) and
+**Rearrange this day** (reorder / move) both work from any browser — they open a
+pre-filled GitHub issue you submit with your GitHub login. Nothing is installed
+and no token is stored.
+
+**Not in the repo — back these up separately** (kept off GitHub on purpose, since
+they contain plaintext codes or original tickets). You only need them to
+*re-encrypt* codes/tickets or change the passphrase from another machine:
+
+- `CONFIRMATIONS-private.md` — plaintext confirmation codes
+- `Vatican Tour.pdf`, `Uffizi Tickets.pdf`, `Duomo Tickets.pdf` — original tickets
+- `encrypt.html` — the local encryption tool (prefilled with codes)
+- `favicon.jpg` — the family photo the app icon is made from
+
+Copy those to a USB stick / private cloud folder / password manager. (Viewing codes
+and tickets in the app works anywhere — you only need these to change encryption.)
+
 ## Editing the trip
 
 Open `trip-data.js`. To add a booking or activity, copy one `{ ... }` block inside
