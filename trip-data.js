@@ -197,7 +197,7 @@ const TRIP = {
     /* ---------------------------- Wed, Aug 5 ---------------------------- */
     // Train in, check in, then the Duomo cluster and down Via dei Calzaiuoli to Piazza della Signoria.
     { date: "2026-08-05", start: null, title: "Train to Florence", type: "transit", fixed: false,
-      note: "Rome → Florence. Train ticket not added yet." },
+      note: "Rome → Florence — buy tickets at the station." },
     { date: "2026-08-05", start: null, title: "Check in — B&B Firenze Pitti Palace", type: "sight", fixed: false,
       address: "Borgo San Jacopo 3/R, Florence", note: "Drop the bags — you're steps from the Ponte Vecchio in the Oltrarno." },
     {
@@ -268,7 +268,7 @@ const TRIP = {
     {
       date: "2026-08-07", start: "13:15", title: "Galleria dell'Accademia", type: "ticket", fixed: true, qty: 4,
       address: "Via Ricasoli 58/60, Florence",
-      note: "Home of Michelangelo's David. (Ticket PDF not added yet — from the itinerary.)",
+      note: "Home of Michelangelo's David. Timed-entry reservation — booking confirmed.",
       booking: { label: "Status", value: "Confirmed", source: "Accademia email" }, codeKey: "accademia",
       headsup: ["Timed entry — arrive ~15 min early"],
     },
