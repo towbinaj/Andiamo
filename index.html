@@ -77,6 +77,17 @@
   .dayhero .dhcap { position:absolute; left:0; right:0; bottom:0; padding:30px 16px 13px; color:#fff; font-family:var(--serif); font-size:21px; font-weight:600; text-shadow:0 1px 10px rgba(0,0,0,.55); background:linear-gradient(to top, rgba(0,0,0,.6), rgba(0,0,0,.1) 60%, transparent); }
   .dayhero .dhtag { position:absolute; top:11px; left:12px; font-size:10.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#fff; background:rgba(0,0,0,.35); backdrop-filter:blur(3px); padding:5px 9px; border-radius:999px; }
 
+  /* special-occasion banner + hearts backdrop (only on a day that has `occasion`) */
+  .occasion { display:flex; align-items:center; justify-content:center; gap:9px; margin:12px 0 4px; padding:12px 16px;
+    border-radius:14px; color:#fff; font-family:var(--serif); font-size:18px; font-weight:600; letter-spacing:.01em;
+    background:linear-gradient(120deg, var(--vermilion), var(--gold)); box-shadow:0 12px 28px -18px rgba(var(--shadow),.7); }
+  .occasion svg { width:20px; height:20px; fill:#fff; flex:none; }
+  #app.hearts-day { position:relative; isolation:isolate; }
+  #hearts { position:absolute; inset:0; z-index:-1; pointer-events:none; opacity:.09; }
+  #hearts svg { width:100%; height:100%; display:block; }
+  :root[data-theme="dark"] #hearts { opacity:.17; }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) #hearts { opacity:.17; } }
+
   /* up-next highlight */
   .upnext { background:color-mix(in srgb, var(--vermilion) 8%, var(--surface)); border:1px solid color-mix(in srgb, var(--vermilion) 30%, var(--hairline)); border-radius:14px; padding:16px 17px; margin-bottom:14px; width:100%; text-align:left; font:inherit; color:inherit; display:block; }
   .upnext.tap { cursor:pointer; display:grid; grid-template-columns:1fr 18px; align-items:center; gap:8px; }
@@ -385,6 +396,33 @@
       (d.highlight ? '<div class="dhcap">'+esc(d.highlight)+'</div>' : '')+'</div>');
   }
 
+  // ---- special occasion (e.g. an anniversary): a banner + a hearts backdrop, only on that day ----
+  const HEART = 'M12 21s-6.5-4.35-9-8.5C1.5 9.5 3 6 6.5 6c2 0 3 1.2 3.5 2 .5-.8 1.5-2 3.5-2C20 6 22.5 9.5 21 12.5 18.5 16.65 12 21 12 21Z';
+  const occasionOf = (iso) => { const d=TRIP.days.find(x=>x.date===iso); return d && d.occasion ? d.occasion : ''; };
+  function occasionBanner(iso){
+    const occ = occasionOf(iso); if(!occ) return null;
+    return $('<div class="occasion"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+HEART+'"/></svg><span>'+esc(occ)+'</span></div>');
+  }
+  // a full-bleed layer of faint hearts, painted behind the day's content (z-index:-1 inside #app)
+  function setOccasionBg(iso){
+    const app = document.getElementById('app');
+    const on = !!occasionOf(iso);
+    app.classList.toggle('hearts-day', on);
+    const existing = document.getElementById('hearts');
+    if (!on){ if (existing) existing.remove(); return; }
+    if (existing) return;
+    const layer = document.createElement('div'); layer.id = 'hearts';
+    layer.innerHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">'+
+        '<pattern id="hp" width="72" height="72" patternUnits="userSpaceOnUse" patternTransform="rotate(-8)">'+
+          '<path fill="#C1442A" transform="translate(6 7) scale(.7)" d="'+HEART+'"/>'+
+          '<path fill="#C1442A" transform="translate(40 40) scale(.95)" d="'+HEART+'"/>'+
+        '</pattern>'+
+        '<rect width="100%" height="100%" fill="url(#hp)"/>'+
+      '</svg>';
+    app.insertBefore(layer, app.firstChild);
+  }
+
   // ---- date helpers ----
   const WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -627,6 +665,8 @@
     host.appendChild($('<p class="eyebrow" style="color:'+cityAccent(cur)+'">'+(isReal?'<span class="live"></span>':'')+esc(cityForDate(cur))+' · Day '+(idx+1)+' of '+TRIP.days.length+'</p>'));
     host.appendChild($('<h1 class="title">'+fmtDate(cur)+'</h1>'));
     host.appendChild($('<p class="sub">'+esc(dayTitle(cur))+'</p>'));
+    setOccasionBg(cur);
+    const obc = occasionBanner(cur); if (obc) host.appendChild(obc);
     const hcur = dayHero(cur); if (hcur) host.appendChild(hcur);
     const wcur = weatherChip(cur); if (wcur) host.appendChild(wcur);
     const mbc = mapDayButton(cur); if (mbc) host.appendChild(mbc);
@@ -696,6 +736,8 @@
     host.appendChild($('<p class="eyebrow" style="color:'+cityAccent(iso)+'">'+esc(cityForDate(iso))+' · Day '+(dayIndex(iso)+1)+' of '+TRIP.days.length+'</p>'));
     host.appendChild($('<h1 class="title">'+fmtDate(iso)+'</h1>'));
     host.appendChild($('<p class="sub">'+esc(dayTitle(iso))+'</p>'));
+    setOccasionBg(iso);
+    const obd = occasionBanner(iso); if (obd) host.appendChild(obd);
     const hcd = dayHero(iso); if (hcd) host.appendChild(hcd);
     const wcd = weatherChip(iso); if (wcd) host.appendChild(wcd);
     const mbd = mapDayButton(iso); if (mbd) host.appendChild(mbd);
@@ -989,6 +1031,7 @@
   function render(){
     const host = document.getElementById('view'); host.innerHTML='';
     const h = (location.hash||'#today').slice(1);
+    setOccasionBg(null);   // day views re-enable it below for a day with an occasion
     if (h.startsWith('day/')) viewDayDetail(host, h.slice(4));
     else if (h.startsWith('booking/')) viewBooking(host, h.slice(8));
     else if (h.startsWith('arrange/')) viewArrange(host, h.slice(8));
