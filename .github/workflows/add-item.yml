@@ -39,6 +39,12 @@ jobs:
             if (!m) { core.setOutput('ok', 'false'); return; }
             let obj;
             try { obj = JSON.parse(m[1].trim()); } catch (e) { core.setOutput('ok', 'false'); return; }
+            // arrangement update (moves + order) -> overrides.json
+            if (obj && obj.overrides) {
+              const ov = { moves: obj.overrides.moves || {}, order: obj.overrides.order || {} };
+              fs.writeFileSync('overrides.json', JSON.stringify(ov, null, 2) + '\n');
+              core.setOutput('ok', 'true'); core.setOutput('title', 'arrangement update'); return;
+            }
             if (!obj || !obj.title || !obj.date) { core.setOutput('ok', 'false'); return; }
             let arr = [];
             try { arr = JSON.parse(fs.readFileSync('custom.json', 'utf8')); if (!Array.isArray(arr)) arr = []; } catch (e) { arr = []; }
@@ -64,8 +70,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add custom.json
-          git commit -m "Add trip item: ${{ steps.parse.outputs.title }} (#${{ github.event.issue.number }})"
+          git add custom.json overrides.json
+          git commit -m "${{ steps.parse.outputs.title }} (#${{ github.event.issue.number }})"
           git push
 
       - name: Configure Pages

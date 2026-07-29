@@ -125,6 +125,15 @@
   .addform input, .addform select, .addform textarea { font:inherit; font-size:16px; padding:12px 13px; border:1px solid var(--hairline); border-radius:10px; background:var(--surface); color:var(--ink); }
   .addform input:focus, .addform select:focus, .addform textarea:focus { outline:2px solid var(--lapis); border-color:var(--lapis); }
   .addform textarea { resize:vertical; }
+  /* rearrange rows */
+  .alist { touch-action:pan-y; }
+  .arow { display:grid; grid-template-columns:32px 1fr auto; gap:10px; align-items:center; padding:12px; border:1px solid var(--hairline); border-radius:11px; background:var(--surface); margin-top:9px; }
+  .arow.dragging { border-color:var(--lapis); box-shadow:0 10px 22px -8px rgba(var(--shadow),.5); opacity:.97; }
+  .draghandle { font-size:19px; color:var(--faint); text-align:center; cursor:grab; touch-action:none; user-select:none; -webkit-user-select:none; }
+  .draghandle.locked { font-family:var(--mono); font-size:11px; cursor:default; color:var(--muted); }
+  .aname { font-size:15px; font-weight:600; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .aname .tglyph { width:16px; height:16px; vertical-align:-3px; margin-right:6px; }
+  .amove { font:inherit; font-size:12.5px; padding:8px 9px; border:1px solid var(--hairline); border-radius:8px; background:var(--surface-2); color:var(--ink); max-width:118px; }
   .meet { margin-top:12px; background:var(--surface-2); border:1px solid var(--hairline); border-radius:11px; padding:13px 14px; }
   .meet .mk { font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--lapis); font-weight:700; margin:0 0 6px; }
   .meet p { font-size:14.5px; color:var(--ink); margin:0; line-height:1.5; }
@@ -297,6 +306,33 @@
   }
   const GH_REPO = 'towbinaj/Andiamo';   // where "Send to trip" opens an issue
 
+  // ---- shared arrangement: moves between days + order within a day (overrides.json) ----
+  const normOver = (o) => ({ moves: (o&&o.moves)||{}, order: (o&&o.order)||{} });
+  let OVER = normOver(null), OVER_DIRTY = false;
+  try { const a = JSON.parse(localStorage.getItem('andiamo-over')||'null'); if (a) OVER = normOver(a); } catch(e){}
+  try { OVER_DIRTY = localStorage.getItem('andiamo-over-dirty')==='1'; } catch(e){}
+  const effDate = (e) => OVER.moves[e._id] || e.date;
+  function saveOver(dirty){
+    try { localStorage.setItem('andiamo-over', JSON.stringify(OVER)); if (dirty){ OVER_DIRTY = true; localStorage.setItem('andiamo-over-dirty','1'); } } catch(e){}
+  }
+  async function loadRemoteOver(){
+    try {
+      const r = await fetch('overrides.json?_='+Date.now(), {cache:'no-store'}); if (!r.ok) return;
+      const o = normOver(await r.json());
+      if (!OVER_DIRTY){ OVER = o; try { localStorage.setItem('andiamo-over', JSON.stringify(OVER)); } catch(e){} render(); }
+    } catch(e){}
+  }
+  // order a day's flexible items by the saved arrangement (unknown ids keep their natural order, appended)
+  function applyOrder(iso, list){
+    const ord = OVER.order[iso]; if (!ord || !ord.length) return list;
+    const pos = {}; ord.forEach((id,i)=> pos[id]=i);
+    return list.slice().sort((a,b)=>{
+      const pa = pos[a._id]!=null ? pos[a._id] : 900+list.indexOf(a);
+      const pb = pos[b._id]!=null ? pos[b._id] : 900+list.indexOf(b);
+      return pa - pb;
+    });
+  }
+
   // ---- weather + sunrise/sunset (Open-Meteo, no key; cached for offline) ----
   const CITY_COORD = { Rome:{lat:41.9028,lon:12.4964}, Florence:{lat:43.7696,lon:11.2558} };
   let WX = null;
@@ -350,7 +386,7 @@
   const cityForDate = (iso) => { let c=TRIP.legs[0].city; for(const l of TRIP.legs){ if(iso>=l.start) c=l.city; } return c; };
   const dayTitle = (iso) => { const d=TRIP.days.find(x=>x.date===iso); return d?d.title:''; };
   const dayIndex = (iso) => TRIP.days.findIndex(x=>x.date===iso);
-  const eventsOn = (iso) => allEvents().filter(e=>e.date===iso);
+  const eventsOn = (iso) => allEvents().filter(e=>effDate(e)===iso);
   const mapURL = (e) => 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(e.address || (e.title+', '+cityForDate(e.date)));
 
   const sortFixed = (a,b) => (a.start||'').localeCompare(b.start||'');
@@ -369,7 +405,8 @@
     ticket:'<path d="M3 9a2 2 0 0 0 0 6v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2a2 2 0 0 0 0-6V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"/><path d="M13 6v2M13 16v2"/>',
     utensils:'<path d="M6 3v3a2 2 0 0 0 4 0V3"/><path d="M8 6v15"/><path d="M15 3c2 1 3 3.3 3 6s-1 3.6-3 4v8"/>',
     cone:'<path d="M8 11a4 4 0 1 1 8 0"/><path d="M8 11l4 10 4-10z"/>',
-    coffee:'<path d="M17 8h1a3 3 0 0 1 0 6h-1"/><path d="M3 8h14v6a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M6 2v2M10 2v2M14 2v2"/>'
+    coffee:'<path d="M17 8h1a3 3 0 0 1 0 6h-1"/><path d="M3 8h14v6a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M6 2v2M10 2v2M14 2v2"/>',
+    headphones:'<path d="M4 14v-3a8 8 0 0 1 16 0v3"/><path d="M4 14a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2z"/><path d="M20 14a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2 2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2z"/>'
   };
   const svgIcon = (name, cls, color) =>
     '<svg class="'+(cls||'')+'"'+(color?' style="color:'+color+'"':'')+' viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[name]||'')+'</svg>';
@@ -401,6 +438,20 @@
     "Galleria dell'Accademia":"Galleria_dell'Accademia,_Florence"
   };
   const wikiURL = (e) => WIKI[e.title] ? 'https://en.wikipedia.org/wiki/'+WIKI[e.title] : null;
+
+  // Rick Steves free audio tours (linked to his official files — not re-hosted)
+  const RS = 'https://podcasts.ricksteves.com/audio-tours/';
+  const AUDIO = {
+    "Trevi Fountain": RS+"rome-heart.mp3", "Spanish Steps": RS+"rome-heart.mp3",
+    "Pantheon": RS+"rome-pantheon.mp3", "Piazza Navona / Campo de' Fiori": RS+"rome-heart.mp3",
+    "St. Peter's Basilica": RS+"rome-st-peters-basilica.mp3", "Vatican Museums": RS+"rome-vatican-museums.mp3",
+    "Sistine Chapel": RS+"rome-sistine-chapel.mp3",
+    "Colosseum — Arena Floor, Forum & Palatine": RS+"rome-colosseum.mp3",
+    "Duomo (Cathedral)": RS+"florence-renaissance-walk.mp3", "Piazza della Signoria": RS+"florence-renaissance-walk.mp3",
+    "Ponte Vecchio": RS+"florence-renaissance-walk.mp3", "Uffizi Gallery": RS+"florence-uffizi-gallery.mp3",
+    "Galleria dell'Accademia": RS+"florence-accademia-david.mp3", "Bargello": RS+"florence-bargello.mp3"
+  };
+  const audioURL = (e) => AUDIO[e.title] || null;
 
   // Google Maps walking route through a day's stops (order: timed first, then flexible)
   function dayMapURL(iso){
@@ -446,6 +497,7 @@
     if (e.address || ['sight','meal','treat','cafe','tour','ticket'].includes(e.type))
       actions.push(iconBtn(mapURL(e), 'Directions', 'pin'));
     if (wikiURL(e)) actions.push(iconBtn(wikiURL(e), 'Read on Wikipedia', 'book'));
+    if (audioURL(e)) actions.push(iconBtn(audioURL(e), 'Rick Steves audio tour', 'headphones'));
 
     const node = $(
       '<div class="ev'+done+'">'+
@@ -467,7 +519,7 @@
   function renderDay(iso, host){
     const evs = eventsOn(iso);
     const fixed = evs.filter(e=>e.fixed && e.start).sort(sortFixed);
-    const flex  = evs.filter(e=>!(e.fixed && e.start));
+    const flex  = applyOrder(iso, evs.filter(e=>!(e.fixed && e.start)));
     if (fixed.length){
       host.appendChild($('<p class="sect-label">Scheduled</p>'));
       fixed.forEach(e=>host.appendChild(renderEvent(e)));
@@ -588,6 +640,7 @@
     host.appendChild($('<hr class="rule">'));
     renderDay(iso, host);
     host.appendChild(addStopButton(iso));
+    host.appendChild(arrangeButton(iso));
   }
 
   // ---- BOOKING pass (tapped from a day / today) ----
@@ -619,6 +672,7 @@
     if (e.note) pb.appendChild($('<p class="note">'+esc(e.note)+'</p>'));
     const acts = $('<div class="actions">'+iconBtn(mapURL(e), 'Directions', 'pin')+'</div>');
     if (wikiURL(e)) acts.appendChild($(iconBtn(wikiURL(e), 'Read on Wikipedia', 'book')));
+    if (audioURL(e)) acts.appendChild($(iconBtn(audioURL(e), 'Rick Steves audio tour', 'headphones')));
     if (e.pdf && PASS){
       const tb = $('<button class="act ticket">View ticket (PDF)</button>');
       tb.addEventListener('click', ()=>{
@@ -686,6 +740,8 @@
 
     host.appendChild($('<div class="card"><h3>Dress code</h3><ul class="plain">'+TRIP.dress.map(d=>'<li>'+esc(d)+'</li>').join('')+'</ul></div>'));
 
+    host.appendChild($('<div class="card"><h3>Audio tours</h3><p>The 🎧 links on stops open <b>Rick Steves’</b> free audio tours (Colosseum, Sistine, Uffizi, Accademia, and more) from his site.</p><p>For offline listening with maps while you walk, download the free <b>Rick Steves Audio Europe</b> app and save the Rome &amp; Florence tours before you go.</p><div class="actions"><a class="act" target="_blank" rel="noopener" href="https://www.ricksteves.com/watch-read-listen/audio/audio-tours/italy">All Italy tours ›</a></div></div>'));
+
     // open items (things without a confirmation)
     const open = [];
     TRIP.events.forEach(e=>{ if((/not yet|not added|check this/i).test(e.note||'')) open.push(fmtDate(e.date)+' — '+e.title); });
@@ -709,6 +765,92 @@
     const url = 'https://github.com/'+GH_REPO+'/issues/new?title=' +
       encodeURIComponent('Trip item: ' + item.title) + '&body=' + encodeURIComponent(body);
     window.open(url, '_blank');
+  }
+  function arrangeButton(date){
+    const b = $('<button class="addbtn">↕ Rearrange this day</button>');
+    b.addEventListener('click', ()=>{ location.hash = '#arrange/'+date; });
+    return b;
+  }
+  function publishArrangement(){
+    const body = 'Update the itinerary arrangement (from the Andiamo app):\n\n```json\n' + JSON.stringify({ overrides: OVER }) + '\n```\n';
+    const url = 'https://github.com/'+GH_REPO+'/issues/new?title=' + encodeURIComponent('Arrangement update') + '&body=' + encodeURIComponent(body);
+    window.open(url, '_blank');
+    OVER_DIRTY = false; try { localStorage.removeItem('andiamo-over-dirty'); } catch(e){}   // optimistic
+  }
+  // touch/mouse drag-to-reorder within a list of .arow[data-id] rows
+  function makeSortable(list, onChange){
+    list.querySelectorAll('.draghandle:not(.locked)').forEach(h=>{
+      h.addEventListener('pointerdown', (e)=>{
+        const row = h.closest('.arow'); if (!row) return; e.preventDefault();
+        try { h.setPointerCapture(e.pointerId); } catch(_){}
+        row.classList.add('dragging');
+        const move = (ev)=>{
+          const y = ev.clientY;
+          for (const s of [].filter.call(list.children, c=>c!==row)){
+            const r = s.getBoundingClientRect();
+            if (y < r.top + r.height/2){ if (row.nextElementSibling!==s) list.insertBefore(row, s); return; }
+          }
+          if (list.lastElementChild!==row) list.appendChild(row);
+        };
+        const up = ()=>{
+          h.removeEventListener('pointermove', move); h.removeEventListener('pointerup', up);
+          row.classList.remove('dragging');
+          onChange([].map.call(list.children, c=>c.getAttribute('data-id')));
+        };
+        h.addEventListener('pointermove', move); h.addEventListener('pointerup', up);
+      });
+    });
+  }
+  function viewArrange(host, date){
+    const back = $('<button class="backbtn">‹ '+fmtDate(date)+'</button>');
+    back.addEventListener('click', ()=>{ location.hash = '#day/'+date; });
+    host.appendChild(back);
+    host.appendChild($('<p class="eyebrow" style="color:'+cityAccent(date)+'">Rearrange</p>'));
+    host.appendChild($('<h1 class="title">'+fmtDate(date)+'</h1>'));
+    host.appendChild($('<p class="sub">Drag ⠿ to reorder flexible stops. Use “Move to” to send a stop to another day. Timed stops keep their time order.</p>'));
+
+    const evs = eventsOn(date);
+    const fixed = evs.filter(e=>e.fixed&&e.start).sort(sortFixed);
+    const flex  = applyOrder(date, evs.filter(e=>!(e.fixed&&e.start)));
+    const dayOptions = () => TRIP.days.map(d=>'<option value="'+d.date+'"'+(d.date===date?' selected':'')+'>'+esc(fmtDate(d.date))+'</option>').join('');
+
+    function moverRow(e, draggable){
+      const lead = draggable ? '<span class="draghandle" title="Drag to reorder">⠿</span>'
+                             : '<span class="draghandle locked">'+(e.start?esc(fmtTime(e.start)):'•')+'</span>';
+      const row = $('<div class="arow" data-id="'+e._id+'">'+lead+'<span class="aname">'+withGlyph(e)+'</span><select class="amove" aria-label="Move to another day">'+dayOptions()+'</select></div>');
+      row.querySelector('.amove').addEventListener('change', (ev)=>{
+        const nd = ev.target.value;
+        if (nd===date){ delete OVER.moves[e._id]; }
+        else { OVER.moves[e._id] = nd; if (OVER.order[date]) OVER.order[date] = OVER.order[date].filter(x=>x!==e._id); }
+        saveOver(true); render();
+      });
+      return row;
+    }
+
+    if (fixed.length){
+      host.appendChild($('<p class="sect-label">Timed</p>'));
+      fixed.forEach(e=> host.appendChild(moverRow(e, false)));
+    }
+    if (flex.length){
+      host.appendChild($('<p class="sect-label" style="margin-top:14px">Flexible — drag to reorder</p>'));
+      const list = $('<div class="alist"></div>');
+      flex.forEach(e=> list.appendChild(moverRow(e, true)));
+      host.appendChild(list);
+      makeSortable(list, (ids)=>{ OVER.order[date] = ids; saveOver(true); });
+    }
+
+    host.appendChild($('<hr class="rule">'));
+    const pub = $('<button class="act ticket" style="width:100%;justify-content:center">Publish for everyone →</button>');
+    pub.addEventListener('click', publishArrangement);
+    host.appendChild(pub);
+    host.appendChild($('<p class="lockhint">Opens a GitHub issue you submit (as you). Everyone sees the new arrangement in ~1 minute.</p>'));
+    const disc = $('<button class="addbtn" style="margin-top:10px">Discard my changes</button>');
+    disc.addEventListener('click', ()=>{
+      OVER = normOver(null); OVER_DIRTY = false;
+      try { localStorage.removeItem('andiamo-over'); localStorage.removeItem('andiamo-over-dirty'); } catch(e){}
+      loadRemoteOver(); location.hash = '#day/'+date;
+    });
+    host.appendChild(disc);
   }
   function viewAdd(host, date){
     const back = $('<button class="backbtn">‹ Back</button>');
@@ -756,7 +898,7 @@
   function renderTabs(){
     const bar = document.getElementById('tabbar'); bar.innerHTML='';
     const cur = currentTab();
-    const active = (cur==='day' || cur==='booking' || cur==='add') ? 'days' : cur;
+    const active = (cur==='day' || cur==='booking' || cur==='add' || cur==='arrange') ? 'days' : cur;
     TABS.forEach(t=>{
       const b = $('<button class="tab'+(active===t.id?' on':'')+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+t.icon+'</svg>'+t.label+'</button>');
       b.addEventListener('click', ()=>{ location.hash='#'+t.id; });
@@ -769,6 +911,7 @@
     const h = (location.hash||'#today').slice(1);
     if (h.startsWith('day/')) viewDayDetail(host, h.slice(4));
     else if (h.startsWith('booking/')) viewBooking(host, h.slice(8));
+    else if (h.startsWith('arrange/')) viewArrange(host, h.slice(8));
     else if (h.startsWith('add')) viewAdd(host, h.indexOf('/')>-1 ? h.slice(h.indexOf('/')+1) : TRIP.startDate);
     else if (h==='days') viewDays(host);
     else if (h==='trip') viewTrip(host);
@@ -813,6 +956,7 @@
   // ---- refresh weather + pull any items added from a phone (custom.json) ----
   fetchWeather().then(()=>render()).catch(()=>{});
   loadRemoteCustom();
+  loadRemoteOver();
 
   // ---- load encrypted confirmation codes if present (safe: ciphertext only) ----
   (function(){
