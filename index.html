@@ -453,6 +453,20 @@
   };
   const audioURL = (e) => AUDIO[e.title] || null;
 
+  // Rick Steves tour route maps (linked to his official PDFs — not re-hosted)
+  const RSMAP = 'https://www.ricksteves.com/watch-read-listen/audio/audio-tours/';
+  const MAPS = {
+    "Trevi Fountain": RSMAP+"heart-of-rome-walk-map-1.pdf", "Spanish Steps": RSMAP+"heart-of-rome-walk-map-1.pdf",
+    "Pantheon": RSMAP+"map-audiotours-rome-pantheon.pdf", "Piazza Navona / Campo de' Fiori": RSMAP+"heart-of-rome-walk-map-1.pdf",
+    "St. Peter's Basilica": RSMAP+"map-audiotours-st-peters-basilica.pdf", "Vatican Museums": RSMAP+"vatican-musems-map.pdf",
+    "Sistine Chapel": RSMAP+"map-audiotours-rome-sistine.pdf",
+    "Colosseum — Arena Floor, Forum & Palatine": "https://d2zwvgyp7l6t28.cloudfront.net/Projects/cms/production/000/027/281/slideshow/17a96174c12bcc997088a15a365f57dc/map-audiotours-colosseum.pdf",
+    "Duomo (Cathedral)": RSMAP+"map-audiotours-florence-renaissance-walk.pdf", "Piazza della Signoria": RSMAP+"map-audiotours-florence-renaissance-walk.pdf",
+    "Ponte Vecchio": RSMAP+"map-audiotours-florence-renaissance-walk.pdf", "Uffizi Gallery": RSMAP+"map-audiotours-florence-uffizi.pdf",
+    "Galleria dell'Accademia": RSMAP+"map-audiotours-accademia.pdf", "Bargello": RSMAP+"map-audiotours-florence-bargello-museum.pdf"
+  };
+  const tourMapURL = (e) => MAPS[e.title] || null;
+
   // Google Maps walking route through a day's stops (order: timed first, then flexible)
   function dayMapURL(iso){
     const evs = eventsOn(iso).filter(e => e.type!=='flight' && e.type!=='transit');
@@ -498,6 +512,7 @@
       actions.push(iconBtn(mapURL(e), 'Directions', 'pin'));
     if (wikiURL(e)) actions.push(iconBtn(wikiURL(e), 'Read on Wikipedia', 'book'));
     if (audioURL(e)) actions.push(iconBtn(audioURL(e), 'Rick Steves audio tour', 'headphones'));
+    if (tourMapURL(e)) actions.push(iconBtn(tourMapURL(e), 'Rick Steves tour map (PDF)', 'map'));
 
     const node = $(
       '<div class="ev'+done+'">'+
@@ -673,6 +688,7 @@
     const acts = $('<div class="actions">'+iconBtn(mapURL(e), 'Directions', 'pin')+'</div>');
     if (wikiURL(e)) acts.appendChild($(iconBtn(wikiURL(e), 'Read on Wikipedia', 'book')));
     if (audioURL(e)) acts.appendChild($(iconBtn(audioURL(e), 'Rick Steves audio tour', 'headphones')));
+    if (tourMapURL(e)) acts.appendChild($(iconBtn(tourMapURL(e), 'Rick Steves tour map (PDF)', 'map')));
     if (e.pdf && PASS){
       const tb = $('<button class="act ticket">View ticket (PDF)</button>');
       tb.addEventListener('click', ()=>{
@@ -740,7 +756,7 @@
 
     host.appendChild($('<div class="card"><h3>Dress code</h3><ul class="plain">'+TRIP.dress.map(d=>'<li>'+esc(d)+'</li>').join('')+'</ul></div>'));
 
-    host.appendChild($('<div class="card"><h3>Audio tours</h3><p>The 🎧 links on stops open <b>Rick Steves’</b> free audio tours (Colosseum, Sistine, Uffizi, Accademia, and more) from his site.</p><p>For offline listening with maps while you walk, download the free <b>Rick Steves Audio Europe</b> app and save the Rome &amp; Florence tours before you go.</p><div class="actions"><a class="act" target="_blank" rel="noopener" href="https://www.ricksteves.com/watch-read-listen/audio/audio-tours/italy">All Italy tours ›</a></div></div>'));
+    host.appendChild($('<div class="card"><h3>Audio tours &amp; maps</h3><p>On the key stops, the 🎧 opens <b>Rick Steves’</b> free audio tour and the 🗺️ opens his route map (PDF) — both from his site (Colosseum, Sistine, Uffizi, Accademia, and more).</p><p>For offline listening with maps while you walk, download the free <b>Rick Steves Audio Europe</b> app and save the Rome &amp; Florence tours before you go.</p><div class="actions"><a class="act" target="_blank" rel="noopener" href="https://www.ricksteves.com/watch-read-listen/audio/audio-tours/italy">All Italy tours ›</a></div></div>'));
 
     // open items (things without a confirmation)
     const open = [];
