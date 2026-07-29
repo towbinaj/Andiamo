@@ -28,7 +28,7 @@
 const TRIP = {
   name: "Andiamo",
   subtitle: "Rome & Florence",
-  travelers: ["Alex", "Meredith", "Philip", "Ross"],
+  partySize: 4,
   startDate: "2026-08-01",
   endDate: "2026-08-08",
 

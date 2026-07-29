@@ -97,30 +97,6 @@
   .dots { display:flex; gap:3px; }
   .dot { width:6px; height:6px; border-radius:50%; }
 
-  /* wallet passes */
-  .travelers { display:flex; gap:6px; flex-wrap:wrap; margin:12px 0 4px; }
-  .tv { font-size:11.5px; font-weight:600; color:var(--muted); background:var(--surface); border:1px solid var(--hairline); padding:4px 10px; border-radius:999px; }
-  .pass { border:1px solid var(--hairline); border-radius:14px; background:var(--surface); overflow:hidden; margin-top:12px; box-shadow:0 8px 18px -14px rgba(var(--shadow),.5); }
-  .pass .band { padding:13px 15px; color:#fff; display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
-  .band.flight { background:linear-gradient(135deg,#2B3A46,#40596B); }
-  .band.tour { background:linear-gradient(135deg,#3B4A2E,#566B3E); }
-  .band.ticket { background:linear-gradient(135deg,#6E5A17,#8C7320); }
-  .band.meal { background:linear-gradient(135deg,#5A2733,#833E4E); }
-  .band.transit { background:linear-gradient(135deg,#3a3340,#564a5f); }
-  .pass .pn { font-family:var(--serif); font-size:17px; margin:0; line-height:1.1; }
-  .pass .pv { font-size:10.5px; opacity:.88; margin:3px 0 0; text-transform:uppercase; letter-spacing:.04em; }
-  .pass .pw { text-align:right; white-space:nowrap; }
-  .pass .pw .d { font-family:var(--mono); font-size:12px; font-weight:700; }
-  .pass .pw .t { font-family:var(--mono); font-size:10.5px; opacity:.88; margin-top:2px; }
-  .pass .stub { padding:10px 15px; border-top:1px dashed var(--hairline); display:flex; justify-content:space-between; align-items:center; gap:10px; }
-  .pass .code { font-family:var(--mono); font-size:11px; color:var(--muted); }
-  .pass .code b { color:var(--ink); font-weight:600; }
-  .pass .qty { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--gold); background:var(--gold-soft); padding:4px 8px; border-radius:6px; white-space:nowrap; }
-  .pass .heads { display:flex; gap:6px; flex-wrap:wrap; padding:0 15px 12px; }
-  .pass .hu { font-size:10px; font-weight:600; color:var(--vermilion); background:color-mix(in srgb, var(--vermilion) 10%, transparent); padding:4px 8px; border-radius:6px; }
-  .pass .hu.info { color:var(--lapis); background:var(--lapis-soft); }
-  .pass .foot { padding:0 15px 13px; }
-
   /* unlock */
   .lockbar { display:flex; gap:10px; align-items:center; justify-content:space-between; background:var(--surface); border:1px solid var(--hairline); border-radius:12px; padding:11px 13px; margin-top:6px; }
   .lockbar .lk { font-size:12.5px; color:var(--muted); }
@@ -256,7 +232,7 @@
       const n = daysBetween(real, start);
       host.appendChild($('<p class="eyebrow">'+esc(TRIP.subtitle)+'</p>'));
       host.appendChild($('<h1 class="title">'+esc(TRIP.name)+'</h1>'));
-      host.appendChild($('<p class="sub">'+fmtDate(start)+' – '+fmtDate(end)+' · '+TRIP.travelers.length+' travelers</p>'));
+      host.appendChild($('<p class="sub">'+fmtDate(start)+' – '+fmtDate(end)+' · '+TRIP.partySize+' travelers</p>'));
       host.appendChild($('<div class="hero"><p class="cap">Trip begins in</p><p class="big">'+n+'</p><p class="cap">'+(n===1?'day':'days')+' — see you in Rome ✈</p></div>'));
       host.appendChild($('<hr class="rule">'));
       host.appendChild($('<p class="sect-label">First day · '+fmtDate(start)+'</p>'));
@@ -353,40 +329,17 @@
     }
   }
 
-  // ---- WALLET ----
-  function viewWallet(host){
-    const booked = TRIP.events.filter(e=>e.booking).slice().sort((a,b)=> (a.date+ (a.start||'')).localeCompare(b.date+(b.start||'')));
-    host.appendChild($('<p class="eyebrow">Everything booked</p>'));
-    host.appendChild($('<h1 class="title">Wallet</h1>'));
-    host.appendChild($('<p class="sub">'+booked.length+' bookings · '+TRIP.travelers.length+' travelers</p>'));
-    host.appendChild($('<div class="travelers">'+TRIP.travelers.map(t=>'<span class="tv">'+esc(t)+'</span>').join('')+'</div>'));
-    renderLock(host);
-    host.appendChild($('<hr class="rule">'));
-    booked.forEach(e=>{
-      const heads = (e.headsup||[]).map(h=>'<span class="hu'+(/👕|Firenze|access|Guided|Includes/i.test(h)?' info':'')+'">'+esc(h)+'</span>').join('');
-      let meetLine = e.meet ? '<div class="foot"><a class="act" target="_blank" rel="noopener" href="'+mapURL(e)+'">📍 Meet: '+esc(e.meet.name)+'</a></div>' :
-                    (e.address ? '<div class="foot"><a class="act" target="_blank" rel="noopener" href="'+mapURL(e)+'">📍 Directions</a></div>' : '');
-      host.appendChild($(
-        '<div class="pass">'+
-          '<div class="band '+e.type+'">'+
-            '<div><p class="pn">'+esc(e.title)+'</p><p class="pv">'+esc(cityForDate(e.date))+(e.booking.source?' · '+esc(e.booking.source):'')+'</p></div>'+
-            '<div class="pw"><p class="d">'+dow(e.date)+' '+MO[asDate(e.date).getMonth()]+' '+asDate(e.date).getDate()+'</p>'+(e.start?'<p class="t">'+esc(fmtTime(e.start))+'</p>':'')+'</div>'+
-          '</div>'+
-          '<div class="stub"><span class="code">'+esc(bookLabel(e))+' <b>'+esc(bookVal(e))+'</b></span>'+(e.qty?'<span class="qty">🎟 ×'+e.qty+'</span>':'')+'</div>'+
-          (heads?'<div class="heads">'+heads+'</div>':'')+
-          meetLine+
-        '</div>'
-      ));
-    });
-  }
-
   // ---- TRIP (info) ----
   function viewTrip(host){
     host.appendChild($('<p class="eyebrow">Good to know</p>'));
     host.appendChild($('<h1 class="title">Trip</h1>'));
     host.appendChild($('<p class="sub">'+esc(TRIP.name)+' · '+esc(TRIP.subtitle)+'</p>'));
 
-    host.appendChild($('<div class="card"><h3>Travelers</h3><p>'+TRIP.travelers.map(esc).join(' · ')+'</p></div>'));
+    if (window.SECRETS){
+      host.appendChild($('<hr class="rule">'));
+      host.appendChild($('<p class="sect-label">Confirmation codes</p>'));
+      renderLock(host);
+    }
 
     TRIP.legs.forEach(l=>{
       const q = encodeURIComponent(l.hotelAddress);
@@ -405,7 +358,6 @@
   const TABS = [
     { id:'today', label:'Today', icon:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>' },
     { id:'days',  label:'Days',  icon:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/>' },
-    { id:'wallet',label:'Wallet',icon:'<rect x="4" y="6" width="16" height="12" rx="2"/><path d="M4 11h16"/>' },
     { id:'trip',  label:'Trip',  icon:'<path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/>' },
   ];
   function currentTab(){ const h=(location.hash||'#today').slice(1); return h.split('/')[0] || 'today'; }
@@ -423,7 +375,6 @@
     const h = (location.hash||'#today').slice(1);
     if (h.startsWith('day/')) viewDayDetail(host, h.slice(4));
     else if (h==='days') viewDays(host);
-    else if (h==='wallet') viewWallet(host);
     else if (h==='trip') viewTrip(host);
     else viewToday(host);
     renderTabs();
@@ -437,7 +388,7 @@
   (function(){
     const s = document.createElement('script');
     s.src = 'secrets.enc.js';
-    s.onload = ()=>{ if (currentTab()==='wallet') render(); };
+    s.onload = ()=>{ render(); };
     s.onerror = ()=>{};
     document.head.appendChild(s);
   })();

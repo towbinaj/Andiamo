@@ -40,8 +40,9 @@ your device, and nobody can read the codes without it.
    not a 4-digit PIN, because the encrypted file is public and a weak passphrase
    could be brute-forced).
 3. Click **Encrypt → Download secrets.enc.js**, put that file in this folder, and push it.
-4. In the app's **Wallet**, tap **Unlock**, enter the same passphrase — the real
-   codes appear (just for that session). **Lock** hides them again.
+4. In the app's **Trip** tab, tap **Unlock**, enter the same passphrase — the real
+   codes then appear on each booking in **Today** and **Days** (just for that
+   session). **Lock** hides them again.
 
 To change the passphrase later, re-run `encrypt.html` and replace `secrets.enc.js`.
 Your plaintext codes always stay in `CONFIRMATIONS-private.md` (git-ignored) as a backup.
@@ -49,6 +50,6 @@ Your plaintext codes always stay in `CONFIRMATIONS-private.md` (git-ignored) as 
 ## Handy tricks
 
 - Preview any day as if it were "today": add `?date=2026-08-04` to the URL.
-- The **Wallet** tab holds every confirmation; **Directions** links open Google Maps.
+- Each day holds its own bookings and confirmations; **Directions** links open Google Maps.
 - Still to add: the Aug 4 dinner (53 Untitled), the Rome→Florence train ticket,
   and the Accademia ticket PDF. They already show under **Trip → Still to add**.

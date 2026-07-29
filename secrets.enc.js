@@ -1,0 +1,2 @@
+/* Encrypted confirmation codes — safe to publish (ciphertext only). */
+window.SECRETS = {"v":1,"kdf":"PBKDF2","hash":"SHA-256","iter":250000,"salt":"5L7KtN3dSi1VusNkvAUqBQ==","iv":"SoLyIu0iB5mhXXvU","ct":"Qdcp5ldaFKnlcr9jsxYo9W3VaHBlN9q7aegU+qmkjsPXsOO9ycATjfrkS+FQWiD8lONUAL8GANMR8d0JQ1fWijjw02KC70OyeGXGR/QLbseBIdY9lAFnFUYXDLXYaj8G0fCiikyo2o+nrxqf6+u7p0gasxyLJoMAwt0AvZlRqDphrsvXp7dhZBMUOWexb+BGZycIa90Wo+eM1eRwrXy/h7CuTbVldHEi6TtwkliuN7DDY6x27qqID/hC9CUWaRuST1Tj8O+HpVYZwZdAfAnvYonJjh5L7NRZ5oFqPZyG+nsNiohAiE4="};
