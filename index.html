@@ -396,17 +396,20 @@
       (d.highlight ? '<div class="dhcap">'+esc(d.highlight)+'</div>' : '')+'</div>');
   }
 
-  // ---- special occasion (e.g. an anniversary): a banner + a hearts backdrop, only on that day ----
+  // ---- special occasion (e.g. an anniversary): a HIDDEN banner + hearts backdrop ----
+  // It stays hidden until the *real* device date's month-day matches the occasion day's
+  // (so it surfaces on Aug 5 in real life, every year — not merely when you browse that itinerary day).
   const HEART = 'M12 21s-6.5-4.35-9-8.5C1.5 9.5 3 6 6.5 6c2 0 3 1.2 3.5 2 .5-.8 1.5-2 3.5-2C20 6 22.5 9.5 21 12.5 18.5 16.65 12 21 12 21Z';
   const occasionOf = (iso) => { const d=TRIP.days.find(x=>x.date===iso); return d && d.occasion ? d.occasion : ''; };
+  const revealedOccasion = (iso) => { const occ = occasionOf(iso); return (occ && todayISO().slice(5) === iso.slice(5)) ? occ : ''; };
   function occasionBanner(iso){
-    const occ = occasionOf(iso); if(!occ) return null;
+    const occ = revealedOccasion(iso); if(!occ) return null;
     return $('<div class="occasion"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+HEART+'"/></svg><span>'+esc(occ)+'</span></div>');
   }
   // a full-bleed layer of faint hearts, painted behind the day's content (z-index:-1 inside #app)
   function setOccasionBg(iso){
     const app = document.getElementById('app');
-    const on = !!occasionOf(iso);
+    const on = !!revealedOccasion(iso);
     app.classList.toggle('hearts-day', on);
     const existing = document.getElementById('hearts');
     if (!on){ if (existing) existing.remove(); return; }
