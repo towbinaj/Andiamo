@@ -281,5 +281,26 @@ const TRIP = {
     { date: "2026-08-07", start: null, title: "Medici Chapels", type: "sight", fixed: false, address: "Piazza di Madonna degli Aldobrandini 6, Florence", note: "Michelangelo's New Sacristy tombs — attached to San Lorenzo. (Ticketed.)" },
     { date: "2026-08-07", start: null, title: "Basilica di Santa Croce", type: "sight", fixed: false, address: "Piazza di Santa Croce 16, Florence", note: "Tombs of Michelangelo, Galileo & Machiavelli.", headsup: ["👕 Shoulders & knees covered"] },
     { date: "2026-08-07", start: null, title: "Vivoli", type: "treat", fixed: false, address: "Via dell'Isola delle Stinche 7r, Florence", note: "Florence's oldest gelateria, by Santa Croce." },
+
+    /* ---------------- More nearby key sites ---------------- */
+    // Aug 1 — near Trevi / Spanish Steps / the hotel
+    { date: "2026-08-01", start: null, title: "Santa Maria Maggiore", type: "sight", fixed: false, address: "Piazza di Santa Maria Maggiore, Rome", note: "One of Rome's four great papal basilicas — glittering 5th-century mosaics, a short walk from the hotel.", headsup: ["👕 Shoulders & knees covered"] },
+    { date: "2026-08-01", start: null, title: "Palazzo Barberini", type: "sight", fixed: false, address: "Via delle Quattro Fontane 13, Rome", note: "National old-master gallery — Caravaggio's Judith and Raphael's La Fornarina — near Piazza Barberini." },
+    { date: "2026-08-01", start: null, title: "Quirinale Palace", type: "sight", fixed: false, address: "Piazza del Quirinale, Rome", note: "The presidential palace on Rome's highest hill — grand piazza, the Dioscuri statues and a sweeping view." },
+
+    // Aug 2 — on Via del Corso
+    { date: "2026-08-02", start: null, title: "Galleria Doria Pamphilj", type: "sight", fixed: false, address: "Via del Corso 305, Rome", note: "Opulent private collection in a family palace — Velázquez's Innocent X and Caravaggios, right on Via del Corso." },
+
+    // Aug 4 — around the Colosseum & Imperial Forums
+    { date: "2026-08-04", start: null, title: "Basilica di San Clemente", type: "sight", fixed: false, address: "Via Labicana 95, Rome", note: "Descend through the centuries — a 12th-century basilica over a 1st-century Mithraic temple, near the Colosseum.", headsup: ["👕 Shoulders & knees covered"] },
+    { date: "2026-08-04", start: null, title: "Trajan's Market", type: "sight", fixed: false, address: "Via Quattro Novembre 94, Rome", note: "The ancient world's 'shopping mall' — brick halls beside Trajan's Column, now the Museo dei Fori Imperiali." },
+    { date: "2026-08-04", start: null, title: "Domus Aurea", type: "sight", fixed: false, optional: true, address: "Via della Domus Aurea 1, Rome", note: "Nero's buried Golden House on the Oppian hill above the Colosseum — guided visits only." },
+
+    // Aug 6 — Oltrarno
+    { date: "2026-08-06", start: null, title: "Santo Spirito", type: "sight", fixed: false, address: "Piazza Santo Spirito 30, Florence", note: "Brunelleschi's serene Oltrarno basilica, with a young Michelangelo's wooden crucifix — steps from tonight's dinner.", headsup: ["👕 Shoulders & knees covered"] },
+    { date: "2026-08-06", start: null, title: "Brancacci Chapel", type: "sight", fixed: false, address: "Piazza del Carmine 14, Florence", note: "Masaccio's revolutionary frescoes in Santa Maria del Carmine — a cornerstone of the early Renaissance.", headsup: ["👕 Shoulders & knees covered"] },
+
+    // Aug 7 — near the Accademia
+    { date: "2026-08-07", start: null, title: "Museo di San Marco", type: "sight", fixed: false, address: "Piazza San Marco 3, Florence", note: "Fra Angelico's luminous frescoes in the monks' cells of San Marco — a short walk from the Accademia." },
   ],
 };
