@@ -393,7 +393,9 @@
   const dayTitle = (iso) => { const d=TRIP.days.find(x=>x.date===iso); return d?d.title:''; };
   const dayIndex = (iso) => TRIP.days.findIndex(x=>x.date===iso);
   const eventsOn = (iso) => allEvents().filter(e=>effDate(e)===iso);
-  const mapURL = (e) => 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(e.address || (e.title+', '+cityForDate(e.date)));
+  const locOf = (e) => e.address || (e.meet && e.meet.address) || '';   // a real street location, if any
+  // lead the map query with the place NAME so the pin is labelled (not just an address that can geocode to a bank)
+  const mapURL = (e) => 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(e.title + ', ' + (locOf(e) || cityForDate(e.date)));
 
   const sortFixed = (a,b) => (a.start||'').localeCompare(b.start||'');
 
@@ -485,9 +487,11 @@
 
   // Google Maps walking route through a day's stops (order: timed first, then flexible)
   function dayMapURL(iso){
-    const evs = eventsOn(iso).filter(e => e.type!=='flight' && e.type!=='transit');
+    // only real, locatable places: skip flights/transit, hotel logistics, and anything without a street location
+    const isPlace = (e) => e.type!=='flight' && e.type!=='transit' && !/^(check in|depart|return to)/i.test(e.title) && locOf(e);
+    const evs = eventsOn(iso).filter(isPlace);
     const pts = evs.filter(e=>e.fixed&&e.start).sort(sortFixed).concat(evs.filter(e=>!(e.fixed&&e.start)))
-      .map(e => e.address || (e.title + ', ' + cityForDate(e.date)));
+      .map(e => e.title + ', ' + locOf(e));   // name + address, so each stop is labelled on the map
     if (pts.length < 2) return null;
     const enc = encodeURIComponent;
     let u = 'https://www.google.com/maps/dir/?api=1&origin='+enc(pts[0])+'&destination='+enc(pts[pts.length-1])+'&travelmode=walking';
@@ -524,7 +528,7 @@
     (e.headsup||[]).forEach(h=> badges.push('<span class="badge '+badgeCls(h)+'">'+esc(h)+'</span>'));
 
     const actions = [];
-    if (e.address || ['sight','meal','treat','cafe','tour','ticket'].includes(e.type))
+    if (locOf(e))
       actions.push(iconBtn(mapURL(e), 'Directions', 'pin'));
     if (wikiURL(e)) actions.push(iconBtn(wikiURL(e), 'Read on Wikipedia', 'book'));
     if (audioURL(e)) actions.push(iconBtn(audioURL(e), 'Rick Steves audio tour', 'headphones'));
