@@ -13,6 +13,13 @@ CONFIRMATIONS-private.md
 encrypt.html
 secrets.test.js
 
+# ...but DO publish the generated app icons (derived from favicon.jpg)
+!favicon.ico
+!favicon-32.png
+!apple-touch-icon.png
+!icon-192.png
+!icon-512.png
+
 # Local tooling
 .claude/
 scratchpad/

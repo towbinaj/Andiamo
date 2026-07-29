@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Andiamo — Italy</title>
 <meta name="theme-color" content="#1F5069">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Andiamo">
+<meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.webmanifest">
 <style>
   :root {
@@ -61,8 +68,16 @@
   .upnext .chev { color:var(--vermilion); font-size:22px; }
 
   /* event row */
-  .ev { display:grid; grid-template-columns:60px 1fr; gap:13px; padding:14px 0; border-top:1px solid var(--hairline); }
+  .ev { display:grid; grid-template-columns:58px 1fr auto; gap:13px; padding:14px 0; border-top:1px solid var(--hairline); }
   .ev:first-of-type { border-top:0; }
+  .ev .ctl { display:flex; align-items:center; gap:9px; }
+  .checkbtn { width:27px; height:27px; border-radius:50%; border:2px solid var(--hairline); background:var(--surface); color:transparent; font-size:15px; font-weight:800; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; flex:none; }
+  .checkbtn.on { background:var(--lapis); border-color:var(--lapis); color:#fff; }
+  .ev.done { opacity:.55; }
+  .ev.done .name { text-decoration:line-through; }
+  .wx { font-size:14px; color:var(--muted); background:var(--surface); border:1px solid var(--hairline); border-radius:11px; padding:10px 13px; margin-top:12px; }
+  .wx b { color:var(--ink); font-weight:700; }
+  .wx .sep { color:var(--faint); margin:0 3px; }
   .ev .time { font-family:var(--mono); font-size:14.5px; color:var(--ink); font-variant-numeric:tabular-nums; padding-top:2px; font-weight:600; }
   .ev .time.flex { color:var(--faint); font-weight:400; }
   .ev .name { font-size:17.5px; font-weight:600; margin:0; line-height:1.25; }
@@ -83,7 +98,7 @@
   .note { font-size:14px; color:var(--muted); margin:9px 0 0; font-style:italic; }
 
   /* tappable booking row — opens the pass */
-  .ev.bkrow { grid-template-columns:60px 1fr 18px; align-items:center; border:1px solid var(--hairline); border-left:4px solid var(--lapis); border-radius:12px; padding:14px 15px; margin:12px 0; background:var(--surface); width:100%; text-align:left; font:inherit; color:inherit; cursor:pointer; }
+  .ev.bkrow { grid-template-columns:58px 1fr auto; align-items:center; border:1px solid var(--hairline); border-left:4px solid var(--lapis); border-radius:12px; padding:14px 15px; margin:12px 0; background:var(--surface); width:100%; text-align:left; font:inherit; color:inherit; cursor:pointer; }
   .ev.bkrow:hover { border-color:var(--lapis); }
   .ev.bkrow:focus-visible { outline:2px solid var(--lapis); outline-offset:2px; }
   .ev.bkrow.t-flight { border-left-color:#40596B; }
@@ -186,6 +201,51 @@
   const bookVal = (e) => codeFor(e) || (e.booking ? e.booking.value : '');
   const bookLabel = (e) => codeFor(e) ? 'Confirmation' : (e.booking ? e.booking.label : '');
 
+  // ---- check off places (saved on this device) ----
+  let DONE = {};
+  try { DONE = JSON.parse(localStorage.getItem('andiamo-done') || '{}') || {}; } catch(e){}
+  const isDone = (idx) => !!DONE[idx];
+  function toggleDone(idx){
+    if (DONE[idx]) delete DONE[idx]; else DONE[idx] = 1;
+    try { localStorage.setItem('andiamo-done', JSON.stringify(DONE)); } catch(e){}
+  }
+  function checkButton(idx){
+    const b = $('<button class="checkbtn'+(isDone(idx)?' on':'')+'" aria-label="Mark as done">✓</button>');
+    b.addEventListener('click', (ev)=>{ ev.stopPropagation(); toggleDone(idx); render(); });
+    return b;
+  }
+
+  // ---- weather + sunrise/sunset (Open-Meteo, no key; cached for offline) ----
+  const CITY_COORD = { Rome:{lat:41.9028,lon:12.4964}, Florence:{lat:43.7696,lon:11.2558} };
+  let WX = null;
+  try { WX = JSON.parse(localStorage.getItem('andiamo-wx') || 'null'); } catch(e){}
+  async function fetchWeather(){
+    const city = {};
+    for (const name of Object.keys(CITY_COORD)){
+      const c = CITY_COORD[name];
+      const url = 'https://api.open-meteo.com/v1/forecast?latitude='+c.lat+'&longitude='+c.lon+
+        '&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=Europe%2FRome&temperature_unit=fahrenheit&start_date='+TRIP.startDate+'&end_date='+TRIP.endDate;
+      const r = await fetch(url); if(!r.ok) throw new Error('wx'); const j = await r.json();
+      const days = {};
+      (j.daily.time||[]).forEach((d,i)=>{ days[d] = { code:j.daily.weather_code[i], hi:Math.round(j.daily.temperature_2m_max[i]), lo:Math.round(j.daily.temperature_2m_min[i]), sr:j.daily.sunrise[i], ss:j.daily.sunset[i] }; });
+      city[name] = days;
+    }
+    WX = { at: new Date().toISOString(), city };
+    try { localStorage.setItem('andiamo-wx', JSON.stringify(WX)); } catch(e){}
+  }
+  const wxFor = (iso) => { if(!WX||!WX.city) return null; const c = WX.city[cityForDate(iso)]; return (c && c[iso]) || null; };
+  function wxDesc(code){
+    const m = {0:['☀️','Clear'],1:['🌤️','Mostly clear'],2:['⛅','Partly cloudy'],3:['☁️','Overcast'],45:['🌫️','Fog'],48:['🌫️','Fog'],51:['🌦️','Light drizzle'],53:['🌦️','Drizzle'],55:['🌦️','Drizzle'],61:['🌧️','Light rain'],63:['🌧️','Rain'],65:['🌧️','Heavy rain'],80:['🌦️','Showers'],81:['🌦️','Showers'],82:['⛈️','Heavy showers'],95:['⛈️','Thunderstorm'],96:['⛈️','Storm'],99:['⛈️','Storm']};
+    return m[code] || ['🌡️',''];
+  }
+  const clock = (dt) => { if(!dt) return ''; const t=String(dt).split('T')[1]; return t ? fmtTime(t.slice(0,5)) : ''; };
+  function weatherChip(iso){
+    const w = wxFor(iso); if(!w) return null;
+    const d = wxDesc(w.code);
+    return $('<div class="wx">'+d[0]+' <b>'+w.hi+'°</b> / '+w.lo+'°F · '+esc(d[1])+
+      '<span class="sep">·</span>☀ '+clock(w.sr)+'<span class="sep">·</span>🌙 '+clock(w.ss)+'</div>');
+  }
+
   // ---- date helpers ----
   const WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -210,18 +270,22 @@
   // A booked event becomes a tappable row that opens its pass (see viewBooking).
   function renderEvent(e){
     const t = e.start ? fmtTime(e.start) : (e.type==='meal'?'dinner':'○');
+    const idx = TRIP.events.indexOf(e);
+    const done = isDone(idx) ? ' done' : '';
 
     if (e.booking){
-      const idx = TRIP.events.indexOf(e);
       const sub = '🎟 ' + esc(bookVal(e)) + (e.booking.source ? ' · ' + esc(e.booking.source) : '');
       const node = $(
-        '<button class="ev bkrow t-'+e.type+'">'+
+        '<div class="ev bkrow t-'+e.type+done+'" role="button" tabindex="0">'+
           '<div class="time'+(e.start?'':' flex')+'">'+esc(t)+'</div>'+
           '<div class="body"><p class="name">'+esc(e.title)+'</p><p class="bksub">'+sub+'</p></div>'+
-          '<div class="chev">›</div>'+
-        '</button>'
+          '<div class="ctl"><span class="chev">›</span></div>'+
+        '</div>'
       );
-      node.addEventListener('click', ()=>{ location.hash = '#booking/'+idx; });
+      node.querySelector('.ctl').insertBefore(checkButton(idx), node.querySelector('.chev'));
+      const open = ()=>{ location.hash = '#booking/'+idx; };
+      node.addEventListener('click', open);
+      node.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); open(); } });
       return node;
     }
 
@@ -233,8 +297,8 @@
     if (e.address || e.type==='sight' || e.type==='meal')
       actions.push('<a class="act" target="_blank" rel="noopener" href="'+mapURL(e)+'">📍 Directions</a>');
 
-    return $(
-      '<div class="ev">'+
+    const node = $(
+      '<div class="ev'+done+'">'+
         '<div class="time'+(e.start?'':' flex')+'">'+esc(t)+'</div>'+
         '<div class="body">'+
           '<p class="name">'+esc(e.title)+'</p>'+
@@ -242,8 +306,11 @@
           (e.note?'<p class="note">'+esc(e.note)+'</p>':'')+
           (actions.length?'<div class="actions">'+actions.join('')+'</div>':'')+
         '</div>'+
+        '<div class="ctl"></div>'+
       '</div>'
     );
+    node.querySelector('.ctl').appendChild(checkButton(idx));
+    return node;
   }
 
   // ---- render a full day's events into a container ----
@@ -277,6 +344,7 @@
       host.appendChild($('<div class="hero"><p class="cap">Trip begins in</p><p class="big">'+n+'</p><p class="cap">'+(n===1?'day':'days')+' — see you in Rome ✈</p></div>'));
       host.appendChild($('<hr class="rule">'));
       host.appendChild($('<p class="sect-label">First day · '+fmtDate(start)+'</p>'));
+      const wc0 = weatherChip(start); if (wc0) host.appendChild(wc0);
       renderDay(start, host);
       return;
     }
@@ -295,6 +363,7 @@
     host.appendChild($('<p class="eyebrow">'+(isReal?'<span class="live"></span>':'')+esc(cityForDate(cur))+' · Day '+(idx+1)+' of '+TRIP.days.length+'</p>'));
     host.appendChild($('<h1 class="title">'+fmtDate(cur)+'</h1>'));
     host.appendChild($('<p class="sub">'+esc(dayTitle(cur))+'</p>'));
+    const wcur = weatherChip(cur); if (wcur) host.appendChild(wcur);
 
     // up-next: next fixed event today (by real clock if today, else first)
     const fixed = eventsOn(cur).filter(e=>e.fixed && e.start).sort(sortFixed);
@@ -349,6 +418,7 @@
     host.appendChild($('<p class="eyebrow">'+esc(cityForDate(iso))+' · Day '+(dayIndex(iso)+1)+'</p>'));
     host.appendChild($('<h1 class="title">'+fmtDate(iso)+'</h1>'));
     host.appendChild($('<p class="sub">'+esc(dayTitle(iso))+'</p>'));
+    const wcd = weatherChip(iso); if (wcd) host.appendChild(wcd);
     host.appendChild($('<hr class="rule">'));
     renderDay(iso, host);
   }
@@ -467,6 +537,9 @@
   }
   window.addEventListener('hashchange', render);
   render();
+
+  // ---- refresh weather in the background (uses cached data until it returns) ----
+  fetchWeather().then(()=>render()).catch(()=>{});
 
   // ---- load encrypted confirmation codes if present (safe: ciphertext only) ----
   (function(){
