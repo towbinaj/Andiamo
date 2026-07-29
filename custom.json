@@ -4,9 +4,10 @@
     "date": "2026-08-02",
     "start": null,
     "title": "Giolitti gelateria",
-    "type": "meal",
+    "type": "treat",
     "fixed": false,
     "custom": true,
-    "note": "Via Uffici del Vicario 40, just a short walk from the Pantheon in Rome"
+    "address": "Via degli Uffici del Vicario 40, Rome",
+    "note": "A short walk from the Pantheon."
   }
 ]

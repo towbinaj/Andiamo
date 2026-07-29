@@ -110,6 +110,8 @@
   .act:active { transform:translateY(1px); }
   .act.ticket { color:var(--gold); border-color:var(--gold); background:var(--gold-soft); }
   .badge.add { background:var(--flor-soft); color:var(--flor); }
+  .mapbtn { width:100%; margin-top:12px; font:inherit; font-size:14.5px; font-weight:600; color:var(--lapis); background:var(--lapis-soft); border:1px solid var(--lapis); border-radius:12px; padding:14px; cursor:pointer; }
+  .mapbtn:active { transform:translateY(1px); }
   .addbtn { width:100%; margin-top:16px; font:inherit; font-size:15px; font-weight:600; color:var(--lapis); background:var(--surface); border:1.5px dashed var(--hairline); border-radius:12px; padding:15px; cursor:pointer; }
   .addbtn:hover { border-color:var(--lapis); background:var(--lapis-soft); }
   .addform { display:flex; flex-direction:column; gap:15px; margin-top:16px; }
@@ -350,14 +352,48 @@
   const badgeCls = (h) => /👕/.test(h) ? 'info' : (/ID|passport|backpack|steps|early|sharp|Firenze|Check in/i.test(h) ? 'warn' : 'info');
 
   // colorful glyph per event type, and city-based accent colour (Rome=blue, Florence=green)
-  const TYPE_EMOJI = { flight:'✈️', transit:'🚆', tour:'🎨', ticket:'🎫', meal:'🍷', sight:'📍' };
-  const glyph = (e) => (TYPE_EMOJI[e.type] || '📍');
+  const TYPE_EMOJI = { flight:'✈️', transit:'🚆', tour:'🎨', ticket:'🎫', meal:'🍝', treat:'🍦', cafe:'☕' };
+  const glyph = (e) => (TYPE_EMOJI[e.type] || '');   // sights get no glyph (the 📍 lives on Directions)
+  const withGlyph = (e) => { const g = glyph(e); return (g ? g+' ' : '') + esc(e.title); };
   const cityAccent = (iso) => cityForDate(iso)==='Florence' ? 'var(--flor)' : 'var(--lapis)';
+
+  // Wikipedia article per key attraction (title -> article slug)
+  const WIKI = {
+    "Trevi Fountain":"Trevi_Fountain", "Spanish Steps":"Spanish_Steps",
+    "Villa Borghese":"Villa_Borghese_gardens", "Pincio Terrace":"Pincio",
+    "Piazza del Popolo":"Piazza_del_Popolo", "Pantheon":"Pantheon,_Rome",
+    "San Luigi dei Francesi":"San_Luigi_dei_Francesi", "Borghese Gallery":"Galleria_Borghese",
+    "St. Peter's Basilica":"St._Peter's_Basilica", "Vatican Museums":"Vatican_Museums",
+    "Sistine Chapel":"Sistine_Chapel", "Castel Sant'Angelo":"Castel_Sant'Angelo",
+    "Piazza Navona / Campo de' Fiori":"Piazza_Navona",
+    "Colosseum — Arena Floor, Forum & Palatine":"Colosseum",
+    "San Pietro in Vincoli":"San_Pietro_in_Vincoli", "Campidoglio":"Capitoline_Hill",
+    "Giotto's Bell Tower":"Giotto's_Campanile", "Duomo (Cathedral)":"Florence_Cathedral",
+    "Baptistery":"Florence_Baptistery", "Opera del Duomo Museum":"Museo_dell'Opera_del_Duomo,_Florence",
+    "Piazza della Signoria":"Piazza_della_Signoria", "Uffizi Gallery":"Uffizi",
+    "Ponte Vecchio":"Ponte_Vecchio", "Palazzo Pitti":"Palazzo_Pitti",
+    "Boboli Gardens":"Boboli_Gardens", "San Lorenzo":"San_Lorenzo,_Florence",
+    "Mercato Centrale":"Mercato_Centrale", "Bargello":"Bargello",
+    "Galleria dell'Accademia":"Galleria_dell'Accademia,_Florence"
+  };
+  const wikiURL = (e) => WIKI[e.title] ? 'https://en.wikipedia.org/wiki/'+WIKI[e.title] : null;
+
+  // Google Maps walking route through a day's stops (order: timed first, then flexible)
+  function dayMapURL(iso){
+    const evs = eventsOn(iso).filter(e => e.type!=='flight' && e.type!=='transit');
+    const pts = evs.filter(e=>e.fixed&&e.start).sort(sortFixed).concat(evs.filter(e=>!(e.fixed&&e.start)))
+      .map(e => e.address || (e.title + ', ' + cityForDate(e.date)));
+    if (pts.length < 2) return null;
+    const enc = encodeURIComponent;
+    let u = 'https://www.google.com/maps/dir/?api=1&origin='+enc(pts[0])+'&destination='+enc(pts[pts.length-1])+'&travelmode=walking';
+    const mid = pts.slice(1,-1); if (mid.length) u += '&waypoints='+mid.map(enc).join('|');
+    return u;
+  }
 
   // ---- render one event ----
   // A booked event becomes a tappable row that opens its pass (see viewBooking).
   function renderEvent(e){
-    const t = e.start ? fmtTime(e.start) : (e.type==='meal'?'dinner':'○');
+    const t = e.start ? fmtTime(e.start) : '•';
     const id = e._id;
     const done = isDone(id) ? ' done' : '';
 
@@ -366,7 +402,7 @@
       const node = $(
         '<div class="ev bkrow t-'+e.type+done+'" role="button" tabindex="0">'+
           '<div class="time'+(e.start?'':' flex')+'">'+esc(t)+'</div>'+
-          '<div class="body"><p class="name">'+glyph(e)+' '+esc(e.title)+'</p><p class="bksub">'+sub+'</p></div>'+
+          '<div class="body"><p class="name">'+withGlyph(e)+'</p><p class="bksub">'+sub+'</p></div>'+
           '<div class="ctl"><span class="chev">›</span></div>'+
         '</div>'
       );
@@ -383,14 +419,15 @@
     (e.headsup||[]).forEach(h=> badges.push('<span class="badge '+badgeCls(h)+'">'+esc(h)+'</span>'));
 
     const actions = [];
-    if (e.address || e.type==='sight' || e.type==='meal')
+    if (e.address || ['sight','meal','treat','cafe','tour','ticket'].includes(e.type))
       actions.push('<a class="act" target="_blank" rel="noopener" href="'+mapURL(e)+'">📍 Directions</a>');
+    if (wikiURL(e)) actions.push('<a class="act" target="_blank" rel="noopener" href="'+wikiURL(e)+'">📖 Wikipedia</a>');
 
     const node = $(
       '<div class="ev'+done+'">'+
         '<div class="time'+(e.start?'':' flex')+'">'+esc(t)+'</div>'+
         '<div class="body">'+
-          '<p class="name">'+glyph(e)+' '+esc(e.title)+'</p>'+
+          '<p class="name">'+withGlyph(e)+'</p>'+
           (badges.length?'<div class="badges">'+badges.join('')+'</div>':'')+
           (e.note?'<p class="note">'+esc(e.note)+'</p>':'')+
           (actions.length?'<div class="actions">'+actions.join('')+'</div>':'')+
@@ -454,6 +491,7 @@
     host.appendChild($('<p class="sub">'+esc(dayTitle(cur))+'</p>'));
     const hcur = dayHero(cur); if (hcur) host.appendChild(hcur);
     const wcur = weatherChip(cur); if (wcur) host.appendChild(wcur);
+    const mbc = mapDayButton(cur); if (mbc) host.appendChild(mbc);
 
     // up-next: next fixed event today (by real clock if today, else first)
     const fixed = eventsOn(cur).filter(e=>e.fixed && e.start).sort(sortFixed);
@@ -463,7 +501,7 @@
     if (up){
       const tap = up.booking ? ' tap' : '';
       const chev = up.booking ? '<div class="chev">›</div>' : '';
-      const un = $('<'+(up.booking?'button':'div')+' class="upnext'+tap+'"><div><p class="k">'+(isReal?'Up next':'First fixed time')+'</p><p class="n">'+glyph(up)+' '+esc(up.title)+'</p><p class="t">'+esc(fmtTime(up.start))+(up.booking?' · '+esc(bookVal(up)):'')+'</p></div>'+chev+'</'+(up.booking?'button':'div')+'>');
+      const un = $('<'+(up.booking?'button':'div')+' class="upnext'+tap+'"><div><p class="k">'+(isReal?'Up next':'First fixed time')+'</p><p class="n">'+withGlyph(up)+'</p><p class="t">'+esc(fmtTime(up.start))+(up.booking?' · '+esc(bookVal(up)):'')+'</p></div>'+chev+'</'+(up.booking?'button':'div')+'>');
       if (up.booking) un.addEventListener('click', ()=>{ location.hash='#booking/'+up._id; });
       host.appendChild(un);
     }
@@ -522,6 +560,7 @@
     host.appendChild($('<p class="sub">'+esc(dayTitle(iso))+'</p>'));
     const hcd = dayHero(iso); if (hcd) host.appendChild(hcd);
     const wcd = weatherChip(iso); if (wcd) host.appendChild(wcd);
+    const mbd = mapDayButton(iso); if (mbd) host.appendChild(mbd);
     host.appendChild($('<hr class="rule">'));
     renderDay(iso, host);
     host.appendChild(addStopButton(iso));
@@ -539,7 +578,7 @@
     const pass = $(
       '<div class="pass">'+
         '<div class="band t-'+e.type+'">'+
-          '<p class="pn">'+glyph(e)+' '+esc(e.title)+'</p>'+
+          '<p class="pn">'+withGlyph(e)+'</p>'+
           '<p class="pv">'+esc(cityForDate(e.date))+(e.booking.source?' · '+esc(e.booking.source):'')+'</p>'+
           '<p class="pw">'+esc(pw)+'</p>'+
         '</div>'+
@@ -555,6 +594,7 @@
       pb.appendChild($('<div class="meet"><p class="mk">Meeting point</p><p><b>'+esc(e.meet.name)+'</b> · '+esc(e.meet.address)+'</p>'+(e.meet.look?'<p class="look">'+esc(e.meet.look)+'</p>':'')+'</div>'));
     if (e.note) pb.appendChild($('<p class="note">'+esc(e.note)+'</p>'));
     const acts = $('<div class="actions"><a class="act" target="_blank" rel="noopener" href="'+mapURL(e)+'">📍 Directions</a></div>');
+    if (wikiURL(e)) acts.appendChild($('<a class="act" target="_blank" rel="noopener" href="'+wikiURL(e)+'">📖 Wikipedia</a>'));
     if (e.pdf && PASS){
       const tb = $('<button class="act ticket">📄 View ticket (PDF)</button>');
       tb.addEventListener('click', ()=>{
@@ -634,6 +674,12 @@
     b.addEventListener('click', ()=>{ location.hash = '#add/'+date; });
     return b;
   }
+  function mapDayButton(iso){
+    const u = dayMapURL(iso); if (!u) return null;
+    const b = $('<button class="mapbtn">🗺️ See the day on a map</button>');
+    b.addEventListener('click', ()=> window.open(u, '_blank'));
+    return b;
+  }
   function sendToTrip(item){
     const body = 'Add this to the itinerary (from the Andiamo app):\n\n```json\n' + JSON.stringify(item) + '\n```\n';
     const url = 'https://github.com/'+GH_REPO+'/issues/new?title=' +
@@ -649,7 +695,7 @@
     host.appendChild($('<p class="sub">Fill this in, then submit it on GitHub (signed in as you). It shows up in the app within a minute — no password stored.</p>'));
 
     const dayOpts = TRIP.days.map(d=>'<option value="'+d.date+'"'+(d.date===date?' selected':'')+'>'+esc(fmtDate(d.date))+' — '+esc(d.title)+'</option>').join('');
-    const typeOpts = [['sight','Sight / place'],['meal','Food / dinner'],['tour','Tour'],['ticket','Ticket'],['transit','Transit']].map(t=>'<option value="'+t[0]+'">'+t[1]+'</option>').join('');
+    const typeOpts = [['sight','Sight / place'],['meal','Restaurant (lunch/dinner)'],['treat','Gelato / treat'],['cafe','Coffee / café'],['tour','Tour'],['ticket','Ticket'],['transit','Transit']].map(t=>'<option value="'+t[0]+'">'+t[1]+'</option>').join('');
     const form = $(
       '<div class="addform">'+
         '<label>What is it?<input id="af-title" type="text" placeholder="e.g. Gelato at Giolitti" autocomplete="off"></label>'+

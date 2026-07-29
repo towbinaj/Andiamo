@@ -42,7 +42,7 @@ jobs:
             if (!obj || !obj.title || !obj.date) { core.setOutput('ok', 'false'); return; }
             let arr = [];
             try { arr = JSON.parse(fs.readFileSync('custom.json', 'utf8')); if (!Array.isArray(arr)) arr = []; } catch (e) { arr = []; }
-            const types = ['sight', 'meal', 'tour', 'ticket', 'transit'];
+            const types = ['sight', 'meal', 'treat', 'cafe', 'tour', 'ticket', 'transit'];
             const item = {
               id: 'c' + context.payload.issue.number,
               date: String(obj.date),
