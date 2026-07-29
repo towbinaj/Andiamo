@@ -105,7 +105,13 @@
   .badge.warn { background:color-mix(in srgb, var(--vermilion) 12%, transparent); color:var(--vermilion); }
   .badge.opt { background:var(--surface-2); color:var(--faint); border:1px solid var(--hairline); }
   .badge.book { background:var(--gold-soft); color:var(--gold); }
-  .actions { display:flex; gap:9px; margin-top:12px; flex-wrap:wrap; }
+  .actions { display:flex; gap:9px; margin-top:11px; flex-wrap:wrap; align-items:center; }
+  .tglyph { width:17px; height:17px; vertical-align:-3px; margin-right:7px; }
+  .iconbtn { width:42px; height:42px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--hairline); border-radius:11px; background:var(--surface); color:var(--lapis); text-decoration:none; }
+  .iconbtn:hover { border-color:var(--lapis); }
+  .iconbtn:active { transform:translateY(1px); }
+  .iconbtn svg { width:21px; height:21px; }
+  .mapbtn-ico { width:19px; height:19px; vertical-align:-4px; margin-right:8px; }
   .act { font:inherit; font-size:14.5px; font-weight:600; text-decoration:none; color:var(--lapis); border:1px solid var(--hairline); background:var(--surface); padding:10px 15px; border-radius:9px; display:inline-flex; gap:6px; align-items:center; cursor:pointer; }
   .act:active { transform:translateY(1px); }
   .act.ticket { color:var(--gold); border-color:var(--gold); background:var(--gold-soft); }
@@ -352,9 +358,27 @@
   const badgeCls = (h) => /👕/.test(h) ? 'info' : (/ID|passport|backpack|steps|early|sharp|Firenze|Check in/i.test(h) ? 'warn' : 'info');
 
   // colorful glyph per event type, and city-based accent colour (Rome=blue, Florence=green)
-  const TYPE_EMOJI = { flight:'✈️', transit:'🚆', tour:'🎨', ticket:'🎫', meal:'🍝', treat:'🍦', cafe:'☕' };
-  const glyph = (e) => (TYPE_EMOJI[e.type] || '');   // sights get no glyph (the 📍 lives on Directions)
-  const withGlyph = (e) => { const g = glyph(e); return (g ? g+' ' : '') + esc(e.title); };
+  // ---- inline line-icons (classier than emoji) ----
+  const ICONS = {
+    pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="2.6"/>',
+    book:'<path d="M12 6.6C10.5 5.6 8.5 5 6.5 5H3v13h3.5c2 0 4 .6 5.5 1.6M12 6.6C13.5 5.6 15.5 5 17.5 5H21v13h-3.5c-2 0-4 .6-5.5 1.6M12 6.6V20.2"/>',
+    map:'<path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5v-13L15 6.5 9 4z"/><path d="M9 4v13M15 6.5v13"/>',
+    plane:'<path d="M22 3 11 14"/><path d="M22 3 15 21l-4-7-7-4 18-7z"/>',
+    train:'<rect x="5" y="4" width="14" height="12" rx="3"/><path d="M5 11h14M9 16l-2.5 4M15 16l2.5 4"/>',
+    flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V4s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>',
+    ticket:'<path d="M3 9a2 2 0 0 0 0 6v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2a2 2 0 0 0 0-6V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"/><path d="M13 6v2M13 16v2"/>',
+    utensils:'<path d="M6 3v3a2 2 0 0 0 4 0V3"/><path d="M8 6v15"/><path d="M15 3c2 1 3 3.3 3 6s-1 3.6-3 4v8"/>',
+    cone:'<path d="M8 11a4 4 0 1 1 8 0"/><path d="M8 11l4 10 4-10z"/>',
+    coffee:'<path d="M17 8h1a3 3 0 0 1 0 6h-1"/><path d="M3 8h14v6a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M6 2v2M10 2v2M14 2v2"/>'
+  };
+  const svgIcon = (name, cls, color) =>
+    '<svg class="'+(cls||'')+'"'+(color?' style="color:'+color+'"':'')+' viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[name]||'')+'</svg>';
+  const TYPE_ICON  = { flight:'plane', transit:'train', tour:'flag', ticket:'ticket', meal:'utensils', treat:'cone', cafe:'coffee' };
+  const TYPE_COLOR = { flight:'#4E6A82', transit:'#6E63C6', tour:'#4E7C57', ticket:'#B08A3E', meal:'#B45B3E', treat:'#C0678B', cafe:'#8A6D3B' };
+  const typeIcon = (e) => TYPE_ICON[e.type] ? svgIcon(TYPE_ICON[e.type], 'tglyph', TYPE_COLOR[e.type]) : '';
+  const withGlyph = (e) => typeIcon(e) + esc(e.title);
+  const iconBtn = (href, label, icon) =>
+    '<a class="iconbtn" target="_blank" rel="noopener" href="'+href+'" title="'+esc(label)+'" aria-label="'+esc(label)+'">'+svgIcon(icon)+'</a>';
   const cityAccent = (iso) => cityForDate(iso)==='Florence' ? 'var(--flor)' : 'var(--lapis)';
 
   // Wikipedia article per key attraction (title -> article slug)
@@ -398,7 +422,7 @@
     const done = isDone(id) ? ' done' : '';
 
     if (e.booking){
-      const sub = '🎟 ' + esc(bookVal(e)) + (e.booking.source ? ' · ' + esc(e.booking.source) : '');
+      const sub = esc(bookVal(e)) + (e.booking.source ? ' · ' + esc(e.booking.source) : '');
       const node = $(
         '<div class="ev bkrow t-'+e.type+done+'" role="button" tabindex="0">'+
           '<div class="time'+(e.start?'':' flex')+'">'+esc(t)+'</div>'+
@@ -420,8 +444,8 @@
 
     const actions = [];
     if (e.address || ['sight','meal','treat','cafe','tour','ticket'].includes(e.type))
-      actions.push('<a class="act" target="_blank" rel="noopener" href="'+mapURL(e)+'">📍 Directions</a>');
-    if (wikiURL(e)) actions.push('<a class="act" target="_blank" rel="noopener" href="'+wikiURL(e)+'">📖 Wikipedia</a>');
+      actions.push(iconBtn(mapURL(e), 'Directions', 'pin'));
+    if (wikiURL(e)) actions.push(iconBtn(wikiURL(e), 'Read on Wikipedia', 'book'));
 
     const node = $(
       '<div class="ev'+done+'">'+
@@ -578,11 +602,11 @@
     const pass = $(
       '<div class="pass">'+
         '<div class="band t-'+e.type+'">'+
-          '<p class="pn">'+withGlyph(e)+'</p>'+
+          '<p class="pn">'+esc(e.title)+'</p>'+
           '<p class="pv">'+esc(cityForDate(e.date))+(e.booking.source?' · '+esc(e.booking.source):'')+'</p>'+
           '<p class="pw">'+esc(pw)+'</p>'+
         '</div>'+
-        '<div class="stub"><div><p class="lbl">'+esc(bookLabel(e))+'</p><p class="val">'+esc(bookVal(e))+'</p></div>'+(e.qty?'<span class="qty">🎟 ×'+e.qty+'</span>':'')+'</div>'+
+        '<div class="stub"><div><p class="lbl">'+esc(bookLabel(e))+'</p><p class="val">'+esc(bookVal(e))+'</p></div>'+(e.qty?'<span class="qty">×'+e.qty+' guests</span>':'')+'</div>'+
         '<div class="pbody"></div>'+
       '</div>'
     );
@@ -593,19 +617,19 @@
     if (e.meet)
       pb.appendChild($('<div class="meet"><p class="mk">Meeting point</p><p><b>'+esc(e.meet.name)+'</b> · '+esc(e.meet.address)+'</p>'+(e.meet.look?'<p class="look">'+esc(e.meet.look)+'</p>':'')+'</div>'));
     if (e.note) pb.appendChild($('<p class="note">'+esc(e.note)+'</p>'));
-    const acts = $('<div class="actions"><a class="act" target="_blank" rel="noopener" href="'+mapURL(e)+'">📍 Directions</a></div>');
-    if (wikiURL(e)) acts.appendChild($('<a class="act" target="_blank" rel="noopener" href="'+wikiURL(e)+'">📖 Wikipedia</a>'));
+    const acts = $('<div class="actions">'+iconBtn(mapURL(e), 'Directions', 'pin')+'</div>');
+    if (wikiURL(e)) acts.appendChild($(iconBtn(wikiURL(e), 'Read on Wikipedia', 'book')));
     if (e.pdf && PASS){
-      const tb = $('<button class="act ticket">📄 View ticket (PDF)</button>');
+      const tb = $('<button class="act ticket">View ticket (PDF)</button>');
       tb.addEventListener('click', ()=>{
         const win = window.open('', '_blank');   // open the tab NOW, inside the tap, so iOS allows it
         tb.textContent = 'Opening…';
         openTicket(e.pdf, win)
-          .then(()=>{ tb.textContent = '📄 View ticket (PDF)'; })
+          .then(()=>{ tb.textContent = 'View ticket (PDF)'; })
           .catch((err)=>{
             if (win && !win.closed) win.close();
             tb.textContent = String(err && err.message)==='missing' ? 'Ticket file not added yet' : 'Couldn’t open — tap again';
-            setTimeout(()=>{ tb.textContent = '📄 View ticket (PDF)'; }, 2500);
+            setTimeout(()=>{ tb.textContent = 'View ticket (PDF)'; }, 2500);
           });
       });
       acts.appendChild(tb);
@@ -657,7 +681,7 @@
 
     TRIP.legs.forEach(l=>{
       const q = encodeURIComponent(l.hotelAddress);
-      host.appendChild($('<div class="card"><h3>'+esc(l.city)+' · '+MO[asDate(l.start).getMonth()]+' '+asDate(l.start).getDate()+'–'+asDate(l.end).getDate()+'</h3><p><b>'+esc(l.hotelName)+'</b></p><p>'+esc(l.hotelAddress)+'</p><div class="actions"><a class="act" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+q+'">📍 Directions</a></div></div>'));
+      host.appendChild($('<div class="card"><h3>'+esc(l.city)+' · '+MO[asDate(l.start).getMonth()]+' '+asDate(l.start).getDate()+'–'+asDate(l.end).getDate()+'</h3><p><b>'+esc(l.hotelName)+'</b></p><p>'+esc(l.hotelAddress)+'</p><div class="actions">'+iconBtn('https://www.google.com/maps/search/?api=1&query='+q, 'Directions', 'pin')+'</div></div>'));
     });
 
     host.appendChild($('<div class="card"><h3>Dress code</h3><ul class="plain">'+TRIP.dress.map(d=>'<li>'+esc(d)+'</li>').join('')+'</ul></div>'));
@@ -676,7 +700,7 @@
   }
   function mapDayButton(iso){
     const u = dayMapURL(iso); if (!u) return null;
-    const b = $('<button class="mapbtn">🗺️ See the day on a map</button>');
+    const b = $('<button class="mapbtn">'+svgIcon('map','mapbtn-ico')+'See the day on a map</button>');
     b.addEventListener('click', ()=> window.open(u, '_blank'));
     return b;
   }
