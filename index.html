@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Andiamo">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.webmanifest">
@@ -17,7 +17,7 @@
   :root {
     --paper:#F3F1EB; --surface:#FFFFFF; --surface-2:#F7F5F0; --hairline:#E0DACE;
     --ink:#23201B; --muted:#736B5E; --faint:#9A9184;
-    --lapis:#1F5069; --lapis-soft:#E4EDF1; --vermilion:#C1442A; --gold:#A9822F; --gold-soft:#F1E7CF;
+    --lapis:#1F5069; --lapis-soft:#E4EDF1; --vermilion:#C1442A; --gold:#A9822F; --gold-soft:#F1E7CF; --flor:#3F7D5A; --flor-soft:#E2EFE7;
     --stage-1:#E7E3DA; --stage-2:#DCD6C9; --shadow:26,22,16;
     --serif:"Palatino Linotype",Palatino,"URW Palladio L","Iowan Old Style",Georgia,serif;
     --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -27,12 +27,12 @@
     :root {
       --paper:#171A1C; --surface:#1D2226; --surface-2:#22282C; --hairline:#2E353A;
       --ink:#ECE6DA; --muted:#9AA2A6; --faint:#6C757A;
-      --lapis:#6FA6C0; --lapis-soft:#1E2B33; --vermilion:#E06A4E; --gold:#CBA85A; --gold-soft:#2C2A22;
+      --lapis:#6FA6C0; --lapis-soft:#1E2B33; --vermilion:#E06A4E; --gold:#CBA85A; --gold-soft:#2C2A22; --flor:#7DBE9A; --flor-soft:#1D2B24;
       --stage-1:#101315; --stage-2:#0A0C0D; --shadow:0,0,0;
     }
   }
-  :root[data-theme="light"]{--paper:#F3F1EB;--surface:#FFFFFF;--surface-2:#F7F5F0;--hairline:#E0DACE;--ink:#23201B;--muted:#736B5E;--faint:#9A9184;--lapis:#1F5069;--lapis-soft:#E4EDF1;--vermilion:#C1442A;--gold:#A9822F;--gold-soft:#F1E7CF;--stage-1:#E7E3DA;--stage-2:#DCD6C9;--shadow:26,22,16;}
-  :root[data-theme="dark"]{--paper:#171A1C;--surface:#1D2226;--surface-2:#22282C;--hairline:#2E353A;--ink:#ECE6DA;--muted:#9AA2A6;--faint:#6C757A;--lapis:#6FA6C0;--lapis-soft:#1E2B33;--vermilion:#E06A4E;--gold:#CBA85A;--gold-soft:#2C2A22;--stage-1:#101315;--stage-2:#0A0C0D;--shadow:0,0,0;}
+  :root[data-theme="light"]{--paper:#F3F1EB;--surface:#FFFFFF;--surface-2:#F7F5F0;--hairline:#E0DACE;--ink:#23201B;--muted:#736B5E;--faint:#9A9184;--lapis:#1F5069;--lapis-soft:#E4EDF1;--vermilion:#C1442A;--gold:#A9822F;--gold-soft:#F1E7CF; --flor:#3F7D5A; --flor-soft:#E2EFE7;--stage-1:#E7E3DA;--stage-2:#DCD6C9;--shadow:26,22,16;}
+  :root[data-theme="dark"]{--paper:#171A1C;--surface:#1D2226;--surface-2:#22282C;--hairline:#2E353A;--ink:#ECE6DA;--muted:#9AA2A6;--faint:#6C757A;--lapis:#6FA6C0;--lapis-soft:#1E2B33;--vermilion:#E06A4E;--gold:#CBA85A;--gold-soft:#2C2A22; --flor:#7DBE9A; --flor-soft:#1D2B24;--stage-1:#101315;--stage-2:#0A0C0D;--shadow:0,0,0;}
 
   * { box-sizing:border-box; }
   html,body { margin:0; height:100%; }
@@ -43,7 +43,7 @@
   #app { max-width:520px; margin:0 auto; min-height:100%; background:var(--paper);
     box-shadow:0 0 60px -20px rgba(var(--shadow),.4); display:flex; flex-direction:column;
     padding-bottom:calc(76px + env(safe-area-inset-bottom,0px)); }
-  .view { padding:22px 18px 8px; animation:fade .25s ease both; }
+  .view { padding:22px 18px 8px; padding-top:calc(22px + env(safe-area-inset-top, 0px)); animation:fade .25s ease both; }
   @keyframes fade { from{opacity:0;transform:translateY(6px)} to{opacity:1} }
   @media (prefers-reduced-motion: reduce){ .view{animation:none} }
 
@@ -55,9 +55,9 @@
   .sect-label { font-size:12px; letter-spacing:.15em; text-transform:uppercase; color:var(--faint); font-weight:700; margin:0 0 11px; }
 
   /* hero / countdown */
-  .hero { background:var(--surface); border:1px solid var(--hairline); border-radius:16px; padding:24px; text-align:center; margin-bottom:8px; }
-  .hero .big { font-family:var(--serif); font-size:52px; line-height:1; color:var(--lapis); margin:6px 0; font-variant-numeric:tabular-nums; }
-  .hero .cap { font-size:15.5px; color:var(--muted); margin:0; }
+  .hero { background:linear-gradient(135deg, var(--lapis), #2C7D6E 52%, var(--gold)); border:0; border-radius:18px; padding:26px; text-align:center; margin-bottom:8px; color:#fff; box-shadow:0 16px 34px -20px rgba(var(--shadow),.7); }
+  .hero .big { font-family:var(--serif); font-size:56px; line-height:1; color:#fff; margin:6px 0; font-variant-numeric:tabular-nums; text-shadow:0 2px 12px rgba(0,0,0,.18); }
+  .hero .cap { font-size:15.5px; color:rgba(255,255,255,.9); margin:0; }
 
   /* up-next highlight */
   .upnext { background:color-mix(in srgb, var(--vermilion) 8%, var(--surface)); border:1px solid color-mix(in srgb, var(--vermilion) 30%, var(--hairline)); border-radius:14px; padding:16px 17px; margin-bottom:14px; width:100%; text-align:left; font:inherit; color:inherit; display:block; }
@@ -75,7 +75,7 @@
   .checkbtn.on { background:var(--lapis); border-color:var(--lapis); color:#fff; }
   .ev.done { opacity:.55; }
   .ev.done .name { text-decoration:line-through; }
-  .wx { font-size:14px; color:var(--muted); background:var(--surface); border:1px solid var(--hairline); border-radius:11px; padding:10px 13px; margin-top:12px; }
+  .wx { font-size:14px; color:var(--muted); background:linear-gradient(120deg, var(--lapis-soft), var(--gold-soft)); border:1px solid var(--hairline); border-radius:11px; padding:10px 13px; margin-top:12px; }
   .wx b { color:var(--ink); font-weight:700; }
   .wx .sep { color:var(--faint); margin:0 3px; }
   .ev .time { font-family:var(--mono); font-size:14.5px; color:var(--ink); font-variant-numeric:tabular-nums; padding-top:2px; font-weight:600; }
@@ -211,7 +211,14 @@
   }
   function checkButton(idx){
     const b = $('<button class="checkbtn'+(isDone(idx)?' on':'')+'" aria-label="Mark as done">✓</button>');
-    b.addEventListener('click', (ev)=>{ ev.stopPropagation(); toggleDone(idx); render(); });
+    b.addEventListener('click', (ev)=>{
+      ev.stopPropagation();
+      toggleDone(idx);
+      const on = isDone(idx);
+      b.classList.toggle('on', on);          // update in place — no re-render, no scroll jump
+      const row = b.closest('.ev');
+      if (row) row.classList.toggle('done', on);
+    });
     return b;
   }
 
@@ -266,6 +273,11 @@
 
   const badgeCls = (h) => /👕/.test(h) ? 'info' : (/ID|passport|backpack|steps|early|sharp|Firenze|Check in/i.test(h) ? 'warn' : 'info');
 
+  // colorful glyph per event type, and city-based accent colour (Rome=blue, Florence=green)
+  const TYPE_EMOJI = { flight:'✈️', transit:'🚆', tour:'🎨', ticket:'🎫', meal:'🍷', sight:'📍' };
+  const glyph = (e) => (TYPE_EMOJI[e.type] || '📍');
+  const cityAccent = (iso) => cityForDate(iso)==='Florence' ? 'var(--flor)' : 'var(--lapis)';
+
   // ---- render one event ----
   // A booked event becomes a tappable row that opens its pass (see viewBooking).
   function renderEvent(e){
@@ -278,7 +290,7 @@
       const node = $(
         '<div class="ev bkrow t-'+e.type+done+'" role="button" tabindex="0">'+
           '<div class="time'+(e.start?'':' flex')+'">'+esc(t)+'</div>'+
-          '<div class="body"><p class="name">'+esc(e.title)+'</p><p class="bksub">'+sub+'</p></div>'+
+          '<div class="body"><p class="name">'+glyph(e)+' '+esc(e.title)+'</p><p class="bksub">'+sub+'</p></div>'+
           '<div class="ctl"><span class="chev">›</span></div>'+
         '</div>'
       );
@@ -301,7 +313,7 @@
       '<div class="ev'+done+'">'+
         '<div class="time'+(e.start?'':' flex')+'">'+esc(t)+'</div>'+
         '<div class="body">'+
-          '<p class="name">'+esc(e.title)+'</p>'+
+          '<p class="name">'+glyph(e)+' '+esc(e.title)+'</p>'+
           (badges.length?'<div class="badges">'+badges.join('')+'</div>':'')+
           (e.note?'<p class="note">'+esc(e.note)+'</p>':'')+
           (actions.length?'<div class="actions">'+actions.join('')+'</div>':'')+
@@ -360,7 +372,7 @@
 
     const idx = dayIndex(cur);
     const isReal = (cur === real);
-    host.appendChild($('<p class="eyebrow">'+(isReal?'<span class="live"></span>':'')+esc(cityForDate(cur))+' · Day '+(idx+1)+' of '+TRIP.days.length+'</p>'));
+    host.appendChild($('<p class="eyebrow" style="color:'+cityAccent(cur)+'">'+(isReal?'<span class="live"></span>':'')+esc(cityForDate(cur))+' · Day '+(idx+1)+' of '+TRIP.days.length+'</p>'));
     host.appendChild($('<h1 class="title">'+fmtDate(cur)+'</h1>'));
     host.appendChild($('<p class="sub">'+esc(dayTitle(cur))+'</p>'));
     const wcur = weatherChip(cur); if (wcur) host.appendChild(wcur);
@@ -373,7 +385,7 @@
     if (up){
       const tap = up.booking ? ' tap' : '';
       const chev = up.booking ? '<div class="chev">›</div>' : '';
-      const un = $('<'+(up.booking?'button':'div')+' class="upnext'+tap+'"><div><p class="k">'+(isReal?'Up next':'First fixed time')+'</p><p class="n">'+esc(up.title)+'</p><p class="t">'+esc(fmtTime(up.start))+(up.booking?' · '+esc(bookVal(up)):'')+'</p></div>'+chev+'</'+(up.booking?'button':'div')+'>');
+      const un = $('<'+(up.booking?'button':'div')+' class="upnext'+tap+'"><div><p class="k">'+(isReal?'Up next':'First fixed time')+'</p><p class="n">'+glyph(up)+' '+esc(up.title)+'</p><p class="t">'+esc(fmtTime(up.start))+(up.booking?' · '+esc(bookVal(up)):'')+'</p></div>'+chev+'</'+(up.booking?'button':'div')+'>');
       if (up.booking) un.addEventListener('click', ()=>{ location.hash='#booking/'+TRIP.events.indexOf(up); });
       host.appendChild(un);
     }
@@ -393,14 +405,15 @@
     if (arr) host.appendChild($('<div class="bookend"><span>✈ '+esc(arr.title)+' · '+fmtDate(arr.date)+' · '+esc(fmtTime(arr.start))+'</span></div>'));
 
     TRIP.legs.forEach((leg, li)=>{
-      host.appendChild($('<div style="margin-top:14px"><div class="leg-head"><h3 class="leg-city">'+esc(leg.city)+'</h3><span class="leg-dates">'+MO[asDate(leg.start).getMonth()]+' '+asDate(leg.start).getDate()+'–'+asDate(leg.end).getDate()+'</span></div><p class="leg-hotel">🏨 '+esc(leg.hotelName)+'</p></div>'));
+      const accent = leg.city==='Florence' ? 'var(--flor)' : 'var(--lapis)';
+      host.appendChild($('<div style="margin-top:14px"><div class="leg-head"><h3 class="leg-city" style="color:'+accent+'">'+esc(leg.city)+'</h3><span class="leg-dates">'+MO[asDate(leg.start).getMonth()]+' '+asDate(leg.start).getDate()+'–'+asDate(leg.end).getDate()+'</span></div><p class="leg-hotel">🏨 '+esc(leg.hotelName)+'</p></div>'));
       TRIP.days.filter(d=> d.date>=leg.start && d.date<(li<TRIP.legs.length-1?TRIP.legs[li+1].start:'9999') ).forEach(d=>{
         const evs = eventsOn(d.date);
         const hasBook = evs.some(e=>e.booking);
         const hasFixed = evs.some(e=>e.fixed && e.start && e.type!=='meal');
         const summary = evs.filter(e=>e.fixed && e.start).sort(sortFixed).map(e=>e.title.split(' — ')[0].split(' (')[0]).slice(0,3).join(' · ') || 'Open day';
-        const dots = (hasFixed?'<span class="dot" style="background:var(--lapis)"></span>':'')+(hasBook?'<span class="dot" style="background:var(--gold)"></span>':'');
-        const card = $('<button class="daycard"><div class="dn">'+(dayIndex(d.date)+1)+'<small>'+dow(d.date)+'</small></div><div><p class="dt">'+esc(d.title)+'</p><p class="dm">'+esc(summary)+'</p><div class="dots">'+dots+'</div></div><div class="chev">›</div></button>');
+        const dots = (hasFixed?'<span class="dot" style="background:'+accent+'"></span>':'')+(hasBook?'<span class="dot" style="background:var(--gold)"></span>':'');
+        const card = $('<button class="daycard" style="border-left:4px solid '+accent+'"><div class="dn" style="color:'+accent+'">'+(dayIndex(d.date)+1)+'<small>'+dow(d.date)+'</small></div><div><p class="dt">'+esc(d.title)+'</p><p class="dm">'+esc(summary)+'</p><div class="dots">'+dots+'</div></div><div class="chev">›</div></button>');
         card.addEventListener('click', ()=>{ location.hash='#day/'+d.date; });
         host.appendChild(card);
       });
@@ -415,7 +428,7 @@
     const back = $('<button class="backbtn">‹ Days</button>');
     back.addEventListener('click', ()=>{ location.hash='#days'; });
     host.appendChild(back);
-    host.appendChild($('<p class="eyebrow">'+esc(cityForDate(iso))+' · Day '+(dayIndex(iso)+1)+'</p>'));
+    host.appendChild($('<p class="eyebrow" style="color:'+cityAccent(iso)+'">'+esc(cityForDate(iso))+' · Day '+(dayIndex(iso)+1)+'</p>'));
     host.appendChild($('<h1 class="title">'+fmtDate(iso)+'</h1>'));
     host.appendChild($('<p class="sub">'+esc(dayTitle(iso))+'</p>'));
     const wcd = weatherChip(iso); if (wcd) host.appendChild(wcd);
@@ -435,7 +448,7 @@
     const pass = $(
       '<div class="pass">'+
         '<div class="band t-'+e.type+'">'+
-          '<p class="pn">'+esc(e.title)+'</p>'+
+          '<p class="pn">'+glyph(e)+' '+esc(e.title)+'</p>'+
           '<p class="pv">'+esc(cityForDate(e.date))+(e.booking.source?' · '+esc(e.booking.source):'')+'</p>'+
           '<p class="pw">'+esc(pw)+'</p>'+
         '</div>'+
