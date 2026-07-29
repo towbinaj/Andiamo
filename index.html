@@ -490,8 +490,19 @@
     // only real, locatable places: skip flights/transit, hotel logistics, and anything without a street location
     const isPlace = (e) => e.type!=='flight' && e.type!=='transit' && !/^(check in|depart|return to)/i.test(e.title) && locOf(e);
     const evs = eventsOn(iso).filter(isPlace);
-    const pts = evs.filter(e=>e.fixed&&e.start).sort(sortFixed).concat(evs.filter(e=>!(e.fixed&&e.start)))
-      .map(e => e.title + ', ' + locOf(e));   // name + address, so each stop is labelled on the map
+    // route order: timed sights/tickets first (by time), then daytime flexible stops, then dinners LAST
+    const timed = evs.filter(e=>e.fixed&&e.start&&e.type!=='meal').sort(sortFixed);
+    const flex  = evs.filter(e=>!(e.fixed&&e.start));
+    const meals = evs.filter(e=>e.type==='meal'&&e.fixed&&e.start).sort(sortFixed);
+    let ordered = timed.concat(flex, meals);
+    // Google Maps URLs choke on very long routes — cap to 10 stops, keeping the dinner as the last stop
+    const MAX = 10;
+    if (ordered.length > MAX){
+      const dinner = meals.length ? meals[meals.length-1] : null;
+      ordered = ordered.slice(0, MAX);
+      if (dinner && ordered[ordered.length-1] !== dinner) ordered[ordered.length-1] = dinner;
+    }
+    const pts = ordered.map(e => e.title + ', ' + locOf(e));   // name + address, so each stop is labelled on the map
     if (pts.length < 2) return null;
     const enc = encodeURIComponent;
     let u = 'https://www.google.com/maps/dir/?api=1&origin='+enc(pts[0])+'&destination='+enc(pts[pts.length-1])+'&travelmode=walking';
@@ -862,8 +873,9 @@
       const row = $('<div class="arow" data-id="'+e._id+'">'+lead+'<span class="aname">'+withGlyph(e)+'</span><select class="amove" aria-label="Move to another day">'+dayOptions()+'</select></div>');
       row.querySelector('.amove').addEventListener('change', (ev)=>{
         const nd = ev.target.value;
-        if (nd===date){ delete OVER.moves[e._id]; }
-        else { OVER.moves[e._id] = nd; if (OVER.order[date]) OVER.order[date] = OVER.order[date].filter(x=>x!==e._id); }
+        if (nd === e.date) delete OVER.moves[e._id];   // back to its home day -> no override
+        else OVER.moves[e._id] = nd;
+        if (nd !== date && OVER.order[date]) OVER.order[date] = OVER.order[date].filter(x=>x!==e._id);
         saveOver(true); render();
       });
       return row;
