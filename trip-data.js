@@ -228,5 +228,44 @@ const TRIP = {
       booking: { label: "Status", value: "Confirmed", source: "Air France / Delta email" }, codeKey: "flights",
       headsup: ["Early start — pre-book a taxi the night before"],
     },
+
+    /* ---------------- Added nearby sights & gelato ---------------- */
+    // Aug 1 — near Trevi
+    { date: "2026-08-01", start: null, title: "Il Gelato di San Crispino", type: "treat", fixed: false, address: "Via della Panetteria 42, Rome", note: "Classic gelato steps from the Trevi Fountain." },
+
+    // Aug 2 — Pantheon / Navona / Popolo cluster
+    { date: "2026-08-02", start: null, title: "Santa Maria del Popolo", type: "sight", fixed: false, address: "Piazza del Popolo 12, Rome", note: "On the piazza — two Caravaggios + a Raphael chapel.", headsup: ["👕 Shoulders & knees covered"] },
+    { date: "2026-08-02", start: null, title: "Santa Maria sopra Minerva", type: "sight", fixed: false, address: "Piazza della Minerva 42, Rome", note: "Just behind the Pantheon — Bernini's elephant obelisk out front.", headsup: ["👕 Shoulders & knees covered"] },
+    { date: "2026-08-02", start: null, title: "Church of St. Ignatius", type: "sight", fixed: false, address: "Via del Caravita 8a, Rome", note: "The famous painted 'fake dome' ceiling.", headsup: ["👕 Shoulders & knees covered"] },
+    { date: "2026-08-02", start: null, title: "Ara Pacis", type: "sight", fixed: false, address: "Lungotevere in Augusta, Rome", note: "Augustus's altar — right by the Il Marchese dinner." },
+    { date: "2026-08-02", start: null, title: "Frigidarium", type: "treat", fixed: false, address: "Via del Governo Vecchio 112, Rome", note: "Popular gelato by Piazza Navona." },
+    { date: "2026-08-02", start: null, title: "Gelateria del Teatro", type: "treat", fixed: false, address: "Via dei Coronari 65/66, Rome", note: "Excellent gelato near Piazza Navona." },
+
+    // Aug 3 — near the Vatican
+    { date: "2026-08-03", start: null, title: "Gelateria dei Gracchi", type: "treat", fixed: false, address: "Via dei Gracchi 272, Rome", note: "Top-tier gelato a short walk from the Vatican Museums." },
+    { date: "2026-08-03", start: null, title: "Gelateria Old Bridge", type: "treat", fixed: false, address: "Viale dei Bastioni di Michelangelo 5, Rome", note: "Famous, right by the Vatican walls." },
+
+    // Aug 4 — Ancient Rome / Campidoglio
+    { date: "2026-08-04", start: null, title: "Capitoline Museums", type: "sight", fixed: false, address: "Piazza del Campidoglio 1, Rome", note: "On the Campidoglio — the original she-wolf & Marcus Aurelius." },
+    { date: "2026-08-04", start: null, title: "Vittoriano (Altare della Patria)", type: "sight", fixed: false, address: "Piazza Venezia, Rome", note: "Rooftop lift for a top-down view over the Forum." },
+    { date: "2026-08-04", start: null, title: "Trajan's Column", type: "sight", fixed: false, address: "Via dei Fori Imperiali, Rome", note: "You walk right past it." },
+
+    // Aug 5 — Duomo → Signoria
+    { date: "2026-08-05", start: null, title: "Palazzo Vecchio", type: "sight", fixed: false, address: "Piazza della Signoria, Florence", note: "Climb the Arnolfo Tower for the best view of the Duomo." },
+    { date: "2026-08-05", start: null, title: "Orsanmichele", type: "sight", fixed: false, address: "Via dell'Arte della Lana 1, Florence", note: "Church-guildhall with famous sculpture niches.", headsup: ["👕 Shoulders & knees covered"] },
+    { date: "2026-08-05", start: null, title: "Loggia dei Lanzi", type: "sight", fixed: false, address: "Piazza della Signoria, Florence", note: "Free open-air sculpture gallery (Cellini's Perseus)." },
+    { date: "2026-08-05", start: null, title: "Edoardo il Gelato Biologico", type: "treat", fixed: false, address: "Piazza del Duomo 45r, Florence", note: "Organic gelato right by the Duomo." },
+    { date: "2026-08-05", start: null, title: "Perché No!", type: "treat", fixed: false, address: "Via dei Tavolini 19r, Florence", note: "Historic gelateria between the Duomo and Signoria." },
+
+    // Aug 6 — Oltrarno / the view
+    { date: "2026-08-06", start: null, title: "Piazzale Michelangelo", type: "sight", fixed: false, address: "Piazzale Michelangelo, Florence", note: "THE Florence panorama — best at sunset." },
+    { date: "2026-08-06", start: null, title: "San Miniato al Monte", type: "sight", fixed: false, address: "Via delle Porte Sante 34, Florence", note: "Romanesque gem above Piazzale Michelangelo; evening chant.", headsup: ["👕 Shoulders & knees covered"] },
+    { date: "2026-08-06", start: null, title: "Gelateria La Carraia", type: "treat", fixed: false, address: "Piazza Nazario Sauro 25/r, Florence", note: "Great gelato by Ponte alla Carraia, in the Oltrarno." },
+    { date: "2026-08-06", start: null, title: "Gelateria della Passera", type: "treat", fixed: false, address: "Via Toscanella 15r, Florence", note: "Beloved little Oltrarno spot near Pitti." },
+
+    // Aug 7 — Michelangelo Day
+    { date: "2026-08-07", start: null, title: "Medici Chapels", type: "sight", fixed: false, address: "Piazza di Madonna degli Aldobrandini 6, Florence", note: "Michelangelo's New Sacristy tombs — attached to San Lorenzo. (Ticketed.)" },
+    { date: "2026-08-07", start: null, title: "Basilica di Santa Croce", type: "sight", fixed: false, address: "Piazza di Santa Croce 16, Florence", note: "Tombs of Michelangelo, Galileo & Machiavelli.", headsup: ["👕 Shoulders & knees covered"] },
+    { date: "2026-08-07", start: null, title: "Vivoli", type: "treat", fixed: false, address: "Via dell'Isola delle Stinche 7r, Florence", note: "Florence's oldest gelateria, by Santa Croce." },
   ],
 };
