@@ -40,6 +40,8 @@ const TRIP = {
       end: "2026-08-05",
       hotelName: "The Hive Hotel",
       hotelAddress: "Via Torino 6, Rome",
+      hotelWebsite: "https://www.thehiverome.com/",
+      hotelPhone: "+39 06 4041 2000",
     },
     {
       city: "Florence",
@@ -47,6 +49,8 @@ const TRIP = {
       end: "2026-08-08",
       hotelName: "B&B Hotel Firenze Pitti Palace al Ponte Vecchio",
       hotelAddress: "Borgo San Jacopo 3/R, Florence",
+      hotelWebsite: "https://www.hotel-bb.com/en/hotel/firenze-pitti-palace-al-ponte-vecchio",
+      hotelPhone: "+39 055 2398711",
     },
   ],
 
@@ -106,6 +110,7 @@ const TRIP = {
     {
       date: "2026-08-02", start: "19:00", title: "Il Marchese", type: "meal", fixed: true, qty: 4,
       address: "Via di Ripetta 162, Rome 00186",
+      website: "https://www.ilmarcheseroma.it/", phone: "+39 06 9021 8872",
       booking: { label: "Status", value: "Confirmed", source: "TheFork app" },
     },
 
@@ -130,6 +135,7 @@ const TRIP = {
     {
       date: "2026-08-03", start: "21:00", title: "Hosteria Grappolo d'Oro", type: "meal", fixed: true, qty: 4,
       address: "Piazza della Cancelleria 80, Rome",
+      website: "https://hosteriagrappolodoro.it/", phone: "+39 06 689 7080",
       booking: { label: "Status", value: "Confirmed", source: "Restaurant email" }, codeKey: "grappolo",
     },
 
@@ -151,6 +157,7 @@ const TRIP = {
     {
       date: "2026-08-04", start: "20:00", title: "53 Untitled", type: "meal", fixed: true, qty: 4,
       address: "Via del Monte della Farina 53, Rome",
+      website: "https://www.untitledrestaurant.com/", phone: "+39 375 715 0155",
       booking: { label: "Status", value: "Confirmed", source: "Restaurant email" },
     },
 
@@ -178,6 +185,7 @@ const TRIP = {
     {
       date: "2026-08-05", start: "21:30", title: "Borgo San Jacopo", type: "meal", fixed: true, qty: 4,
       address: "Borgo San Jacopo 62/r, Florence",
+      website: "https://www.lungarnocollection.com/borgo-san-jacopo/", phone: "+39 055 281661",
       note: "Fixed summer tasting menu — €185 per person.",
       booking: { label: "Status", value: "Confirmed", source: "TheFork app" },
     },
@@ -198,6 +206,7 @@ const TRIP = {
     {
       date: "2026-08-06", start: "19:30", title: "Il Santo Bevitore", type: "meal", fixed: true, qty: 4,
       address: "Via Santo Spirito 64/66R, Florence",
+      website: "https://www.ilsantobevitore.com/", phone: "+39 055 211264",
       booking: { label: "Status", value: "Confirmed", source: "ResDiary email" }, codeKey: "santobevitore",
     },
 
@@ -216,6 +225,7 @@ const TRIP = {
     {
       date: "2026-08-07", start: "19:30", title: "Osteria Konnubio", type: "meal", fixed: true, qty: 4,
       address: "Via dei Conti 8, Florence 50123",
+      website: "https://www.konnubio.com/", phone: "+39 055 238 1189",
       note: "Last dinner in Florence — remember the flight home is early (6:55 AM).",
       booking: { label: "Booking", value: "TheFork · confirmed", source: "TheFork" },
     },
