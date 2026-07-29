@@ -185,7 +185,7 @@ const TRIP = {
     {
       date: "2026-08-05", start: "21:30", title: "Borgo San Jacopo", type: "meal", fixed: true, qty: 4,
       address: "Borgo San Jacopo 62/r, Florence",
-      website: "https://www.lungarnocollection.com/borgo-san-jacopo/", phone: "+39 055 281661",
+      website: "https://www.lungarnocollection.com/borgo-san-jacopo/", phone: "+39 055 281661", whatsapp: "+39 342 1234710",
       note: "Fixed summer tasting menu — €185 per person.",
       booking: { label: "Status", value: "Confirmed", source: "TheFork app" },
     },
