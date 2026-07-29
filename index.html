@@ -402,6 +402,9 @@
   const locOf = (e) => e.address || (e.meet && e.meet.address) || '';   // a real street location, if any
   // lead the map query with the place NAME so the pin is labelled (not just an address that can geocode to a bank)
   const mapURL = (e) => 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(e.title + ', ' + (locOf(e) || cityForDate(e.date)));
+  // the hotel/leg an event falls under, and walking directions from that hotel to the event
+  const legForDate = (iso) => { let leg=TRIP.legs[0]; for(const l of TRIP.legs){ if(iso>=l.start) leg=l; } return leg; };
+  const hotelDirURL = (leg, e) => 'https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(leg.hotelAddress)+'&destination='+encodeURIComponent(e.title+', '+locOf(e))+'&travelmode=walking';
 
   const sortFixed = (a,b) => (a.start||'').localeCompare(b.start||'');
 
@@ -413,6 +416,7 @@
     pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="2.6"/>',
     book:'<path d="M12 6.6C10.5 5.6 8.5 5 6.5 5H3v13h3.5c2 0 4 .6 5.5 1.6M12 6.6C13.5 5.6 15.5 5 17.5 5H21v13h-3.5c-2 0-4 .6-5.5 1.6M12 6.6V20.2"/>',
     map:'<path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5v-13L15 6.5 9 4z"/><path d="M9 4v13M15 6.5v13"/>',
+    home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>',
     plane:'<path d="M22 3 11 14"/><path d="M22 3 15 21l-4-7-7-4 18-7z"/>',
     train:'<rect x="5" y="4" width="14" height="12" rx="3"/><path d="M5 11h14M9 16l-2.5 4M15 16l2.5 4"/>',
     flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V4s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>',
@@ -459,7 +463,12 @@
     "Trajan's Column":"Trajan's_Column", "Palazzo Vecchio":"Palazzo_Vecchio", "Orsanmichele":"Orsanmichele",
     "Loggia dei Lanzi":"Loggia_dei_Lanzi", "Piazzale Michelangelo":"Piazzale_Michelangelo",
     "San Miniato al Monte":"San_Miniato_al_Monte", "Medici Chapels":"Medici_Chapel",
-    "Basilica di Santa Croce":"Basilica_of_Santa_Croce,_Florence"
+    "Basilica di Santa Croce":"Basilica_of_Santa_Croce,_Florence",
+    "Santa Maria Maggiore":"Santa_Maria_Maggiore", "Palazzo Barberini":"Palazzo_Barberini",
+    "Quirinale Palace":"Quirinal_Palace", "Galleria Doria Pamphilj":"Galleria_Doria_Pamphilj",
+    "Basilica di San Clemente":"Basilica_of_San_Clemente", "Trajan's Market":"Trajan's_Market",
+    "Domus Aurea":"Domus_Aurea", "Santo Spirito":"Santo_Spirito,_Florence",
+    "Brancacci Chapel":"Brancacci_Chapel", "Museo di San Marco":"San_Marco,_Florence"
   };
   const wikiURL = (e) => WIKI[e.title] ? 'https://en.wikipedia.org/wiki/'+WIKI[e.title] : null;
 
@@ -724,7 +733,13 @@
     if (e.meet)
       pb.appendChild($('<div class="meet"><p class="mk">Meeting point</p><p><b>'+esc(e.meet.name)+'</b> · '+esc(e.meet.address)+'</p>'+(e.meet.look?'<p class="look">'+esc(e.meet.look)+'</p>':'')+'</div>'));
     if (e.note) pb.appendChild($('<p class="note">'+esc(e.note)+'</p>'));
+    // estimated hop from the hotel (dinners etc.)
+    const leg = legForDate(ed);
+    const hasHotelHop = e.type==='meal' && locOf(e) && leg && leg.hotelAddress;
+    if (hasHotelHop && e.fromHotel)
+      pb.appendChild($('<p class="note">'+esc(e.fromHotel)+'</p>'));
     const acts = $('<div class="actions">'+iconBtn(mapURL(e), 'Directions', 'pin')+'</div>');
+    if (hasHotelHop) acts.appendChild($(iconBtn(hotelDirURL(leg, e), 'Directions from hotel', 'home')));
     if (wikiURL(e)) acts.appendChild($(iconBtn(wikiURL(e), 'Read on Wikipedia', 'book')));
     if (audioURL(e)) acts.appendChild($(iconBtn(audioURL(e), 'Rick Steves audio tour', 'headphones')));
     if (tourMapURL(e)) acts.appendChild($(iconBtn(tourMapURL(e), 'Rick Steves tour map (PDF)', 'map')));
