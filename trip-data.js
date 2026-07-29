@@ -58,13 +58,14 @@ const TRIP = {
     },
   ],
 
-  // A short title for each calendar day.
+  // A short title for each calendar day. Add `occasion: "..."` to mark a special
+  // day — it shows a banner + a hearts backdrop on that day only.
   days: [
     { date: "2026-08-01", title: "Arrival in Rome",        photo: "photos/day1.jpg", highlight: "Trevi Fountain" },
     { date: "2026-08-02", title: "Borghese & Historic Rome", photo: "photos/day2.jpg", highlight: "Galleria Borghese" },
     { date: "2026-08-03", title: "Vatican",                 photo: "photos/day3.jpg", highlight: "St. Peter's Basilica" },
     { date: "2026-08-04", title: "Ancient Rome",            photo: "photos/day4.jpg", highlight: "The Colosseum" },
-    { date: "2026-08-05", title: "To Florence",             photo: "photos/day5.jpg", highlight: "The Duomo" },
+    { date: "2026-08-05", title: "To Florence",             photo: "photos/day5.jpg", highlight: "The Duomo", occasion: "Happy Anniversary" },
     { date: "2026-08-06", title: "Renaissance Florence",    photo: "photos/day6.jpg", highlight: "Ponte Vecchio" },
     { date: "2026-08-07", title: "Michelangelo Day",        photo: "photos/day7.jpg", highlight: "Michelangelo's David" },
     { date: "2026-08-08", title: "Departure",               photo: "photos/day8.jpg", highlight: "Arrivederci, Firenze" },
