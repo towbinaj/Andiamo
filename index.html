@@ -89,8 +89,9 @@
   .badge.opt { background:var(--surface-2); color:var(--faint); border:1px solid var(--hairline); }
   .badge.book { background:var(--gold-soft); color:var(--gold); }
   .actions { display:flex; gap:9px; margin-top:12px; flex-wrap:wrap; }
-  a.act { font-size:14.5px; font-weight:600; text-decoration:none; color:var(--lapis); border:1px solid var(--hairline); background:var(--surface); padding:10px 15px; border-radius:9px; display:inline-flex; gap:6px; align-items:center; }
-  a.act:active { transform:translateY(1px); }
+  .act { font:inherit; font-size:14.5px; font-weight:600; text-decoration:none; color:var(--lapis); border:1px solid var(--hairline); background:var(--surface); padding:10px 15px; border-radius:9px; display:inline-flex; gap:6px; align-items:center; cursor:pointer; }
+  .act:active { transform:translateY(1px); }
+  .act.ticket { color:var(--gold); border-color:var(--gold); background:var(--gold-soft); }
   .meet { margin-top:12px; background:var(--surface-2); border:1px solid var(--hairline); border-radius:11px; padding:13px 14px; }
   .meet .mk { font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--lapis); font-weight:700; margin:0 0 6px; }
   .meet p { font-size:14.5px; color:var(--ink); margin:0; line-height:1.5; }
@@ -187,9 +188,25 @@
   const params = new URLSearchParams(location.search);
 
   // ---- confirmation-code unlock (client-side AES-GCM) ----
-  let CODES = null;
+  let CODES = null, PASS = null;
   try { const s = sessionStorage.getItem('andiamo-codes'); if (s) CODES = JSON.parse(s); } catch(e){}
+  try { PASS = sessionStorage.getItem('andiamo-pass'); } catch(e){}
   const b64d = (s) => Uint8Array.from(atob(s), c=>c.charCodeAt(0));
+
+  // decrypt an encrypted ticket PDF (tickets/<key>.enc = [16 salt][12 iv][ciphertext]) and open it
+  async function openTicket(key){
+    if (!PASS) return;
+    const r = await fetch('tickets/'+key+'.enc', {cache:'no-store'});
+    if (!r.ok) throw new Error('missing');
+    const buf = new Uint8Array(await r.arrayBuffer());
+    const salt = buf.slice(0,16), iv = buf.slice(16,28), ct = buf.slice(28);
+    const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(PASS), 'PBKDF2', false, ['deriveKey']);
+    const dk = await crypto.subtle.deriveKey({name:'PBKDF2', salt, iterations:250000, hash:'SHA-256'}, km, {name:'AES-GCM', length:256}, false, ['decrypt']);
+    const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv}, dk, ct);
+    const url = URL.createObjectURL(new Blob([pt], {type:'application/pdf'}));
+    window.open(url, '_blank');
+    setTimeout(()=>URL.revokeObjectURL(url), 60000);
+  }
   async function decryptSecrets(pass){
     const s = window.SECRETS; if(!s) throw new Error('no secrets');
     const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
@@ -463,7 +480,19 @@
     if (e.meet)
       pb.appendChild($('<div class="meet"><p class="mk">Meeting point</p><p><b>'+esc(e.meet.name)+'</b> · '+esc(e.meet.address)+'</p>'+(e.meet.look?'<p class="look">'+esc(e.meet.look)+'</p>':'')+'</div>'));
     if (e.note) pb.appendChild($('<p class="note">'+esc(e.note)+'</p>'));
-    pb.appendChild($('<div class="actions"><a class="act" target="_blank" rel="noopener" href="'+mapURL(e)+'">📍 Directions</a></div>'));
+    const acts = $('<div class="actions"><a class="act" target="_blank" rel="noopener" href="'+mapURL(e)+'">📍 Directions</a></div>');
+    if (e.pdf && PASS){
+      const tb = $('<button class="act ticket">📄 View ticket (PDF)</button>');
+      tb.addEventListener('click', ()=>{
+        tb.textContent = 'Opening…';
+        openTicket(e.pdf).then(()=>{ tb.textContent = '📄 View ticket (PDF)'; })
+          .catch(()=>{ tb.textContent = 'Ticket file not added yet'; });
+      });
+      acts.appendChild(tb);
+    }
+    pb.appendChild(acts);
+    if (e.pdf && CODES && !PASS)
+      pb.appendChild($('<p class="note">Re-unlock on the Trip tab to view the ticket PDF.</p>'));
 
     // if this booking has a hidden code and we're locked, offer to unlock right here
     if (window.SECRETS && !CODES && e.codeKey){
@@ -478,14 +507,14 @@
     if (!window.SECRETS) return;
     if (CODES){
       const bar = $('<div class="lockbar"><span class="lk">🔓 Codes unlocked for this session</span><button>Lock</button></div>');
-      bar.querySelector('button').addEventListener('click', ()=>{ CODES=null; try{sessionStorage.removeItem('andiamo-codes');}catch(e){} render(); });
+      bar.querySelector('button').addEventListener('click', ()=>{ CODES=null; PASS=null; try{sessionStorage.removeItem('andiamo-codes'); sessionStorage.removeItem('andiamo-pass');}catch(e){} render(); });
       host.appendChild(bar);
     } else {
       const wrap = $('<div><div class="lockbar"><span class="lk">🔒 Confirmation codes are locked</span></div><div class="lockrow"><input type="password" inputmode="text" autocomplete="off" placeholder="Family passphrase"><button>Unlock</button></div><p class="lockhint">Codes are encrypted on the page — the passphrase never leaves this device.</p></div>');
       const input = wrap.querySelector('input'), btn = wrap.querySelector('button');
       const go = async ()=>{
         wrap.querySelectorAll('.lockerr').forEach(n=>n.remove());
-        try { const map = await decryptSecrets(input.value); CODES = map; try{sessionStorage.setItem('andiamo-codes', JSON.stringify(map));}catch(e){} render(); }
+        try { const map = await decryptSecrets(input.value); CODES = map; PASS = input.value; try{sessionStorage.setItem('andiamo-codes', JSON.stringify(map)); sessionStorage.setItem('andiamo-pass', input.value);}catch(e){} render(); }
         catch(e){ wrap.appendChild($('<p class="lockerr">That passphrase didn’t work — try again.</p>')); }
       };
       btn.addEventListener('click', go);
