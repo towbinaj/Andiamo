@@ -35,12 +35,13 @@
   :root[data-theme="dark"]{--paper:#171A1C;--surface:#1D2226;--surface-2:#22282C;--hairline:#2E353A;--ink:#ECE6DA;--muted:#9AA2A6;--faint:#6C757A;--lapis:#6FA6C0;--lapis-soft:#1E2B33;--vermilion:#E06A4E;--gold:#CBA85A;--gold-soft:#2C2A22; --flor:#7DBE9A; --flor-soft:#1D2B24;--stage-1:#101315;--stage-2:#0A0C0D;--shadow:0,0,0;}
 
   * { box-sizing:border-box; }
-  html,body { margin:0; height:100%; }
+  html,body { margin:0; }
   body {
     font-family:var(--sans); color:var(--ink); line-height:1.5; -webkit-font-smoothing:antialiased;
+    min-height:100vh; min-height:100dvh;
     background:radial-gradient(120% 80% at 50% -10%, var(--stage-1), var(--stage-2)); background-attachment:fixed;
   }
-  #app { max-width:520px; margin:0 auto; min-height:100%; background:var(--paper);
+  #app { max-width:520px; margin:0 auto; min-height:100vh; min-height:100dvh; background:var(--paper);
     box-shadow:0 0 60px -20px rgba(var(--shadow),.4); display:flex; flex-direction:column;
     padding-bottom:calc(76px + env(safe-area-inset-bottom,0px)); }
   .view { padding:22px 18px 8px; padding-top:calc(22px + env(safe-area-inset-top, 0px)); }
