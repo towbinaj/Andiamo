@@ -151,7 +151,7 @@ const TRIP = {
     {
       date: "2026-08-04", start: "20:00", title: "53 Untitled", type: "meal", fixed: true, qty: 4,
       address: "Via del Monte della Farina 53, Rome",
-      note: "⚠️ No confirmation on hand yet — check this is actually booked.",
+      booking: { label: "Status", value: "Confirmed", source: "Restaurant email" },
     },
 
     /* ---------------------------- Wed, Aug 5 ---------------------------- */
