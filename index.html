@@ -307,7 +307,7 @@
       arr.forEach(e=>{ e._id = e.id; });
       CUSTOM = arr;
       try { localStorage.setItem('andiamo-custom', JSON.stringify(arr)); } catch(e){}
-      render();
+      bgRender();
     } catch(e){}
   }
   const GH_REPO = 'towbinaj/Andiamo';   // where "Send to trip" opens an issue
@@ -321,11 +321,17 @@
   function saveOver(dirty){
     try { localStorage.setItem('andiamo-over', JSON.stringify(OVER)); if (dirty){ OVER_DIRTY = true; localStorage.setItem('andiamo-over-dirty','1'); } } catch(e){}
   }
+  const canon = (o) => { const s = (x) => (x && typeof x==='object' && !Array.isArray(x)) ? '{'+Object.keys(x).sort().map(k=>JSON.stringify(k)+':'+s(x[k])).join(',')+'}' : JSON.stringify(x); return s(o); };
   async function loadRemoteOver(){
     try {
       const r = await fetch('overrides.json?_='+Date.now(), {cache:'no-store'}); if (!r.ok) return;
       const o = normOver(await r.json());
-      if (!OVER_DIRTY){ OVER = o; try { localStorage.setItem('andiamo-over', JSON.stringify(OVER)); } catch(e){} render(); }
+      if (OVER_DIRTY){
+        // keep our local edits until they land; once the remote matches, we're published & clean
+        if (canon(o) === canon(OVER)){ OVER_DIRTY = false; try { localStorage.removeItem('andiamo-over-dirty'); } catch(e){} }
+        return;
+      }
+      OVER = o; try { localStorage.setItem('andiamo-over', JSON.stringify(OVER)); } catch(e){} bgRender();
     } catch(e){}
   }
   // order a day's flexible items by the saved arrangement (unknown ids keep their natural order, appended)
@@ -485,29 +491,27 @@
   };
   const tourMapURL = (e) => MAPS[e.title] || null;
 
-  // Google Maps walking route through a day's stops (order: timed first, then flexible)
-  function dayMapURL(iso){
-    // only real, locatable places: skip flights/transit, hotel logistics, and anything without a street location
-    const isPlace = (e) => e.type!=='flight' && e.type!=='transit' && !/^(check in|depart|return to)/i.test(e.title) && locOf(e);
-    const evs = eventsOn(iso).filter(isPlace);
-    // route order: timed sights/tickets first (by time), then daytime flexible stops, then dinners LAST
-    const timed = evs.filter(e=>e.fixed&&e.start&&e.type!=='meal').sort(sortFixed);
-    const flex  = evs.filter(e=>!(e.fixed&&e.start));
-    const meals = evs.filter(e=>e.type==='meal'&&e.fixed&&e.start).sort(sortFixed);
-    let ordered = timed.concat(flex, meals);
-    // Google Maps URLs choke on very long routes — cap to 10 stops, keeping the dinner as the last stop
-    const MAX = 10;
-    if (ordered.length > MAX){
-      const dinner = meals.length ? meals[meals.length-1] : null;
-      ordered = ordered.slice(0, MAX);
-      if (dinner && ordered[ordered.length-1] !== dinner) ordered[ordered.length-1] = dinner;
-    }
-    const pts = ordered.map(e => e.title + ', ' + locOf(e));   // name + address, so each stop is labelled on the map
-    if (pts.length < 2) return null;
+  const dirURL = (pts) => {   // one Google Maps walking-directions URL through the given labelled stops
     const enc = encodeURIComponent;
     let u = 'https://www.google.com/maps/dir/?api=1&origin='+enc(pts[0])+'&destination='+enc(pts[pts.length-1])+'&travelmode=walking';
     const mid = pts.slice(1,-1); if (mid.length) u += '&waypoints='+mid.map(enc).join('|');
     return u;
+  };
+  // Walking route(s) through a day's stops. Long days are split into parts (overlapping by
+  // one stop so they connect) rather than dropped, since Google Maps URLs choke past ~10 stops.
+  function dayMapURLs(iso){
+    const isPlace = (e) => e.type!=='flight' && e.type!=='transit' && !/^(check in|depart|return to)/i.test(e.title) && locOf(e);
+    const evs = eventsOn(iso).filter(isPlace);
+    // order: timed sights/tickets first (by time), then daytime flexible stops, then dinners LAST
+    const timed = evs.filter(e=>e.fixed&&e.start&&e.type!=='meal').sort(sortFixed);
+    const flex  = evs.filter(e=>!(e.fixed&&e.start));
+    const meals = evs.filter(e=>e.type==='meal'&&e.fixed&&e.start).sort(sortFixed);
+    const pts = timed.concat(flex, meals).map(e => e.title + ', ' + locOf(e));
+    if (pts.length < 2) return [];
+    const MAX = 10, parts = [];
+    if (pts.length <= MAX) parts.push(pts);
+    else for (let i=0; i<pts.length-1; i += MAX-1) parts.push(pts.slice(i, i+MAX));
+    return parts.map(dirURL);
   }
 
   // ---- render one event ----
@@ -696,16 +700,17 @@
   function viewBooking(host, id){
     const e = allEvents().find(x=>x._id===String(id));
     if (!e || !e.booking){ location.hash='#days'; return; }
-    const back = $('<button class="backbtn">‹ '+fmtDate(e.date)+'</button>');
-    back.addEventListener('click', ()=>{ location.hash='#day/'+e.date; });
+    const ed = effDate(e);   // respect a move to another day
+    const back = $('<button class="backbtn">‹ '+fmtDate(ed)+'</button>');
+    back.addEventListener('click', ()=>{ location.hash='#day/'+ed; });
     host.appendChild(back);
 
-    const pw = dow(e.date)+' '+MO[asDate(e.date).getMonth()]+' '+asDate(e.date).getDate()+(e.start?' · '+fmtTime(e.start):'');
+    const pw = dow(ed)+' '+MO[asDate(ed).getMonth()]+' '+asDate(ed).getDate()+(e.start?' · '+fmtTime(e.start):'');
     const pass = $(
       '<div class="pass">'+
         '<div class="band t-'+e.type+'">'+
           '<p class="pn">'+esc(e.title)+'</p>'+
-          '<p class="pv">'+esc(cityForDate(e.date))+(e.booking.source?' · '+esc(e.booking.source):'')+'</p>'+
+          '<p class="pv">'+esc(cityForDate(ed))+(e.booking.source?' · '+esc(e.booking.source):'')+'</p>'+
           '<p class="pw">'+esc(pw)+'</p>'+
         '</div>'+
         '<div class="stub"><div><p class="lbl">'+esc(bookLabel(e))+'</p><p class="val">'+esc(bookVal(e))+'</p></div>'+(e.qty?'<span class="qty">×'+e.qty+' guests</span>':'')+'</div>'+
@@ -808,10 +813,15 @@
     return b;
   }
   function mapDayButton(iso){
-    const u = dayMapURL(iso); if (!u) return null;
-    const b = $('<button class="mapbtn">'+svgIcon('map','mapbtn-ico')+'See the day on a map</button>');
-    b.addEventListener('click', ()=> window.open(u, '_blank'));
-    return b;
+    const urls = dayMapURLs(iso); if (!urls.length) return null;
+    const wrap = $('<div></div>');
+    urls.forEach((u, i) => {
+      const label = urls.length === 1 ? 'See the day on a map' : ('Map · part '+(i+1)+' of '+urls.length);
+      const b = $('<button class="mapbtn">'+svgIcon('map','mapbtn-ico')+esc(label)+'</button>');
+      b.addEventListener('click', ()=> window.open(u, '_blank'));
+      wrap.appendChild(b);
+    });
+    return wrap;
   }
   function sendToTrip(item){
     const body = 'Add this to the itinerary (from the Andiamo app):\n\n```json\n' + JSON.stringify(item) + '\n```\n';
@@ -828,7 +838,8 @@
     const body = 'Update the itinerary arrangement (from the Andiamo app):\n\n```json\n' + JSON.stringify({ overrides: OVER }) + '\n```\n';
     const url = 'https://github.com/'+GH_REPO+'/issues/new?title=' + encodeURIComponent('Arrangement update') + '&body=' + encodeURIComponent(body);
     window.open(url, '_blank');
-    OVER_DIRTY = false; try { localStorage.removeItem('andiamo-over-dirty'); } catch(e){}   // optimistic
+    // stay "dirty" so a stale overrides.json can't revert us before the deploy lands;
+    // loadRemoteOver() clears it once the published version matches.
   }
   // touch/mouse drag-to-reorder within a list of .arow[data-id] rows
   function makeSortable(list, onChange){
@@ -846,11 +857,11 @@
           if (list.lastElementChild!==row) list.appendChild(row);
         };
         const up = ()=>{
-          h.removeEventListener('pointermove', move); h.removeEventListener('pointerup', up);
+          h.removeEventListener('pointermove', move); h.removeEventListener('pointerup', up); h.removeEventListener('pointercancel', up);
           row.classList.remove('dragging');
           onChange([].map.call(list.children, c=>c.getAttribute('data-id')));
         };
-        h.addEventListener('pointermove', move); h.addEventListener('pointerup', up);
+        h.addEventListener('pointermove', move); h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up);
       });
     });
   }
@@ -983,6 +994,15 @@
   window.addEventListener('hashchange', render);
   render();
 
+  // background refreshes must not wipe a form you're typing in or a drag in progress
+  function bgRender(){
+    const h = (location.hash||'').slice(1);
+    if (h.startsWith('add') || h.startsWith('arrange')) return;
+    const ae = document.activeElement;
+    if (ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)) return;
+    render();
+  }
+
   // ---- swipe / arrow-key / tap navigation between days ----
   const currentDayISO = () => { const h=(location.hash||'').slice(1); return h.startsWith('day/') ? h.slice(4) : null; };
   function goDay(delta){
@@ -1008,7 +1028,7 @@
   })();
 
   // ---- refresh weather + pull any items added from a phone (custom.json) ----
-  fetchWeather().then(()=>render()).catch(()=>{});
+  fetchWeather().then(()=>bgRender()).catch(()=>{});
   loadRemoteCustom();
   loadRemoteOver();
 
@@ -1016,7 +1036,7 @@
   (function(){
     const s = document.createElement('script');
     s.src = 'secrets.enc.js';
-    s.onload = ()=>{ render(); };
+    s.onload = ()=>{ bgRender(); };
     s.onerror = ()=>{};
     document.head.appendChild(s);
   })();
