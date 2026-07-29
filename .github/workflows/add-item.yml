@@ -1,0 +1,99 @@
+name: Add trip item from issue
+
+# When YOU open an issue (the "Send to trip" button pre-fills it), read the item
+# out of the issue body, append it to custom.json, and redeploy the site.
+# Locked to the repo owner so nobody else can inject items.
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  add:
+    if: github.event.issue.user.login == github.repository_owner
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Parse issue into custom.json
+        id: parse
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = context.payload.issue.body || '';
+            const m = body.match(/```json\s*([\s\S]*?)```/);
+            if (!m) { core.setOutput('ok', 'false'); return; }
+            let obj;
+            try { obj = JSON.parse(m[1].trim()); } catch (e) { core.setOutput('ok', 'false'); return; }
+            if (!obj || !obj.title || !obj.date) { core.setOutput('ok', 'false'); return; }
+            let arr = [];
+            try { arr = JSON.parse(fs.readFileSync('custom.json', 'utf8')); if (!Array.isArray(arr)) arr = []; } catch (e) { arr = []; }
+            const types = ['sight', 'meal', 'tour', 'ticket', 'transit'];
+            const item = {
+              id: 'c' + context.payload.issue.number,
+              date: String(obj.date),
+              start: obj.start ? String(obj.start) : null,
+              title: String(obj.title).slice(0, 120),
+              type: types.includes(obj.type) ? obj.type : 'sight',
+              fixed: !!obj.start,
+              custom: true
+            };
+            if (obj.note) item.note = String(obj.note).slice(0, 300);
+            if (obj.address) item.address = String(obj.address).slice(0, 200);
+            arr.push(item);
+            fs.writeFileSync('custom.json', JSON.stringify(arr, null, 2) + '\n');
+            core.setOutput('ok', 'true');
+            core.setOutput('title', item.title);
+
+      - name: Commit
+        if: steps.parse.outputs.ok == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add custom.json
+          git commit -m "Add trip item: ${{ steps.parse.outputs.title }} (#${{ github.event.issue.number }})"
+          git push
+
+      - name: Configure Pages
+        if: steps.parse.outputs.ok == 'true'
+        uses: actions/configure-pages@v5
+
+      - name: Upload site
+        if: steps.parse.outputs.ok == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy
+        id: deployment
+        if: steps.parse.outputs.ok == 'true'
+        uses: actions/deploy-pages@v4
+
+      - name: Reply on the issue
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const ok = '${{ steps.parse.outputs.ok }}' === 'true';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number,
+              body: ok ? '✅ Added to your itinerary — it will appear in the app shortly.'
+                       : '⚠️ Could not read an item from this issue. Use the app’s “Send to trip” button so it’s formatted correctly.'
+            });
+            if (ok) {
+              await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, state: 'closed' });
+            }

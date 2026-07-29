@@ -98,6 +98,14 @@
   .act { font:inherit; font-size:14.5px; font-weight:600; text-decoration:none; color:var(--lapis); border:1px solid var(--hairline); background:var(--surface); padding:10px 15px; border-radius:9px; display:inline-flex; gap:6px; align-items:center; cursor:pointer; }
   .act:active { transform:translateY(1px); }
   .act.ticket { color:var(--gold); border-color:var(--gold); background:var(--gold-soft); }
+  .badge.add { background:var(--flor-soft); color:var(--flor); }
+  .addbtn { width:100%; margin-top:16px; font:inherit; font-size:15px; font-weight:600; color:var(--lapis); background:var(--surface); border:1.5px dashed var(--hairline); border-radius:12px; padding:15px; cursor:pointer; }
+  .addbtn:hover { border-color:var(--lapis); background:var(--lapis-soft); }
+  .addform { display:flex; flex-direction:column; gap:15px; margin-top:16px; }
+  .addform label { display:flex; flex-direction:column; gap:6px; font-size:13px; font-weight:700; color:var(--muted); }
+  .addform input, .addform select, .addform textarea { font:inherit; font-size:16px; padding:12px 13px; border:1px solid var(--hairline); border-radius:10px; background:var(--surface); color:var(--ink); }
+  .addform input:focus, .addform select:focus, .addform textarea:focus { outline:2px solid var(--lapis); border-color:var(--lapis); }
+  .addform textarea { resize:vertical; }
   .meet { margin-top:12px; background:var(--surface-2); border:1px solid var(--hairline); border-radius:11px; padding:13px 14px; }
   .meet .mk { font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--lapis); font-weight:700; margin:0 0 6px; }
   .meet p { font-size:14.5px; color:var(--ink); margin:0; line-height:1.5; }
@@ -323,7 +331,7 @@
   const cityForDate = (iso) => { let c=TRIP.legs[0].city; for(const l of TRIP.legs){ if(iso>=l.start) c=l.city; } return c; };
   const dayTitle = (iso) => { const d=TRIP.days.find(x=>x.date===iso); return d?d.title:''; };
   const dayIndex = (iso) => TRIP.days.findIndex(x=>x.date===iso);
-  const eventsOn = (iso) => TRIP.events.filter(e=>e.date===iso);
+  const eventsOn = (iso) => allEvents().filter(e=>e.date===iso);
   const mapURL = (e) => 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(e.address || (e.title+', '+cityForDate(e.date)));
 
   const sortFixed = (a,b) => (a.start||'').localeCompare(b.start||'');
@@ -339,8 +347,8 @@
   // A booked event becomes a tappable row that opens its pass (see viewBooking).
   function renderEvent(e){
     const t = e.start ? fmtTime(e.start) : (e.type==='meal'?'dinner':'○');
-    const idx = TRIP.events.indexOf(e);
-    const done = isDone(idx) ? ' done' : '';
+    const id = e._id;
+    const done = isDone(id) ? ' done' : '';
 
     if (e.booking){
       const sub = '🎟 ' + esc(bookVal(e)) + (e.booking.source ? ' · ' + esc(e.booking.source) : '');
@@ -351,8 +359,8 @@
           '<div class="ctl"><span class="chev">›</span></div>'+
         '</div>'
       );
-      node.querySelector('.ctl').insertBefore(checkButton(idx), node.querySelector('.chev'));
-      const open = ()=>{ location.hash = '#booking/'+idx; };
+      node.querySelector('.ctl').insertBefore(checkButton(id), node.querySelector('.chev'));
+      const open = ()=>{ location.hash = '#booking/'+id; };
       node.addEventListener('click', open);
       node.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); open(); } });
       return node;
@@ -360,6 +368,7 @@
 
     const badges = [];
     if (e.optional) badges.push('<span class="badge opt">optional</span>');
+    if (e.custom) badges.push('<span class="badge add">added</span>');
     (e.headsup||[]).forEach(h=> badges.push('<span class="badge '+badgeCls(h)+'">'+esc(h)+'</span>'));
 
     const actions = [];
@@ -378,7 +387,7 @@
         '<div class="ctl"></div>'+
       '</div>'
     );
-    node.querySelector('.ctl').appendChild(checkButton(idx));
+    node.querySelector('.ctl').appendChild(checkButton(id));
     return node;
   }
 
@@ -444,11 +453,12 @@
       const tap = up.booking ? ' tap' : '';
       const chev = up.booking ? '<div class="chev">›</div>' : '';
       const un = $('<'+(up.booking?'button':'div')+' class="upnext'+tap+'"><div><p class="k">'+(isReal?'Up next':'First fixed time')+'</p><p class="n">'+glyph(up)+' '+esc(up.title)+'</p><p class="t">'+esc(fmtTime(up.start))+(up.booking?' · '+esc(bookVal(up)):'')+'</p></div>'+chev+'</'+(up.booking?'button':'div')+'>');
-      if (up.booking) un.addEventListener('click', ()=>{ location.hash='#booking/'+TRIP.events.indexOf(up); });
+      if (up.booking) un.addEventListener('click', ()=>{ location.hash='#booking/'+up._id; });
       host.appendChild(un);
     }
     host.appendChild($('<hr class="rule">'));
     renderDay(cur, host);
+    host.appendChild(addStopButton(cur));
   }
 
   // ---- DAYS ----
@@ -493,11 +503,12 @@
     const wcd = weatherChip(iso); if (wcd) host.appendChild(wcd);
     host.appendChild($('<hr class="rule">'));
     renderDay(iso, host);
+    host.appendChild(addStopButton(iso));
   }
 
   // ---- BOOKING pass (tapped from a day / today) ----
-  function viewBooking(host, idx){
-    const e = TRIP.events[idx];
+  function viewBooking(host, id){
+    const e = allEvents().find(x=>x._id===String(id));
     if (!e || !e.booking){ location.hash='#days'; return; }
     const back = $('<button class="backbtn">‹ '+fmtDate(e.date)+'</button>');
     back.addEventListener('click', ()=>{ location.hash='#day/'+e.date; });
@@ -596,6 +607,52 @@
     if (open.length) host.appendChild($('<div class="card"><h3>Still to add</h3><ul class="plain">'+open.map(o=>'<li>'+esc(o)+'</li>').join('')+'</ul></div>'));
   }
 
+  // ---- add a stop (opens a pre-filled GitHub issue you submit; an Action adds it) ----
+  function addStopButton(date){
+    const b = $('<button class="addbtn">＋ Add a stop</button>');
+    b.addEventListener('click', ()=>{ location.hash = '#add/'+date; });
+    return b;
+  }
+  function sendToTrip(item){
+    const body = 'Add this to the itinerary (from the Andiamo app):\n\n```json\n' + JSON.stringify(item) + '\n```\n';
+    const url = 'https://github.com/'+GH_REPO+'/issues/new?title=' +
+      encodeURIComponent('Trip item: ' + item.title) + '&body=' + encodeURIComponent(body);
+    window.open(url, '_blank');
+  }
+  function viewAdd(host, date){
+    const back = $('<button class="backbtn">‹ Back</button>');
+    back.addEventListener('click', ()=>{ location.hash = '#day/'+date; });
+    host.appendChild(back);
+    host.appendChild($('<p class="eyebrow" style="color:var(--lapis)">Send to trip</p>'));
+    host.appendChild($('<h1 class="title">Add a stop</h1>'));
+    host.appendChild($('<p class="sub">Fill this in, then submit it on GitHub (signed in as you). It shows up in the app within a minute — no password stored.</p>'));
+
+    const dayOpts = TRIP.days.map(d=>'<option value="'+d.date+'"'+(d.date===date?' selected':'')+'>'+esc(fmtDate(d.date))+' — '+esc(d.title)+'</option>').join('');
+    const typeOpts = [['sight','Sight / place'],['meal','Food / dinner'],['tour','Tour'],['ticket','Ticket'],['transit','Transit']].map(t=>'<option value="'+t[0]+'">'+t[1]+'</option>').join('');
+    const form = $(
+      '<div class="addform">'+
+        '<label>What is it?<input id="af-title" type="text" placeholder="e.g. Gelato at Giolitti" autocomplete="off"></label>'+
+        '<label>Day<select id="af-date">'+dayOpts+'</select></label>'+
+        '<label>Time — leave blank for “any time”<input id="af-time" type="time"></label>'+
+        '<label>Type<select id="af-type">'+typeOpts+'</select></label>'+
+        '<label>Note (optional)<textarea id="af-note" rows="2" placeholder="anything to remember"></textarea></label>'+
+      '</div>'
+    );
+    host.appendChild(form);
+    const err = $('<p class="lockerr" style="display:none"></p>');
+    const btn = $('<button class="act ticket" style="margin-top:16px">Send to trip →</button>');
+    btn.addEventListener('click', ()=>{
+      const title = form.querySelector('#af-title').value.trim();
+      if (!title){ err.textContent = 'Give it a name first.'; err.style.display = 'block'; return; }
+      const item = { date: form.querySelector('#af-date').value, start: form.querySelector('#af-time').value || null, title: title, type: form.querySelector('#af-type').value };
+      const note = form.querySelector('#af-note').value.trim(); if (note) item.note = note;
+      sendToTrip(item);
+    });
+    host.appendChild(btn);
+    host.appendChild(err);
+    host.appendChild($('<p class="lockhint">GitHub opens in a new tab — tap “Submit new issue” there to finish.</p>'));
+  }
+
   // ---- router ----
   const TABS = [
     { id:'today', label:'Today', icon:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>' },
@@ -606,7 +663,7 @@
   function renderTabs(){
     const bar = document.getElementById('tabbar'); bar.innerHTML='';
     const cur = currentTab();
-    const active = (cur==='day' || cur==='booking') ? 'days' : cur;
+    const active = (cur==='day' || cur==='booking' || cur==='add') ? 'days' : cur;
     TABS.forEach(t=>{
       const b = $('<button class="tab'+(active===t.id?' on':'')+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+t.icon+'</svg>'+t.label+'</button>');
       b.addEventListener('click', ()=>{ location.hash='#'+t.id; });
@@ -617,7 +674,8 @@
     const host = document.getElementById('view'); host.innerHTML='';
     const h = (location.hash||'#today').slice(1);
     if (h.startsWith('day/')) viewDayDetail(host, h.slice(4));
-    else if (h.startsWith('booking/')) viewBooking(host, parseInt(h.slice(8),10));
+    else if (h.startsWith('booking/')) viewBooking(host, h.slice(8));
+    else if (h.startsWith('add')) viewAdd(host, h.indexOf('/')>-1 ? h.slice(h.indexOf('/')+1) : TRIP.startDate);
     else if (h==='days') viewDays(host);
     else if (h==='trip') viewTrip(host);
     else viewToday(host);
@@ -628,8 +686,9 @@
   window.addEventListener('hashchange', render);
   render();
 
-  // ---- refresh weather in the background (uses cached data until it returns) ----
+  // ---- refresh weather + pull any items added from a phone (custom.json) ----
   fetchWeather().then(()=>render()).catch(()=>{});
+  loadRemoteCustom();
 
   // ---- load encrypted confirmation codes if present (safe: ciphertext only) ----
   (function(){
