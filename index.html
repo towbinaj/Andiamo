@@ -59,6 +59,12 @@
   .hero .big { font-family:var(--serif); font-size:56px; line-height:1; color:#fff; margin:6px 0; font-variant-numeric:tabular-nums; text-shadow:0 2px 12px rgba(0,0,0,.18); }
   .hero .cap { font-size:15.5px; color:rgba(255,255,255,.9); margin:0; }
 
+  /* per-day hero photo (same footprint as the countdown hero) */
+  .dayhero { position:relative; border-radius:18px; overflow:hidden; height:158px; margin:12px 0 4px; background:var(--surface-2); box-shadow:0 16px 34px -20px rgba(var(--shadow),.7); }
+  .dayhero img { width:100%; height:100%; object-fit:cover; display:block; }
+  .dayhero .dhcap { position:absolute; left:0; right:0; bottom:0; padding:30px 16px 13px; color:#fff; font-family:var(--serif); font-size:21px; font-weight:600; text-shadow:0 1px 10px rgba(0,0,0,.55); background:linear-gradient(to top, rgba(0,0,0,.6), rgba(0,0,0,.1) 60%, transparent); }
+  .dayhero .dhtag { position:absolute; top:11px; left:12px; font-size:10.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#fff; background:rgba(0,0,0,.35); backdrop-filter:blur(3px); padding:5px 9px; border-radius:999px; }
+
   /* up-next highlight */
   .upnext { background:color-mix(in srgb, var(--vermilion) 8%, var(--surface)); border:1px solid color-mix(in srgb, var(--vermilion) 30%, var(--hairline)); border-radius:14px; padding:16px 17px; margin-bottom:14px; width:100%; text-align:left; font:inherit; color:inherit; display:block; }
   .upnext.tap { cursor:pointer; display:grid; grid-template-columns:1fr 18px; align-items:center; gap:8px; }
@@ -193,9 +199,10 @@
   try { PASS = sessionStorage.getItem('andiamo-pass'); } catch(e){}
   const b64d = (s) => Uint8Array.from(atob(s), c=>c.charCodeAt(0));
 
-  // decrypt an encrypted ticket PDF (tickets/<key>.enc = [16 salt][12 iv][ciphertext]) and open it
-  async function openTicket(key){
-    if (!PASS) return;
+  // decrypt an encrypted ticket PDF (tickets/<key>.enc = [16 salt][12 iv][ciphertext]).
+  // `win` is a tab opened synchronously on tap (so iOS doesn't block it); we point it at the PDF.
+  async function openTicket(key, win){
+    if (!PASS) throw new Error('locked');
     const r = await fetch('tickets/'+key+'.enc', {cache:'no-store'});
     if (!r.ok) throw new Error('missing');
     const buf = new Uint8Array(await r.arrayBuffer());
@@ -204,8 +211,12 @@
     const dk = await crypto.subtle.deriveKey({name:'PBKDF2', salt, iterations:250000, hash:'SHA-256'}, km, {name:'AES-GCM', length:256}, false, ['decrypt']);
     const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv}, dk, ct);
     const url = URL.createObjectURL(new Blob([pt], {type:'application/pdf'}));
-    window.open(url, '_blank');
-    setTimeout(()=>URL.revokeObjectURL(url), 60000);
+    if (win && !win.closed) { win.location.href = url; }             // use the pre-opened tab
+    else {                                                            // fallback if it was blocked
+      const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener';
+      document.body.appendChild(a); a.click(); a.remove();
+    }
+    setTimeout(()=>URL.revokeObjectURL(url), 120000);
   }
   async function decryptSecrets(pass){
     const s = window.SECRETS; if(!s) throw new Error('no secrets');
@@ -239,6 +250,26 @@
     return b;
   }
 
+  // ---- custom items (added via "Send to trip" -> GitHub issue -> Action -> custom.json) ----
+  TRIP.events.forEach((e,i)=>{ e._id = String(i); });   // stable id for trip events (keeps check-off keys)
+  let CUSTOM = [];
+  (function loadLocalCustom(){
+    try { const a = JSON.parse(localStorage.getItem('andiamo-custom')||'[]'); if (Array.isArray(a)) CUSTOM = a; } catch(e){}
+    CUSTOM.forEach(e=>{ e._id = e.id; });
+  })();
+  const allEvents = () => TRIP.events.concat(CUSTOM);
+  async function loadRemoteCustom(){
+    try {
+      const r = await fetch('custom.json?_='+Date.now(), {cache:'no-store'});
+      if (!r.ok) return; const arr = await r.json(); if (!Array.isArray(arr)) return;
+      arr.forEach(e=>{ e._id = e.id; });
+      CUSTOM = arr;
+      try { localStorage.setItem('andiamo-custom', JSON.stringify(arr)); } catch(e){}
+      render();
+    } catch(e){}
+  }
+  const GH_REPO = 'towbinaj/Andiamo';   // where "Send to trip" opens an issue
+
   // ---- weather + sunrise/sunset (Open-Meteo, no key; cached for offline) ----
   const CITY_COORD = { Rome:{lat:41.9028,lon:12.4964}, Florence:{lat:43.7696,lon:11.2558} };
   let WX = null;
@@ -268,6 +299,15 @@
     const d = wxDesc(w.code);
     return $('<div class="wx">'+d[0]+' <b>'+w.hi+'°</b> / '+w.lo+'°F · '+esc(d[1])+
       '<span class="sep">·</span>☀ '+clock(w.sr)+'<span class="sep">·</span>🌙 '+clock(w.ss)+'</div>');
+  }
+
+  // per-day hero photo of the day's highlight
+  function dayHero(iso){
+    const d = TRIP.days.find(x=>x.date===iso);
+    if (!d || !d.photo) return null;
+    return $('<div class="dayhero"><img loading="lazy" decoding="async" src="'+esc(d.photo)+'" alt="'+esc(d.highlight||'')+'">'+
+      '<span class="dhtag">Today’s highlight</span>'+
+      (d.highlight ? '<div class="dhcap">'+esc(d.highlight)+'</div>' : '')+'</div>');
   }
 
   // ---- date helpers ----
@@ -392,6 +432,7 @@
     host.appendChild($('<p class="eyebrow" style="color:'+cityAccent(cur)+'">'+(isReal?'<span class="live"></span>':'')+esc(cityForDate(cur))+' · Day '+(idx+1)+' of '+TRIP.days.length+'</p>'));
     host.appendChild($('<h1 class="title">'+fmtDate(cur)+'</h1>'));
     host.appendChild($('<p class="sub">'+esc(dayTitle(cur))+'</p>'));
+    const hcur = dayHero(cur); if (hcur) host.appendChild(hcur);
     const wcur = weatherChip(cur); if (wcur) host.appendChild(wcur);
 
     // up-next: next fixed event today (by real clock if today, else first)
@@ -448,6 +489,7 @@
     host.appendChild($('<p class="eyebrow" style="color:'+cityAccent(iso)+'">'+esc(cityForDate(iso))+' · Day '+(dayIndex(iso)+1)+'</p>'));
     host.appendChild($('<h1 class="title">'+fmtDate(iso)+'</h1>'));
     host.appendChild($('<p class="sub">'+esc(dayTitle(iso))+'</p>'));
+    const hcd = dayHero(iso); if (hcd) host.appendChild(hcd);
     const wcd = weatherChip(iso); if (wcd) host.appendChild(wcd);
     host.appendChild($('<hr class="rule">'));
     renderDay(iso, host);
@@ -484,9 +526,15 @@
     if (e.pdf && PASS){
       const tb = $('<button class="act ticket">📄 View ticket (PDF)</button>');
       tb.addEventListener('click', ()=>{
+        const win = window.open('', '_blank');   // open the tab NOW, inside the tap, so iOS allows it
         tb.textContent = 'Opening…';
-        openTicket(e.pdf).then(()=>{ tb.textContent = '📄 View ticket (PDF)'; })
-          .catch(()=>{ tb.textContent = 'Ticket file not added yet'; });
+        openTicket(e.pdf, win)
+          .then(()=>{ tb.textContent = '📄 View ticket (PDF)'; })
+          .catch((err)=>{
+            if (win && !win.closed) win.close();
+            tb.textContent = String(err && err.message)==='missing' ? 'Ticket file not added yet' : 'Couldn’t open — tap again';
+            setTimeout(()=>{ tb.textContent = '📄 View ticket (PDF)'; }, 2500);
+          });
       });
       acts.appendChild(tb);
     }

@@ -20,6 +20,10 @@ secrets.test.js
 !icon-192.png
 !icon-512.png
 
+# ...and the day highlight photos
+!photos/
+!photos/*.jpg
+
 # Local tooling
 .claude/
 scratchpad/
