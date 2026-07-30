@@ -167,15 +167,16 @@ const TRIP = {
     /* ---------------------------- Tue, Aug 4 ---------------------------- */
     // Colosseum tour, then a loop up the Oppian and back along the Imperial Forums to the Campidoglio.
     {
-      date: "2026-08-04", start: "08:30", title: "Colosseum — Arena Floor, Forum & Palatine", type: "tour", fixed: true, qty: 4,
-      note: "Small-group guided tour (Viator) · includes Roman Forum & Palatine Hill.",
-      booking: { label: "Status", value: "Confirmed", source: "Viator app" }, codeKey: "colosseum",
+      date: "2026-08-04", start: "08:45", title: "Colosseum — Arena Floor, Forum & Palatine", type: "tour", fixed: true, qty: 4,
+      note: "Small-group guided tour · Arena floor, Roman Forum & Palatine Hill. Ends around 11:15.",
+      phone: "+39 06 4543 0994",
+      booking: { label: "Status", value: "Confirmed", source: "FareHarbor email" }, codeKey: "colosseum",
       meet: {
         name: "Basilica SS. Cosma e Damiano",
         address: "Via dei Fori Imperiali, Rome",
         look: "Greeters in red “Show Me Italy” shirts by the large red pillar. Ends at Largo della Salara Vecchia.",
       },
-      headsup: ["Check in by 8:15 — 15 min early", "Bring passport / ID that matches the booking name", "Arena floor access"],
+      headsup: ["Check in by 8:30 — arrive 15 min early", "Bring passport / ID that matches the booking name", "Arena floor access"],
     },
     { date: "2026-08-04", start: null, title: "Basilica di San Clemente", type: "sight", fixed: false, address: "Via Labicana 95, Rome", note: "Descend through the centuries — a 12th-century basilica over a 1st-century Mithraic temple, near the Colosseum.", headsup: ["👕 Shoulders & knees covered"] },
     { date: "2026-08-04", start: null, title: "Domus Aurea", type: "sight", fixed: false, optional: true, address: "Via della Domus Aurea 1, Rome", note: "Nero's buried Golden House on the Oppian hill above the Colosseum — guided visits only." },
