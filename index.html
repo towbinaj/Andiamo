@@ -88,6 +88,23 @@
   :root[data-theme="dark"] #hearts { opacity:.17; }
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) #hearts { opacity:.17; } }
 
+  /* day-prep button + checklist */
+  .prepbtn { width:100%; display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--hairline);
+    border-left:4px solid var(--gold); border-radius:12px; padding:12px 14px; margin:2px 0 6px; font:inherit; font-size:15px;
+    font-weight:600; color:var(--ink); cursor:pointer; }
+  .prepbtn svg.pb-ic { width:20px; height:20px; color:var(--gold); flex:none; }
+  .prepbtn .pb-c { margin-left:auto; font-size:12px; font-weight:700; color:var(--gold); background:var(--gold-soft); padding:3px 10px; border-radius:999px; }
+  .prepbtn .pb-c.allset { color:var(--flor); background:var(--flor-soft); }
+  .prep-sect { font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); font-weight:700; margin:16px 0 9px; }
+  .prow { width:100%; display:flex; align-items:flex-start; gap:11px; text-align:left; background:var(--surface); border:1px solid var(--hairline);
+    border-radius:11px; padding:12px 13px; margin-bottom:8px; font:inherit; color:var(--ink); cursor:pointer; }
+  .prow .pcheck { flex:none; width:22px; height:22px; border-radius:6px; border:1.5px solid var(--hairline); display:flex; align-items:center;
+    justify-content:center; font-size:14px; color:#fff; margin-top:1px; }
+  .prow.on .pcheck { background:var(--flor); border-color:var(--flor); }
+  .prow .ptxt b { display:block; font-weight:600; font-size:15px; }
+  .prow .ptxt small { display:block; color:var(--muted); font-size:13px; margin-top:2px; line-height:1.4; }
+  .prow.on .ptxt b { text-decoration:line-through; color:var(--muted); }
+
   /* up-next highlight */
   .upnext { background:color-mix(in srgb, var(--vermilion) 8%, var(--surface)); border:1px solid color-mix(in srgb, var(--vermilion) 30%, var(--hairline)); border-radius:14px; padding:16px 17px; margin-bottom:14px; width:100%; text-align:left; font:inherit; color:inherit; display:block; }
   .upnext.tap { cursor:pointer; display:grid; grid-template-columns:1fr 18px; align-items:center; gap:8px; }
@@ -303,6 +320,17 @@
     return b;
   }
 
+  // per-day prep checklist — remembers what you've ticked off
+  let PREP = {};
+  try { PREP = JSON.parse(localStorage.getItem('andiamo-prep') || '{}') || {}; } catch(e){}
+  const prepKey  = (iso, txt) => iso + '|' + txt;
+  const prepDone = (iso, txt) => !!PREP[prepKey(iso, txt)];
+  function togglePrep(iso, txt){
+    const k = prepKey(iso, txt);
+    if (PREP[k]) delete PREP[k]; else PREP[k] = 1;
+    try { localStorage.setItem('andiamo-prep', JSON.stringify(PREP)); } catch(e){}
+  }
+
   // ---- custom items (added via "Send to trip" -> GitHub issue -> Action -> custom.json) ----
   TRIP.events.forEach((e,i)=>{ e._id = String(i); });   // stable id for trip events (keeps check-off keys)
   let CUSTOM = [];
@@ -458,6 +486,7 @@
     book:'<path d="M12 6.6C10.5 5.6 8.5 5 6.5 5H3v13h3.5c2 0 4 .6 5.5 1.6M12 6.6C13.5 5.6 15.5 5 17.5 5H21v13h-3.5c-2 0-4 .6-5.5 1.6M12 6.6V20.2"/>',
     map:'<path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5v-13L15 6.5 9 4z"/><path d="M9 4v13M15 6.5v13"/>',
     home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>',
+    clipboard:'<rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 5a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 5v.5H9z"/><path d="m9.2 13 2 2 3.6-4"/>',
     plane:'<path d="M22 3 11 14"/><path d="M22 3 15 21l-4-7-7-4 18-7z"/>',
     train:'<rect x="5" y="4" width="14" height="12" rx="3"/><path d="M5 11h14M9 16l-2.5 4M15 16l2.5 4"/>',
     flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V4s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>',
@@ -672,6 +701,7 @@
     const obc = occasionBanner(cur); if (obc) host.appendChild(obc);
     const hcur = dayHero(cur); if (hcur) host.appendChild(hcur);
     const wcur = weatherChip(cur); if (wcur) host.appendChild(wcur);
+    const pbc = prepButton(cur); if (pbc) host.appendChild(pbc);
     const mbc = mapDayButton(cur); if (mbc) host.appendChild(mbc);
 
     // up-next: next fixed event today (by real clock if today, else first)
@@ -744,6 +774,7 @@
     const obd = occasionBanner(iso); if (obd) host.appendChild(obd);
     const hcd = dayHero(iso); if (hcd) host.appendChild(hcd);
     const wcd = weatherChip(iso); if (wcd) host.appendChild(wcd);
+    const pbd = prepButton(iso); if (pbd) host.appendChild(pbd);
     const mbd = mapDayButton(iso); if (mbd) host.appendChild(mbd);
     host.appendChild($('<hr class="rule">'));
     renderDay(iso, host);
@@ -886,6 +917,81 @@
     });
     return wrap;
   }
+
+  // ---- day prep: auto-built checklist of what a day needs (dress code, tickets, ID, timing) ----
+  function dayPrep(iso){
+    const evs = eventsOn(iso);
+    const wear = [], bring = [], heads = [];
+    const seen = new Set();
+    const push = (arr, text, detail) => {
+      const k = (text+'|'+(detail||'')).toLowerCase();
+      if (seen.has(k)) return; seen.add(k); arr.push({ text, detail });
+    };
+
+    // dress code — one consolidated reminder listing the day's covered-up sites
+    const dress = evs.filter(e=>(e.headsup||[]).some(h=>/👕|shoulders|knees/i.test(h))).map(e=>e.title);
+    if (dress.length) push(wear, 'Dress modestly — shoulders & knees covered', dress.join(' · '));
+
+    // hot-weather nudge, if a forecast is loaded
+    const wx = wxFor(iso);
+    if (wx && wx.hi >= 84) push(wear, 'Sun protection & water', 'Warm day — about '+wx.hi+'°F');
+
+    evs.forEach(e=>{
+      if (e.meet) push(heads, 'Meet at '+e.meet.name, e.title+(e.start?' · '+fmtTime(e.start):''));
+      if (e.booking && e.pdf) push(bring, e.title+' ticket', 'Open the pass in the app');
+      else if (e.booking && (e.type==='ticket'||e.type==='tour')) push(bring, e.title+' booking', 'Confirmation is in the pass');
+      (e.headsup||[]).forEach(h=>{
+        if (/👕|shoulders|knees/i.test(h)) return;                       // covered above
+        else if (/firenze card/i.test(h)) push(bring, 'Firenze Card', e.title);
+        else if (/passport|photo id|\bID\b/i.test(h)) push(bring, 'Passport / photo ID', e.title);
+        else if (/backpack/i.test(h)) push(bring, 'Leave backpacks behind', h.replace(/^\s*no backpacks\s*[—-]\s*/i,''));
+        else if (/steps|no lift/i.test(h)) push(wear, 'Comfortable shoes', e.title+' — '+h);
+        else push(heads, h, e.title);                                    // timing / other reminders
+      });
+    });
+    return { wear, bring, heads };
+  }
+  function prepButton(iso){
+    const p = dayPrep(iso);
+    const all = p.wear.concat(p.bring, p.heads);
+    if (!all.length) return null;
+    const left = all.filter(it=>!prepDone(iso, it.text)).length;
+    const chip = left ? '<span class="pb-c">'+left+' to check</span>' : '<span class="pb-c allset">all set ✓</span>';
+    const b = $('<button class="prepbtn">'+svgIcon('clipboard','pb-ic')+'<span>Day prep</span>'+chip+'</button>');
+    b.addEventListener('click', ()=>{ subReturn = location.hash || '#today'; location.hash = '#prep/'+iso; });
+    return b;
+  }
+  function prepRow(iso, item){
+    const on = prepDone(iso, item.text);
+    const row = $('<button class="prow'+(on?' on':'')+'"><span class="pcheck">'+(on?'✓':'')+'</span>'+
+      '<span class="ptxt"><b>'+esc(item.text)+'</b>'+(item.detail?'<small>'+esc(item.detail)+'</small>':'')+'</span></button>');
+    row.addEventListener('click', ()=>{
+      togglePrep(iso, item.text);
+      const now = prepDone(iso, item.text);
+      row.classList.toggle('on', now);
+      row.querySelector('.pcheck').textContent = now ? '✓' : '';
+    });
+    return row;
+  }
+  function viewPrep(host, iso){
+    const back = $('<button class="backbtn">‹ '+fmtDate(iso)+'</button>');
+    back.addEventListener('click', ()=>{ location.hash = subReturn || ('#day/'+iso); });
+    host.appendChild(back);
+    host.appendChild($('<p class="eyebrow" style="color:'+cityAccent(iso)+'">Day prep</p>'));
+    host.appendChild($('<h1 class="title">'+fmtDate(iso)+'</h1>'));
+    host.appendChild($('<p class="sub">'+esc(dayTitle(iso))+' — before you head out</p>'));
+    const p = dayPrep(iso);
+    const sect = (label, items) => {
+      if (!items.length) return;
+      host.appendChild($('<p class="prep-sect">'+label+'</p>'));
+      items.forEach(it=> host.appendChild(prepRow(iso, it)));
+    };
+    sect('Wear', p.wear);
+    sect('Bring', p.bring);
+    sect('Heads-up', p.heads);
+    if (!(p.wear.length || p.bring.length || p.heads.length))
+      host.appendChild($('<p class="sub" style="margin-top:14px">Nothing special to prep for today — travel light.</p>'));
+  }
   function sendToTrip(item){
     const body = 'Add this to the itinerary (from the Andiamo app):\n\n```json\n' + JSON.stringify(item) + '\n```\n';
     const url = 'https://github.com/'+GH_REPO+'/issues/new?title=' +
@@ -1026,7 +1132,9 @@
   function renderTabs(){
     const bar = document.getElementById('tabbar'); bar.innerHTML='';
     const cur = currentTab();
-    const active = (cur==='day' || cur==='booking' || cur==='add' || cur==='arrange') ? 'days' : cur;
+    let active = cur;
+    if (cur==='day' || cur==='booking') active = 'days';
+    else if (cur==='add' || cur==='arrange' || cur==='prep') active = (subReturn && subReturn.indexOf('today')>-1) ? 'today' : 'days';
     TABS.forEach(t=>{
       const b = $('<button class="tab'+(active===t.id?' on':'')+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+t.icon+'</svg>'+t.label+'</button>');
       b.addEventListener('click', ()=>{ location.hash='#'+t.id; });
@@ -1039,6 +1147,7 @@
     const h = (location.hash||'#today').slice(1);
     setOccasionBg(null);   // day views re-enable it below for a day with an occasion
     if (h.startsWith('day/')) viewDayDetail(host, h.slice(4));
+    else if (h.startsWith('prep/')) viewPrep(host, h.slice(5));
     else if (h.startsWith('booking/')) viewBooking(host, h.slice(8));
     else if (h.startsWith('arrange/')) viewArrange(host, h.slice(8));
     else if (h.startsWith('add')) viewAdd(host, h.indexOf('/')>-1 ? h.slice(h.indexOf('/')+1) : TRIP.startDate);
