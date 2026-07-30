@@ -89,12 +89,16 @@
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) #hearts { opacity:.17; } }
 
   /* day-prep button + checklist */
-  .prepbtn { width:100%; display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--hairline);
-    border-left:4px solid var(--gold); border-radius:12px; padding:12px 14px; margin:2px 0 6px; font:inherit; font-size:15px;
-    font-weight:600; color:var(--ink); cursor:pointer; }
-  .prepbtn svg.pb-ic { width:20px; height:20px; color:var(--gold); flex:none; }
-  .prepbtn .pb-c { margin-left:auto; font-size:12px; font-weight:700; color:var(--gold); background:var(--gold-soft); padding:3px 10px; border-radius:999px; }
-  .prepbtn .pb-c.allset { color:var(--flor); background:var(--flor-soft); }
+  .dayhead { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .dayhead .title { margin:8px 0 3px; }
+  .prepicon { position:relative; flex:none; width:44px; height:44px; border-radius:12px; background:var(--surface);
+    border:1px solid var(--hairline); color:var(--gold); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; }
+  .prepicon:hover { border-color:var(--gold); }
+  .prepicon svg { width:22px; height:22px; }
+  .prepicon .pi-badge { position:absolute; top:-7px; right:-7px; min-width:19px; height:19px; padding:0 5px; border-radius:999px;
+    background:var(--vermilion); color:#fff; font-size:11px; font-weight:800; line-height:1; display:flex; align-items:center;
+    justify-content:center; box-shadow:0 2px 6px -1px rgba(var(--shadow),.5); }
   .prep-sect { font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); font-weight:700; margin:16px 0 9px; }
   .prow { width:100%; display:flex; align-items:flex-start; gap:11px; text-align:left; background:var(--surface); border:1px solid var(--hairline);
     border-radius:11px; padding:12px 13px; margin-bottom:8px; font:inherit; color:var(--ink); cursor:pointer; }
@@ -695,13 +699,12 @@
     const idx = dayIndex(cur);
     const isReal = (cur === real);
     host.appendChild($('<p class="eyebrow" style="color:'+cityAccent(cur)+'">'+(isReal?'<span class="live"></span>':'')+esc(cityForDate(cur))+' · Day '+(idx+1)+' of '+TRIP.days.length+'</p>'));
-    host.appendChild($('<h1 class="title">'+fmtDate(cur)+'</h1>'));
+    host.appendChild(dayHeadRow(cur));
     host.appendChild($('<p class="sub">'+esc(dayTitle(cur))+'</p>'));
     setOccasionBg(cur);
     const obc = occasionBanner(cur); if (obc) host.appendChild(obc);
     const hcur = dayHero(cur); if (hcur) host.appendChild(hcur);
     const wcur = weatherChip(cur); if (wcur) host.appendChild(wcur);
-    const pbc = prepButton(cur); if (pbc) host.appendChild(pbc);
     const mbc = mapDayButton(cur); if (mbc) host.appendChild(mbc);
 
     // up-next: next fixed event today (by real clock if today, else first)
@@ -768,13 +771,12 @@
     host.appendChild(nav);
 
     host.appendChild($('<p class="eyebrow" style="color:'+cityAccent(iso)+'">'+esc(cityForDate(iso))+' · Day '+(dayIndex(iso)+1)+' of '+TRIP.days.length+'</p>'));
-    host.appendChild($('<h1 class="title">'+fmtDate(iso)+'</h1>'));
+    host.appendChild(dayHeadRow(iso));
     host.appendChild($('<p class="sub">'+esc(dayTitle(iso))+'</p>'));
     setOccasionBg(iso);
     const obd = occasionBanner(iso); if (obd) host.appendChild(obd);
     const hcd = dayHero(iso); if (hcd) host.appendChild(hcd);
     const wcd = weatherChip(iso); if (wcd) host.appendChild(wcd);
-    const pbd = prepButton(iso); if (pbd) host.appendChild(pbd);
     const mbd = mapDayButton(iso); if (mbd) host.appendChild(mbd);
     host.appendChild($('<hr class="rule">'));
     renderDay(iso, host);
@@ -951,15 +953,22 @@
     });
     return { wear, bring, heads };
   }
-  function prepButton(iso){
+  function prepIcon(iso){
     const p = dayPrep(iso);
     const all = p.wear.concat(p.bring, p.heads);
     if (!all.length) return null;
     const left = all.filter(it=>!prepDone(iso, it.text)).length;
-    const chip = left ? '<span class="pb-c">'+left+' to check</span>' : '<span class="pb-c allset">all set ✓</span>';
-    const b = $('<button class="prepbtn">'+svgIcon('clipboard','pb-ic')+'<span>Day prep</span>'+chip+'</button>');
+    const badge = left ? '<span class="pi-badge">'+left+'</span>' : '';
+    const b = $('<button class="prepicon" aria-label="Day prep checklist" title="Day prep">'+svgIcon('clipboard')+badge+'</button>');
     b.addEventListener('click', ()=>{ subReturn = location.hash || '#today'; location.hash = '#prep/'+iso; });
     return b;
+  }
+  // the date heading with the prep icon right-justified next to it
+  function dayHeadRow(iso){
+    const row = $('<div class="dayhead"></div>');
+    row.appendChild($('<h1 class="title">'+fmtDate(iso)+'</h1>'));
+    const pic = prepIcon(iso); if (pic) row.appendChild(pic);
+    return row;
   }
   function prepRow(iso, item){
     const on = prepDone(iso, item.text);
@@ -1177,7 +1186,20 @@
   }
 
   // ---- swipe / arrow-key / tap navigation between days ----
-  const currentDayISO = () => { const h=(location.hash||'').slice(1); return h.startsWith('day/') ? h.slice(4) : null; };
+  // the day currently on screen — a day-detail hash, or the day the Today tab is showing (so it swipes too)
+  const currentDayISO = () => {
+    const h = (location.hash||'').slice(1);
+    if (h.startsWith('day/')) return h.slice(4);
+    if (h==='' || h==='today'){
+      const real = todayISO(), override = params.get('date');
+      if (!override && real < TRIP.startDate) return TRIP.startDate;
+      let cur = override || real;
+      if (cur < TRIP.startDate) cur = TRIP.startDate;
+      if (cur > TRIP.endDate) return null;
+      return cur;
+    }
+    return null;
+  };
   function goDay(delta){
     const cur = currentDayISO(); if (!cur) return;
     const i = TRIP.days.findIndex(d=>d.date===cur), j = i + delta;
