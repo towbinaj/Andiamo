@@ -9,5 +9,14 @@
     "custom": true,
     "address": "Via degli Uffici del Vicario 40, Rome",
     "note": "A short walk from the Pantheon."
+  },
+  {
+    "id": "c9",
+    "date": "2026-08-02",
+    "start": null,
+    "title": "Temple of Vibia Sabina and Hadrian Tempio di Vibia Sabina e Adriano",
+    "type": "sight",
+    "fixed": false,
+    "custom": true
   }
 ]
