@@ -18,5 +18,15 @@
     "type": "sight",
     "fixed": false,
     "custom": true
+  },
+  {
+    "id": "c10",
+    "date": "2026-08-02",
+    "start": null,
+    "title": "Lucciano’s Gelato",
+    "type": "treat",
+    "fixed": false,
+    "custom": true,
+    "address": "Via delle Muratte 76"
   }
 ]
