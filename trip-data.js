@@ -140,6 +140,18 @@ const TRIP = {
       address: "St. Peter's Basilica, Vatican City",
       note: "Free entry — you can enter Vatican City earlier in the day.",
       headsup: ["👕 Shoulders & knees covered"] },
+    {
+      date: "2026-08-03", start: "10:00", title: "St. Peter's Dome — tickets & audioguide", type: "tour", fixed: true, qty: 4,
+      note: "Dome (cupola) tickets + audioguide with Feel the City Tours. €350 for 4.",
+      meet: {
+        name: "Bar “Al San Michele”",
+        address: "Borgo di Santo Spirito 17, 00193 Roma",
+        look: "Meet the staff at the bar — they hand over your tickets & audioguides. Arrive ~10 min early.",
+      },
+      phone: "+34 664 64 29 04", whatsapp: "+34 600 124 206",
+      booking: { label: "Status", value: "Confirmed", source: "Feel the City Tours email" }, codeKey: "stpetersdome",
+      headsup: ["Valid photo ID for everyone", "Arrive 10 min early", "👕 Shoulders & knees covered", "Entry time can shift ±90 min — check the tickets"],
+    },
     { date: "2026-08-03", start: null, title: "Gelateria dei Gracchi", type: "treat", fixed: false, address: "Via dei Gracchi 272, Rome", note: "Top-tier gelato a short walk from the Vatican Museums." },
     { date: "2026-08-03", start: null, title: "Gelateria Old Bridge", type: "treat", fixed: false, address: "Viale dei Bastioni di Michelangelo 5, Rome", note: "Famous, right by the Vatican walls." },
     {
