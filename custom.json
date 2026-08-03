@@ -28,5 +28,14 @@
     "fixed": false,
     "custom": true,
     "address": "Via delle Muratte 76"
+  },
+  {
+    "id": "c12",
+    "date": "2026-08-04",
+    "start": null,
+    "title": "Tarpeian Rock",
+    "type": "sight",
+    "fixed": false,
+    "custom": true
   }
 ]
