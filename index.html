@@ -83,10 +83,13 @@
     background:linear-gradient(120deg, var(--vermilion), var(--gold)); box-shadow:0 12px 28px -18px rgba(var(--shadow),.7); }
   .occ-label { display:inline-flex; align-items:center; gap:9px; }
   .occasion svg.occ-heart { width:20px; height:20px; fill:#fff; flex:none; }
-  .occ-open { flex:none; width:38px; height:38px; border-radius:50%; background:#fff; border:0; cursor:pointer;
-    display:inline-flex; align-items:center; justify-content:center; box-shadow:0 4px 12px -4px rgba(0,0,0,.3); }
+  .occ-actions { display:inline-flex; align-items:center; gap:8px; }
+  .occ-open, .occ-gift { flex:none; width:38px; height:38px; border-radius:50%; background:#fff; border:0; cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center; box-shadow:0 4px 12px -4px rgba(0,0,0,.3); text-decoration:none; }
   .occ-open svg { width:20px; height:20px; fill:var(--vermilion); }
-  .occ-open:hover { transform:scale(1.06); }
+  .occ-gift { color:var(--vermilion); }
+  .occ-gift svg { width:22px; height:22px; }
+  .occ-open:hover, .occ-gift:hover { transform:scale(1.06); }
   .lovenote { margin:12px 0 4px; padding:20px 20px 18px; border-radius:16px; background:var(--gold-soft);
     border:1px solid color-mix(in srgb, var(--gold) 45%, var(--hairline)); box-shadow:0 14px 30px -20px rgba(var(--shadow),.55);
     font-family:var(--serif); color:var(--ink); }
@@ -470,16 +473,21 @@
   // (so it surfaces on Aug 5 in real life, every year — not merely when you browse that itinerary day).
   const HEART = 'M12 21s-6.5-4.35-9-8.5C1.5 9.5 3 6 6.5 6c2 0 3 1.2 3.5 2 .5-.8 1.5-2 3.5-2C20 6 22.5 9.5 21 12.5 18.5 16.65 12 21 12 21Z';
   const occasionOf = (iso) => { const d=TRIP.days.find(x=>x.date===iso); return d && d.occasion ? d.occasion : ''; };
+  const giftOf = (iso) => { const d=TRIP.days.find(x=>x.date===iso); return d && d.gift ? d.gift : ''; };
   const revealedOccasion = (iso) => { const occ = occasionOf(iso); return (occ && todayISO().slice(5) === iso.slice(5)) ? occ : ''; };
   let notePromptOpen = false;   // set once the banner's "Open your note" button is tapped
   function occasionBanner(iso){
     const occ = revealedOccasion(iso); if(!occ) return null;
     const b = $('<div class="occasion"><span class="occ-label"><svg class="occ-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="'+HEART+'"/></svg><span>'+esc(occ)+'</span></span></div>');
+    const acts = $('<span class="occ-actions"></span>');
     if (window.LOVENOTE && !NOTE && !notePromptOpen){
       const btn = $('<button class="occ-open" aria-label="Open your note" title="Open your note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+HEART+'"/></svg></button>');
       btn.addEventListener('click', ()=>{ notePromptOpen = true; render(); });
-      b.appendChild(btn);
+      acts.appendChild(btn);
     }
+    const gurl = giftOf(iso);
+    if (gurl) acts.appendChild($('<a class="occ-gift" href="'+esc(gurl)+'" target="_blank" rel="noopener" aria-label="Your gift" title="Your gift">'+svgIcon('gift')+'</a>'));
+    if (acts.children.length) b.appendChild(acts);
     return b;
   }
   // a private note on the occasion day. It has its own passkey (separate from the codes):
@@ -562,6 +570,7 @@
     map:'<path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5v-13L15 6.5 9 4z"/><path d="M9 4v13M15 6.5v13"/>',
     home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>',
     clipboard:'<rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 5a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 5v.5H9z"/><path d="m9.2 13 2 2 3.6-4"/>',
+    gift:'<rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8"/><path d="M12 8v13"/><path d="M12 8S11 4 8.5 4a2.5 2.5 0 0 0 0 5H12"/><path d="M12 8s1-4 3.5-4a2.5 2.5 0 0 1 0 5H12"/>',
     plane:'<path d="M22 3 11 14"/><path d="M22 3 15 21l-4-7-7-4 18-7z"/>',
     train:'<rect x="5" y="4" width="14" height="12" rx="3"/><path d="M5 11h14M9 16l-2.5 4M15 16l2.5 4"/>',
     flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V4s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>',
