@@ -85,12 +85,12 @@
   .lovenote { margin:12px 0 4px; padding:20px 20px 18px; border-radius:16px; background:var(--gold-soft);
     border:1px solid color-mix(in srgb, var(--gold) 45%, var(--hairline)); box-shadow:0 14px 30px -20px rgba(var(--shadow),.55);
     font-family:var(--serif); color:var(--ink); }
-  .lovenote::before { content:'♥'; display:block; text-align:center; color:var(--vermilion); font-size:20px; margin-bottom:10px; }
+  .lovenote .ln-heart { display:block; margin:0 auto 12px; width:26px; height:26px; fill:var(--vermilion); }
   .lovenote p { margin:0 0 12px; font-size:16px; line-height:1.62; }
   .lovenote p:last-child { margin-bottom:0; }
   .noteunlock { margin:12px 0 4px; padding:18px 18px 16px; border-radius:16px; background:var(--gold-soft);
     border:1px solid color-mix(in srgb, var(--gold) 45%, var(--hairline)); text-align:center; }
-  .noteunlock .nu-heart { color:var(--vermilion); font-size:20px; }
+  .noteunlock .nu-heart { display:block; margin:0 auto; width:24px; height:24px; fill:var(--vermilion); }
   .noteunlock .nu-t { font-family:var(--serif); font-size:16px; color:var(--ink); margin:6px 0 12px; }
   .noteunlock .nu-row { display:flex; gap:8px; justify-content:center; }
   .noteunlock .nu-in { flex:1; max-width:220px; font:inherit; font-size:15px; padding:10px 12px; border-radius:10px;
@@ -315,16 +315,21 @@
     const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64d(s.iv)}, key, b64d(s.ct));
     return JSON.parse(new TextDecoder().decode(pt));
   }
-  // the anniversary note has its OWN passkey and its own encrypted file (note.enc.js -> window.LOVENOTE),
-  // separate from the family confirmation-code passphrase. Doesn't need to be strong.
+  // the anniversary note has its OWN passkey and its own file (note.js -> window.LOVENOTE),
+  // separate from the family confirmation-code passphrase. Simple by design: the note is XOR-encoded
+  // with the passkey and base64'd (the passkey is never stored), with a marker so a wrong word is caught.
+  // Not hashed and not strong; it does not need to be.
   let NOTE = null;
   try { NOTE = sessionStorage.getItem('andiamo-lovenote') || null; } catch(e){}
-  async function decryptNote(pass){
-    const s = window.LOVENOTE; if(!s) throw new Error('no note');
-    const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
-    const key = await crypto.subtle.deriveKey({name:'PBKDF2', salt:b64d(s.salt), iterations:s.iter, hash:s.hash}, km, {name:'AES-GCM', length:256}, false, ['decrypt']);
-    const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64d(s.iv)}, key, b64d(s.ct));
-    return new TextDecoder().decode(pt);
+  function decodeNote(pass){
+    const s = window.LOVENOTE; if (!s || !pass) return null;
+    let data; try { data = b64d(s); } catch(e){ return null; }
+    const key = new TextEncoder().encode(pass);
+    const out = new Uint8Array(data.length);
+    for (let i=0;i<data.length;i++) out[i] = data[i] ^ key[i % key.length];
+    const mark = new TextEncoder().encode('LOVE');
+    for (let i=0;i<mark.length;i++) if (out[i] !== mark[i]) return null;   // wrong word
+    return new TextDecoder().decode(out.slice(mark.length));
   }
   const codeFor = (e) => (e && e.codeKey && CODES && CODES[e.codeKey]) ? CODES[e.codeKey] : null;
   const bookVal = (e) => codeFor(e) || (e.booking ? e.booking.value : '');
@@ -467,27 +472,26 @@
   }
   // a private note on the occasion day. It has its own passkey (separate from the codes):
   // locked, it shows a small "enter the word" prompt; unlocked, the note itself.
+  const heartSVG = (cls) => '<svg class="'+cls+'" viewBox="0 0 24 24" aria-hidden="true"><path d="'+HEART+'"/></svg>';
   function noteCard(text){
     const raw = String(text).replace(/\\n/g,'\n').trim();   // accept real or literal "\n" line breaks
     const paras = raw.split(/\n\s*\n/).map(p=>'<p>'+esc(p).replace(/\n/g,'<br>')+'</p>').join('');
-    return $('<div class="lovenote">'+paras+'</div>');
+    return $('<div class="lovenote">'+heartSVG('ln-heart')+paras+'</div>');
   }
   function occasionNote(iso){
     if (!occasionOf(iso)) return null;      // only on the occasion day
     if (NOTE) return noteCard(NOTE);        // already unlocked this session
     if (!window.LOVENOTE) return null;      // no note configured yet
-    const box = $('<div class="noteunlock"><div class="nu-heart">♥</div>'+
+    const box = $('<div class="noteunlock">'+heartSVG('nu-heart')+
       '<p class="nu-t">A note is waiting for you.</p>'+
       '<div class="nu-row"><input type="text" class="nu-in" placeholder="Enter the word" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="nu-go">Reveal</button></div>'+
       '<p class="nu-err" hidden>That is not the word. Try again.</p></div>');
     const input = box.querySelector('.nu-in'), err = box.querySelector('.nu-err');
-    const attempt = async ()=>{
-      err.hidden = true;
-      try {
-        const txt = await decryptNote(input.value.trim());
-        NOTE = txt; try { sessionStorage.setItem('andiamo-lovenote', txt); } catch(e){}
-        render();
-      } catch(e){ err.hidden = false; input.value=''; input.focus(); }
+    const attempt = ()=>{
+      const txt = decodeNote(input.value.trim());
+      if (txt == null){ err.hidden = false; input.value=''; input.focus(); return; }
+      NOTE = txt; try { sessionStorage.setItem('andiamo-lovenote', txt); } catch(e){}
+      render();
     };
     box.querySelector('.nu-go').addEventListener('click', attempt);
     input.addEventListener('keydown', (e)=>{ if(e.key==='Enter') attempt(); });
@@ -1293,10 +1297,10 @@
     document.head.appendChild(s);
   })();
 
-  // ---- load the encrypted anniversary note if present (its own passkey) ----
+  // ---- load the anniversary note if present (its own passkey, separate from the codes) ----
   (function(){
     const s = document.createElement('script');
-    s.src = 'note.enc.js';
+    s.src = 'note.js';
     s.onload = ()=>{ bgRender(); };
     s.onerror = ()=>{};
     document.head.appendChild(s);
