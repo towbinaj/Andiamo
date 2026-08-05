@@ -324,7 +324,7 @@
   function decodeNote(pass){
     const s = window.LOVENOTE; if (!s || !pass) return null;
     let data; try { data = b64d(s); } catch(e){ return null; }
-    const key = new TextEncoder().encode(pass);
+    const key = new TextEncoder().encode(pass.toLowerCase());   // case-insensitive passkey
     const out = new Uint8Array(data.length);
     for (let i=0;i<data.length;i++) out[i] = data[i] ^ key[i % key.length];
     const mark = new TextEncoder().encode('LOVE');
