@@ -78,10 +78,13 @@
   .dayhero .dhtag { position:absolute; top:11px; left:12px; font-size:10.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#fff; background:rgba(0,0,0,.35); backdrop-filter:blur(3px); padding:5px 9px; border-radius:999px; }
 
   /* special-occasion banner + hearts backdrop (only on a day that has `occasion`) */
-  .occasion { display:flex; align-items:center; justify-content:center; gap:9px; margin:12px 0 4px; padding:12px 16px;
+  .occasion { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px 12px; margin:12px 0 4px; padding:12px 16px;
     border-radius:14px; color:#fff; font-family:var(--serif); font-size:18px; font-weight:600; letter-spacing:.01em;
     background:linear-gradient(120deg, var(--vermilion), var(--gold)); box-shadow:0 12px 28px -18px rgba(var(--shadow),.7); }
-  .occasion svg { width:20px; height:20px; fill:#fff; flex:none; }
+  .occ-label { display:inline-flex; align-items:center; gap:9px; }
+  .occasion svg.occ-heart { width:20px; height:20px; fill:#fff; flex:none; }
+  .occ-open { font:inherit; font-size:14px; font-weight:700; color:var(--vermilion); background:#fff; border:0;
+    border-radius:999px; padding:8px 15px; cursor:pointer; box-shadow:0 4px 12px -4px rgba(0,0,0,.3); }
   .lovenote { margin:12px 0 4px; padding:20px 20px 18px; border-radius:16px; background:var(--gold-soft);
     border:1px solid color-mix(in srgb, var(--gold) 45%, var(--hairline)); box-shadow:0 14px 30px -20px rgba(var(--shadow),.55);
     font-family:var(--serif); color:var(--ink); }
@@ -466,9 +469,16 @@
   const HEART = 'M12 21s-6.5-4.35-9-8.5C1.5 9.5 3 6 6.5 6c2 0 3 1.2 3.5 2 .5-.8 1.5-2 3.5-2C20 6 22.5 9.5 21 12.5 18.5 16.65 12 21 12 21Z';
   const occasionOf = (iso) => { const d=TRIP.days.find(x=>x.date===iso); return d && d.occasion ? d.occasion : ''; };
   const revealedOccasion = (iso) => { const occ = occasionOf(iso); return (occ && todayISO().slice(5) === iso.slice(5)) ? occ : ''; };
+  let notePromptOpen = false;   // set once the banner's "Open your note" button is tapped
   function occasionBanner(iso){
     const occ = revealedOccasion(iso); if(!occ) return null;
-    return $('<div class="occasion"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+HEART+'"/></svg><span>'+esc(occ)+'</span></div>');
+    const b = $('<div class="occasion"><span class="occ-label"><svg class="occ-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="'+HEART+'"/></svg><span>'+esc(occ)+'</span></span></div>');
+    if (window.LOVENOTE && !NOTE && !notePromptOpen){
+      const btn = $('<button class="occ-open">Open your note</button>');
+      btn.addEventListener('click', ()=>{ notePromptOpen = true; render(); });
+      b.appendChild(btn);
+    }
+    return b;
   }
   // a private note on the occasion day. It has its own passkey (separate from the codes):
   // locked, it shows a small "enter the word" prompt; unlocked, the note itself.
@@ -478,12 +488,11 @@
     const paras = raw.split(/\n\s*\n/).map(p=>'<p>'+esc(p).replace(/\n/g,'<br>')+'</p>').join('');
     return $('<div class="lovenote">'+heartSVG('ln-heart')+paras+'</div>');
   }
-  function occasionNote(iso){
-    if (!occasionOf(iso)) return null;      // only on the occasion day
-    if (NOTE) return noteCard(NOTE);        // already unlocked this session
-    if (!window.LOVENOTE) return null;      // no note configured yet
-    const box = $('<div class="noteunlock">'+heartSVG('nu-heart')+
-      '<p class="nu-t">A note is waiting for you.</p>'+
+  function occasionReveal(iso){
+    if (!revealedOccasion(iso)) return null;          // same gate as the banner (the actual day)
+    if (NOTE) return noteCard(NOTE);                  // already unlocked this session
+    if (!window.LOVENOTE || !notePromptOpen) return null;   // wait for the banner button
+    const box = $('<div class="noteunlock">'+
       '<div class="nu-row"><input type="text" class="nu-in" placeholder="Enter the word" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="nu-go">Reveal</button></div>'+
       '<p class="nu-err" hidden>That is not the word. Try again.</p></div>');
     const input = box.querySelector('.nu-in'), err = box.querySelector('.nu-err');
@@ -495,6 +504,7 @@
     };
     box.querySelector('.nu-go').addEventListener('click', attempt);
     input.addEventListener('keydown', (e)=>{ if(e.key==='Enter') attempt(); });
+    setTimeout(()=>{ try { input.focus(); } catch(e){} }, 0);
     return box;
   }
   // a full-bleed layer of faint hearts, painted behind the day's content (z-index:-1 inside #app)
@@ -762,7 +772,7 @@
     host.appendChild($('<p class="sub">'+esc(dayTitle(cur))+'</p>'));
     setOccasionBg(cur);
     const obc = occasionBanner(cur); if (obc) host.appendChild(obc);
-    const lnc = occasionNote(cur); if (lnc) host.appendChild(lnc);
+    const lnc = occasionReveal(cur); if (lnc) host.appendChild(lnc);
     const hcur = dayHero(cur); if (hcur) host.appendChild(hcur);
     const wcur = weatherChip(cur); if (wcur) host.appendChild(wcur);
     const mbc = mapDayButton(cur); if (mbc) host.appendChild(mbc);
@@ -835,7 +845,7 @@
     host.appendChild($('<p class="sub">'+esc(dayTitle(iso))+'</p>'));
     setOccasionBg(iso);
     const obd = occasionBanner(iso); if (obd) host.appendChild(obd);
-    const lnd = occasionNote(iso); if (lnd) host.appendChild(lnd);
+    const lnd = occasionReveal(iso); if (lnd) host.appendChild(lnd);
     const hcd = dayHero(iso); if (hcd) host.appendChild(hcd);
     const wcd = weatherChip(iso); if (wcd) host.appendChild(wcd);
     const mbd = mapDayButton(iso); if (mbd) host.appendChild(mbd);
