@@ -486,7 +486,15 @@
       acts.appendChild(btn);
     }
     const gurl = giftOf(iso);
-    if (gurl) acts.appendChild($('<a class="occ-gift" href="'+esc(gurl)+'" target="_blank" rel="noopener" aria-label="Your gift" title="Your gift">'+svgIcon('gift')+'</a>'));
+    if (gurl){
+      if (NOTE){   // unlocked: the gift is a live link to the photos
+        acts.appendChild($('<a class="occ-gift" href="'+esc(gurl)+'" target="_blank" rel="noopener" aria-label="Your gift" title="Your gift">'+svgIcon('gift')+'</a>'));
+      } else {     // locked: tapping asks for the same passkey as the note
+        const gb = $('<button class="occ-gift" aria-label="Your gift" title="Your gift">'+svgIcon('gift')+'</button>');
+        gb.addEventListener('click', ()=>{ notePromptOpen = true; render(); });
+        acts.appendChild(gb);
+      }
+    }
     if (acts.children.length) b.appendChild(acts);
     return b;
   }
