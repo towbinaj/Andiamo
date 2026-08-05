@@ -450,7 +450,8 @@
     if (!occasionOf(iso)) return null;
     const text = (CODES && CODES.anniversary) ? CODES.anniversary : null;
     if (!text) return null;
-    const paras = String(text).trim().split(/\n\s*\n/).map(p=>'<p>'+esc(p).replace(/\n/g,'<br>')+'</p>').join('');
+    const raw = String(text).replace(/\\n/g,'\n').trim();   // accept real or literal "\n" line breaks
+    const paras = raw.split(/\n\s*\n/).map(p=>'<p>'+esc(p).replace(/\n/g,'<br>')+'</p>').join('');
     return $('<div class="lovenote">'+paras+'</div>');
   }
   // a full-bleed layer of faint hearts, painted behind the day's content (z-index:-1 inside #app)
