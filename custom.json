@@ -37,5 +37,14 @@
     "type": "sight",
     "fixed": false,
     "custom": true
+  },
+  {
+    "id": "c25",
+    "date": "2026-08-07",
+    "start": null,
+    "title": "Laurentian Medici Library",
+    "type": "sight",
+    "fixed": false,
+    "custom": true
   }
 ]
