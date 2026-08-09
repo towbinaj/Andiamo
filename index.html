@@ -1238,8 +1238,14 @@
     lastRenderedHash = h; pendingSlide = null;
   }
   window.addEventListener('hashchange', render);
-  // open on the trip shelf — this is an album of past trips first, an itinerary second
-  if (!location.hash || location.hash==='#') location.hash = '#trips';
+  // On a fresh open: a trip that's happening right now jumps straight to its
+  // days; otherwise land on the shelf of trips to relive.
+  if (!location.hash || location.hash==='#'){
+    const today = todayISO();
+    const active = TRIPS.find(t => today >= t.startDate && today <= t.endDate);
+    if (active){ selectTrip(active.id); location.hash = '#days'; }
+    else location.hash = '#trips';
+  }
   render();
 
   // background refreshes must not wipe a form you're typing in or a drag in progress
