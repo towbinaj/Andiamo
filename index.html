@@ -259,6 +259,21 @@
   .lockhint { font-size:13px; color:var(--faint); margin:9px 0 0; }
   .lockerr { font-size:13.5px; color:var(--vermilion); font-weight:600; margin:9px 0 0; }
 
+  /* trips tab — one poster-style card per trip */
+  .tripcard { position:relative; display:block; width:100%; text-align:left; font:inherit; color:inherit; cursor:pointer;
+    background:var(--surface); border:1px solid var(--hairline); border-radius:16px; overflow:hidden; margin-top:14px;
+    box-shadow:0 14px 30px -22px rgba(var(--shadow),.55); transition:border-color .15s, transform .15s; }
+  .tripcard:hover { border-color:var(--lapis); }
+  .tripcard:active { transform:scale(.995); }
+  .tripcard .tc-img { height:150px; background:var(--surface-2); }
+  .tripcard .tc-img img { width:100%; height:100%; object-fit:cover; display:block; }
+  .tripcard .tc-body { padding:14px 16px 16px; }
+  .tripcard .tc-when { font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--lapis); font-weight:700; margin:0; }
+  .tripcard .tc-name { font-family:var(--serif); font-size:25px; line-height:1.05; margin:5px 0 2px; }
+  .tripcard .tc-sub { font-size:15px; color:var(--muted); margin:0; }
+  .tripcard .tc-meta { font-family:var(--mono); font-size:12.5px; color:var(--faint); margin:10px 0 0; }
+  .tripcard .tc-chev { position:absolute; right:14px; bottom:12px; color:var(--faint); font-size:24px; line-height:1; }
+
   /* trip tab */
   .card { background:var(--surface); border:1px solid var(--hairline); border-radius:13px; padding:16px; margin-top:13px; }
   .card h3 { font-size:16px; margin:0 0 9px; }
@@ -290,6 +305,19 @@
   const $ = (h) => { const t=document.createElement('template'); t.innerHTML=h.trim(); return t.content.firstChild; };
   const esc = (s) => String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const params = new URLSearchParams(location.search);
+
+  // ---- the trip collection ----
+  // TRIPS (from trip-data.js) holds every trip; TRIP is the one being viewed.
+  // Picking a trip on the Trips tab sets TRIP; every other view reads from it.
+  let TRIP = TRIPS[0];
+  (function restoreActiveTrip(){
+    try { const id = localStorage.getItem('andiamo-trip'); if (id){ const t = TRIPS.find(x=>x.id===id); if (t) TRIP = t; } } catch(e){}
+  })();
+  function selectTrip(id){
+    const t = TRIPS.find(x=>x.id===id); if (!t) return;
+    TRIP = t;
+    try { localStorage.setItem('andiamo-trip', id); } catch(e){}
+  }
 
   // ---- confirmation-code unlock (client-side AES-GCM) ----
   let CODES = null, PASS = null;
@@ -376,7 +404,7 @@
   }
 
   // ---- custom items (added via "Send to trip" -> GitHub issue -> Action -> custom.json) ----
-  TRIP.events.forEach((e,i)=>{ e._id = String(i); });   // stable id for trip events (keeps check-off keys)
+  TRIPS.forEach(t => t.events.forEach((e,i)=>{ e._id = String(i); }));   // stable id per trip (keeps check-off keys)
   let CUSTOM = [];
   (function loadLocalCustom(){
     try { const a = JSON.parse(localStorage.getItem('andiamo-custom')||'[]'); if (Array.isArray(a)) CUSTOM = a; } catch(e){}
@@ -842,6 +870,13 @@
 
     const dep = TRIP.events.find(e=>e.type==='flight' && e.date===TRIP.endDate);
     if (dep) host.appendChild($('<div class="bookend"><span>✈ '+esc(dep.title)+' · '+fmtDate(dep.date)+' · '+esc(fmtTime(dep.start))+'</span></div>'));
+
+    // confirmation codes for this trip's bookings (only if an encrypted set is present)
+    if (window.SECRETS){
+      host.appendChild($('<hr class="rule">'));
+      host.appendChild($('<p class="sect-label">Confirmation codes</p>'));
+      renderLock(host);
+    }
   }
 
   // ---- single DAY detail ----
@@ -932,7 +967,7 @@
     }
     pb.appendChild(acts);
     if (e.pdf && CODES && !PASS)
-      pb.appendChild($('<p class="note">Re-unlock on the Trip tab to view the ticket PDF.</p>'));
+      pb.appendChild($('<p class="note">Re-unlock from the Days list to view the ticket PDF.</p>'));
 
     // if this booking has a hidden code and we're locked, offer to unlock right here
     if (window.SECRETS && !CODES && e.codeKey){
@@ -963,31 +998,33 @@
     }
   }
 
-  // ---- TRIP (info) ----
-  function viewTrip(host){
-    host.appendChild($('<p class="eyebrow">Good to know</p>'));
-    host.appendChild($('<h1 class="title">Trip</h1>'));
-    host.appendChild($('<p class="sub">'+esc(TRIP.name)+' · '+esc(TRIP.subtitle)+'</p>'));
+  // ---- TRIPS (the collection — pick one to relive it) ----
+  function viewTrips(host){
+    host.appendChild($('<p class="eyebrow">Your travels</p>'));
+    host.appendChild($('<h1 class="title">Trips</h1>'));
+    host.appendChild($('<p class="sub">'+TRIPS.length+' '+(TRIPS.length===1?'trip':'trips')+' to remember — tap one to relive it, day by day.</p>'));
+    host.appendChild($('<hr class="rule">'));
 
-    if (window.SECRETS){
-      host.appendChild($('<hr class="rule">'));
-      host.appendChild($('<p class="sect-label">Confirmation codes</p>'));
-      renderLock(host);
-    }
-
-    TRIP.legs.forEach(l=>{
-      const q = encodeURIComponent(l.hotelAddress);
-      host.appendChild($('<div class="card"><h3>'+esc(l.city)+' · '+MO[asDate(l.start).getMonth()]+' '+asDate(l.start).getDate()+'–'+asDate(l.end).getDate()+'</h3><p><b>'+esc(l.hotelName)+'</b></p><p>'+esc(l.hotelAddress)+'</p><div class="actions">'+iconBtn('https://www.google.com/maps/search/?api=1&query='+q, 'Directions', 'pin')+(l.hotelWebsite?iconBtn(l.hotelWebsite,'Website','globe'):'')+(l.hotelPhone?iconBtn('tel:'+l.hotelPhone.replace(/[^+\d]/g,''),'Call','phone'):'')+'</div></div>'));
+    TRIPS.forEach(t=>{
+      const cover  = t.cover || (t.days && t.days[0] && t.days[0].photo) || '';
+      const sd = asDate(t.startDate), ed = asDate(t.endDate);
+      const when   = MO[sd.getMonth()]+' '+sd.getFullYear();
+      const range  = MO[sd.getMonth()]+' '+sd.getDate()+' – '+MO[ed.getMonth()]+' '+ed.getDate()+', '+ed.getFullYear();
+      const nDays  = t.days ? t.days.length : 0;
+      const meta   = range+' · '+nDays+' '+(nDays===1?'day':'days');
+      const card = $('<button class="tripcard">'+
+        (cover ? '<div class="tc-img"><img loading="lazy" decoding="async" src="'+esc(cover)+'" alt="'+esc(t.name)+'"></div>' : '')+
+        '<div class="tc-body">'+
+          '<p class="tc-when">'+esc(when)+'</p>'+
+          '<p class="tc-name">'+esc(t.name)+'</p>'+
+          (t.subtitle ? '<p class="tc-sub">'+esc(t.subtitle)+'</p>' : '')+
+          '<p class="tc-meta">'+esc(meta)+'</p>'+
+        '</div>'+
+        '<span class="tc-chev">›</span>'+
+      '</button>');
+      card.addEventListener('click', ()=>{ selectTrip(t.id); location.hash = '#days'; });
+      host.appendChild(card);
     });
-
-    host.appendChild($('<div class="card"><h3>Dress code</h3><ul class="plain">'+TRIP.dress.map(d=>'<li>'+esc(d)+'</li>').join('')+'</ul></div>'));
-
-    host.appendChild($('<div class="card"><h3>Audio tours &amp; maps</h3><p>On the key stops, the 🎧 opens <b>Rick Steves’</b> free audio tour and the 🗺️ opens his route map (PDF) — both from his site (Colosseum, Sistine, Uffizi, Accademia, and more).</p><p>For offline listening with maps while you walk, download the free <b>Rick Steves Audio Europe</b> app and save the Rome &amp; Florence tours before you go.</p><div class="actions"><a class="act" target="_blank" rel="noopener" href="https://www.ricksteves.com/watch-read-listen/audio/audio-tours/italy">All Italy tours ›</a></div></div>'));
-
-    // open items (things without a confirmation)
-    const open = [];
-    TRIP.events.forEach(e=>{ if((/not yet|not added|check this/i).test(e.note||'')) open.push(fmtDate(e.date)+' — '+e.title); });
-    if (open.length) host.appendChild($('<div class="card"><h3>Still to add</h3><ul class="plain">'+open.map(o=>'<li>'+esc(o)+'</li>').join('')+'</ul></div>'));
   }
 
   // ---- add a stop (opens a pre-filled GitHub issue you submit; an Action adds it) ----
@@ -1225,7 +1262,7 @@
   const TABS = [
     { id:'today', label:'Today', icon:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>' },
     { id:'days',  label:'Days',  icon:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/>' },
-    { id:'trip',  label:'Trip',  icon:'<path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/>' },
+    { id:'trips', label:'Trips', icon:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/>' },
   ];
   function currentTab(){ const h=(location.hash||'#today').slice(1); return h.split('/')[0] || 'today'; }
   function renderTabs(){
@@ -1251,7 +1288,7 @@
     else if (h.startsWith('arrange/')) viewArrange(host, h.slice(8));
     else if (h.startsWith('add')) viewAdd(host, h.indexOf('/')>-1 ? h.slice(h.indexOf('/')+1) : TRIP.startDate);
     else if (h==='days') viewDays(host);
-    else if (h==='trip') viewTrip(host);
+    else if (h==='trips') viewTrips(host);
     else viewToday(host);
     renderTabs();
     // play an enter animation only when the route actually changed (not on background re-renders)
@@ -1264,6 +1301,8 @@
     lastRenderedHash = h; pendingSlide = null;
   }
   window.addEventListener('hashchange', render);
+  // open on the trip shelf — this is an album of past trips first, an itinerary second
+  if (!location.hash || location.hash==='#') location.hash = '#trips';
   render();
 
   // background refreshes must not wipe a form you're typing in or a drag in progress
