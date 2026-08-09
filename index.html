@@ -578,6 +578,7 @@
   const MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const asDate = (iso) => new Date(iso+'T12:00:00');
   const todayISO = () => { const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
+  const daysBetween = (a,b) => Math.round((asDate(b)-asDate(a))/86400000);
   const dow = (iso) => WD[asDate(iso).getDay()];
   const fmtDate = (iso) => { const d=asDate(iso); return WD[d.getDay()]+', '+MO[d.getMonth()]+' '+d.getDate(); };
   const fmtTime = (hm) => { if(!hm) return null; let [h,m]=hm.split(':').map(Number); const ap=h<12?'AM':'PM'; h=h%12||12; return h+':'+String(m).padStart(2,'0')+' '+ap; };
@@ -787,6 +788,15 @@
     host.appendChild($('<p class="eyebrow">The whole trip</p>'));
     host.appendChild($('<h1 class="title">Days</h1>'));
     host.appendChild($('<p class="sub">'+fmtDate(TRIP.startDate)+' – '+fmtDate(TRIP.endDate)+' · '+TRIP.legs.length+' cities</p>'));
+
+    // countdown while the trip is still ahead
+    const today = todayISO();
+    if (today < TRIP.startDate){
+      const n = daysBetween(today, TRIP.startDate);
+      const city = (TRIP.legs && TRIP.legs[0]) ? TRIP.legs[0].city : '';
+      host.appendChild($('<div class="hero"><p class="cap">Trip begins in</p><p class="big">'+n+'</p><p class="cap">'+(n===1?'day':'days')+(city?' — see you in '+esc(city)+' ✈':' ✈')+'</p></div>'));
+    }
+
     host.appendChild($('<hr class="rule">'));
 
     // arrival bookend
@@ -1238,12 +1248,18 @@
     lastRenderedHash = h; pendingSlide = null;
   }
   window.addEventListener('hashchange', render);
-  // On a fresh open: a trip that's happening right now jumps straight to its
-  // days; otherwise land on the shelf of trips to relive.
+  // On a fresh open: a trip that's happening now — or starting within the next
+  // 10 days (so the countdown greets you) — jumps straight to its days;
+  // otherwise land on the shelf of trips to relive.
   if (!location.hash || location.hash==='#'){
     const today = todayISO();
-    const active = TRIPS.find(t => today >= t.startDate && today <= t.endDate);
-    if (active){ selectTrip(active.id); location.hash = '#days'; }
+    let target = TRIPS.find(t => today >= t.startDate && today <= t.endDate);   // underway
+    if (!target){
+      target = TRIPS
+        .filter(t => today < t.startDate && daysBetween(today, t.startDate) <= 10)   // starting soon
+        .sort((a,b)=> a.startDate < b.startDate ? -1 : 1)[0];
+    }
+    if (target){ selectTrip(target.id); location.hash = '#days'; }
     else location.hash = '#trips';
   }
   render();
