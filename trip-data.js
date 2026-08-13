@@ -203,8 +203,8 @@ const TRIPS = [
 
 {
   id: "rome-florence-2026",
-  name: "Andiamo",
-  subtitle: "Rome & Florence",
+  name: "Rome/Florence",
+  subtitle: "Italy",
   cover: "photos/day5.jpg",
   partySize: 4,
   startDate: "2026-08-01",
