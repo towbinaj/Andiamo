@@ -374,9 +374,20 @@
   // ---- check off places (saved on this device) ----
   let DONE = {};
   try { DONE = JSON.parse(localStorage.getItem('andiamo-done') || '{}') || {}; } catch(e){}
-  const isDone = (idx) => !!DONE[idx];
-  function toggleDone(idx){
-    if (DONE[idx]) delete DONE[idx]; else DONE[idx] = 1;
+  // Check-offs are namespaced by trip so the same-indexed stop in two trips
+  // doesn't share a checkmark. (One-time migration of the pre-namespace keys,
+  // which all belonged to the original Rome & Florence trip.)
+  (function migrateDone(){
+    let changed = false;
+    for (const k of Object.keys(DONE)){
+      if (k.indexOf(':') === -1){ DONE['rome-florence-2026:'+k] = DONE[k]; delete DONE[k]; changed = true; }
+    }
+    if (changed) try { localStorage.setItem('andiamo-done', JSON.stringify(DONE)); } catch(e){}
+  })();
+  const doneKey = (e) => (TRIP.id || 'trip') + ':' + e._id;
+  const isDone = (key) => !!DONE[key];
+  function toggleDone(key){
+    if (DONE[key]) delete DONE[key]; else DONE[key] = 1;
     try { localStorage.setItem('andiamo-done', JSON.stringify(DONE)); } catch(e){}
   }
   function checkButton(idx){
@@ -718,7 +729,8 @@
   function renderEvent(e){
     const t = e.start ? fmtTime(e.start) : '•';
     const id = e._id;
-    const done = isDone(id) ? ' done' : '';
+    const dkey = doneKey(e);
+    const done = isDone(dkey) ? ' done' : '';
 
     if (e.booking){
       const sub = esc(bookVal(e)) + (e.booking.source ? ' · ' + esc(e.booking.source) : '');
@@ -729,7 +741,7 @@
           '<div class="ctl"><span class="chev">›</span></div>'+
         '</div>'
       );
-      node.querySelector('.ctl').insertBefore(checkButton(id), node.querySelector('.chev'));
+      node.querySelector('.ctl').insertBefore(checkButton(dkey), node.querySelector('.chev'));
       const open = ()=>{ location.hash = '#booking/'+id; };
       node.addEventListener('click', open);
       node.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); open(); } });
@@ -763,7 +775,7 @@
         '<div class="ctl"></div>'+
       '</div>'
     );
-    node.querySelector('.ctl').appendChild(checkButton(id));
+    node.querySelector('.ctl').appendChild(checkButton(dkey));
     return node;
   }
 
