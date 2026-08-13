@@ -14,6 +14,22 @@ lead images (resized and optimized for the app). Source articles:
 | Aug 7 | Michelangelo's David | en.wikipedia.org/wiki/David_(Michelangelo) |
 | Aug 8 | Florence | en.wikipedia.org/wiki/Florence |
 
+## Singapore trip photos
+
+Fetched by `scripts/fetch-sg-photos.py` from the same Wikipedia lead-image
+source. Run that script on a machine with internet access to populate
+`photos/sg-*.jpg` (the app references them and hides gracefully until they exist).
+
+| Where | Photo | Source article |
+|-------|-------|----------------|
+| Cover | Marina Bay | en.wikipedia.org/wiki/Marina_Bay |
+| Aug 18 | Gardens by the Bay | en.wikipedia.org/wiki/Gardens_by_the_Bay |
+| Aug 19 | Chinatown | en.wikipedia.org/wiki/Chinatown,_Singapore |
+| Aug 20 | Sultan Mosque | en.wikipedia.org/wiki/Sultan_Mosque,_Singapore |
+| Aug 21 | Singapore Flyer | en.wikipedia.org/wiki/Singapore_Flyer |
+| Aug 22 | Marina Bay Sands | en.wikipedia.org/wiki/Marina_Bay_Sands |
+| Aug 23 | Jewel Changi Airport | en.wikipedia.org/wiki/Jewel_Changi_Airport |
+
 Images remain under their original Wikimedia Commons licenses (mostly CC BY-SA /
 public domain). See each Commons file page for the specific license and author.
 Used here for a personal, non-commercial family trip app.
