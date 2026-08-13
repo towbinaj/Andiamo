@@ -502,9 +502,12 @@
   function dayHero(iso){
     const d = TRIP.days.find(x=>x.date===iso);
     if (!d || !d.photo) return null;
-    return $('<div class="dayhero"><img loading="lazy" decoding="async" src="'+esc(d.photo)+'" alt="'+esc(d.highlight||'')+'">'+
+    const node = $('<div class="dayhero"><img loading="lazy" decoding="async" src="'+esc(d.photo)+'" alt="'+esc(d.highlight||'')+'">'+
       '<span class="dhtag">Highlight</span>'+
       (d.highlight ? '<div class="dhcap">'+esc(d.highlight)+'</div>' : '')+'</div>');
+    // if the photo file isn't there (yet), drop the hero rather than show a broken image
+    node.querySelector('img').addEventListener('error', ()=>{ node.remove(); });
+    return node;
   }
 
   // ---- special occasion (e.g. an anniversary): a HIDDEN banner + hearts backdrop ----
@@ -984,6 +987,9 @@
         '</div>'+
         '<span class="tc-chev">›</span>'+
       '</button>');
+      // if the cover file isn't there (yet), fall back to a clean text-only card
+      const cimg = card.querySelector('.tc-img img');
+      if (cimg) cimg.addEventListener('error', ()=>{ const w=cimg.closest('.tc-img'); if (w) w.remove(); });
       card.addEventListener('click', ()=>{ selectTrip(t.id); location.hash = '#days'; });
       host.appendChild(card);
     });
