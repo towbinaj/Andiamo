@@ -1,7 +1,22 @@
 /* ============================================================================
-   ANDIAMO — your trip data
+   ANDIAMO — your trips
    ----------------------------------------------------------------------------
    This is the ONLY file you need to edit to update the app.
+
+   Trips are a COLLECTION: `TRIPS` is an array, one { ... } block per trip.
+   The Trips tab lists them all — tap one to relive its days. To remember a
+   new trip, copy an entire trip block (from `id:` down to its closing `}`),
+   paste it as another element of the array, and change the values. Give each
+   trip a unique `id`. The most recent / current trip can go first.
+
+   A trip needs:
+     id        "unique-slug"          (required, no spaces)
+     name      short name shown        (required)
+     subtitle  "City & City"           (optional)
+     cover     "photos/…​.jpg"          card image on the Trips tab; optional
+                                       (falls back to the first day's photo)
+     partySize, startDate, endDate, legs, days, dress, events  (as below)
+
    To add a booking or activity, copy one { ... } block inside `events`,
    paste it, and change the values. Keep the commas between blocks.
 
@@ -29,9 +44,13 @@
    always sort by their start time, wherever they sit in the block.
    ============================================================================ */
 
-const TRIP = {
+const TRIPS = [
+
+{
+  id: "rome-florence-2026",
   name: "Andiamo",
   subtitle: "Rome & Florence",
+  cover: "photos/day5.jpg",
   partySize: 4,
   startDate: "2026-08-01",
   endDate: "2026-08-08",
@@ -308,4 +327,12 @@ const TRIP = {
       headsup: ["Early start — pre-book a taxi the night before"],
     },
   ],
-};
+},
+
+// ── Add the next trip to remember here: copy the block above and edit it. ──
+
+];
+
+// The app opens on whichever trip you pick in the Trips tab; this is just the
+// default before you've chosen one.
+const TRIP = TRIPS[0];
