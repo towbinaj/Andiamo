@@ -47,6 +47,134 @@
 const TRIPS = [
 
 {
+  id: "singapore-2026",
+  name: "Singapore",
+  subtitle: "AOCR · SGCR-WIRES 2026",
+  partySize: 1,
+  startDate: "2026-08-16",
+  endDate: "2026-08-24",
+
+  legs: [
+    {
+      city: "Singapore",
+      start: "2026-08-16",
+      end: "2026-08-24",
+      hotelName: "JEN Singapore Orchardgateway by Shangri-La",
+      hotelAddress: "277 Orchard Road, Singapore 238858",
+      hotelWebsite: "https://www.shangri-la.com/en/singapore/jen-orchardgateway/",
+    },
+  ],
+
+  days: [
+    { date: "2026-08-16", title: "Fly to Singapore" },
+    { date: "2026-08-17", title: "Detroit · Seoul · arrive Singapore" },
+    { date: "2026-08-18", title: "Free day in Singapore" },
+    { date: "2026-08-19", title: "Free day in Singapore" },
+    { date: "2026-08-20", title: "Pre-conference & badge pickup" },
+    { date: "2026-08-21", title: "Congress Day 1" },
+    { date: "2026-08-22", title: "Congress Day 2" },
+    { date: "2026-08-23", title: "Congress Day 3 · fly home" },
+    { date: "2026-08-24", title: "Home to Cincinnati" },
+  ],
+
+  dress: [
+    "Thu, Aug 20 (pre-conference) — Business casual.",
+    "Fri, Aug 21 — Business formal.",
+    "Sat, Aug 22 — Business formal.",
+    "Sun, Aug 23 — Business casual.",
+  ],
+
+  events: [
+    /* ---------------------------- Sun, Aug 16 — outbound ---------------------------- */
+    { date: "2026-08-16", start: "08:10", title: "Depart Cincinnati — CVG → Detroit", type: "flight", fixed: true,
+      note: "Cincinnati → Detroit · Endeavor Air / Delta Connection · DL 5479 · arrives 9:26 AM.",
+      booking: { label: "Status", value: "Confirmed", source: "Delta app" } },
+    { date: "2026-08-16", start: "12:40", title: "Detroit → Seoul — DTW", type: "flight", fixed: true,
+      note: "Detroit → Seoul-Incheon (ICN) · Delta · DL 159 · arrives 4:25 PM on Aug 17.",
+      booking: { label: "Status", value: "Confirmed", source: "Delta app" } },
+
+    /* ---------------------------- Mon, Aug 17 — arrive Singapore ---------------------------- */
+    { date: "2026-08-17", start: "18:40", title: "Seoul → Singapore — ICN", type: "flight", fixed: true,
+      note: "Seoul-Incheon (ICN) → Singapore (SIN) · Korean Air · DL 7821 · arrives 11:55 PM.",
+      booking: { label: "Status", value: "Confirmed", source: "Delta app" } },
+    { date: "2026-08-17", start: null, title: "Check in — JEN Orchardgateway", type: "sight", fixed: false,
+      address: "277 Orchard Road, Singapore 238858",
+      note: "Late arrival — the hotel is right on Orchard Road, above the Orchardgateway mall." },
+
+    /* ---------------------------- Tue, Aug 18 — free day ---------------------------- */
+    { date: "2026-08-18", start: null, title: "Free day — explore Singapore", type: "sight", fixed: false,
+      note: "No conference events. Ideas: Gardens by the Bay, Marina Bay Sands & the waterfront, Merlion Park, Chinatown, Little India." },
+    { date: "2026-08-18", start: null, title: "Gardens by the Bay", type: "sight", fixed: false, optional: true, address: "18 Marina Gardens Drive, Singapore 018953", note: "Supertree Grove and the cooled conservatories on Marina Bay." },
+    { date: "2026-08-18", start: null, title: "Marina Bay waterfront", type: "sight", fixed: false, optional: true, address: "Marina Bay Sands, 10 Bayfront Avenue, Singapore", note: "The bay loop — Marina Bay Sands, the Merlion, the Helix Bridge; light show after dark." },
+
+    /* ---------------------------- Wed, Aug 19 — free day ---------------------------- */
+    { date: "2026-08-19", start: null, title: "Free day — explore Singapore", type: "sight", fixed: false,
+      note: "No conference events. Ideas: Botanic Gardens, Orchard Road shopping (steps from the hotel), Chinatown, Sentosa, hawker centres." },
+    { date: "2026-08-19", start: null, title: "Singapore Botanic Gardens", type: "sight", fixed: false, optional: true, address: "1 Cluny Road, Singapore 259569", note: "UNESCO-listed gardens with the National Orchid Garden, near Orchard Road." },
+    { date: "2026-08-19", start: null, title: "Orchard Road", type: "sight", fixed: false, optional: true, address: "Orchard Road, Singapore", note: "Singapore's flagship shopping boulevard — right outside the hotel." },
+
+    /* ---------------------------- Thu, Aug 20 — pre-conference ---------------------------- */
+    { date: "2026-08-20", start: null, title: "Collect speaker badge — Speakers' Room", type: "ticket", fixed: false,
+      address: "Citrine 211, Level 2, Singapore EXPO Meeting Rooms, 1 Expo Drive, Singapore 486150",
+      note: "Speakers' Room open 2:00–6:00 PM today. Badges are collected here, not at the registration counter. Speaker Lounge with refreshments: Tourmaline 207.",
+      headsup: ["👔 Business casual", "Speakers' Room 2:00–6:00 PM"] },
+
+    /* ---------------------------- Fri, Aug 21 — Congress Day 1 ---------------------------- */
+    { date: "2026-08-21", start: "10:30", title: "Opening Ceremony", type: "tour", fixed: true,
+      address: "Garnet 218 & 219, Singapore EXPO Meeting Rooms, 1 Expo Drive, Singapore 486150",
+      note: "Opening Ceremony · 10:30 AM–12:00 PM · AOCR-SGCR 1 Track.",
+      headsup: ["👔 Business formal"] },
+    { date: "2026-08-21", start: "14:45", title: "Present — The Evolution of PACS in the Age of AI", type: "tour", fixed: true,
+      address: "Garnet 214 & 215, Singapore EXPO Meeting Rooms, 1 Expo Drive, Singapore 486150",
+      note: "Your talk 2:45–3:00 PM (15 min) in the session “Imaging Informatics — (More Than) 101: RIS-PACS, Enterprise Imaging, Standards and More” (2:00–3:30 PM) · Track AOCR-SGCR 3.",
+      headsup: ["Arrive 20 min early to prep", "👔 Business formal", "Slides load on the event laptop — no personal laptops"] },
+    { date: "2026-08-21", start: "18:30", title: "Faculty Dinner — Singapore Flyer", type: "meal", fixed: true,
+      address: "Flyer Event Hall, Level 2, Singapore Flyer, 30 Raffles Avenue, Singapore 039803",
+      note: "A ride on the Singapore Flyer followed by dinner · 6:30 PM–10:00 PM. Entry by invitation/ticket only.",
+      fromHotel: "Shuttle from the JEN Orchardgateway lobby at 6:30 PM (last bus 6:45 PM); returns 9:30 PM (last 10:00 PM).",
+      headsup: ["👔 Business formal", "Bring your invitation / ticket", "Hotel shuttle 6:30 PM"] },
+
+    /* ---------------------------- Sat, Aug 22 — Congress Day 2 ---------------------------- */
+    { date: "2026-08-22", start: "10:50", title: "Present — After AI: The Workflow Integration", type: "tour", fixed: true,
+      address: "Garnet 214 & 215, Singapore EXPO Meeting Rooms, 1 Expo Drive, Singapore 486150",
+      note: "Your talk 10:50–11:00 AM (10 min) in “Beyond Imaging AI — The Shifting Sands”, the AOSR–SIIM–EUSOMII Friendship Session (10:30 AM–12:00 PM) · Track AOCR-SGCR 3.",
+      headsup: ["Arrive 20 min early to prep", "👔 Business formal"] },
+    { date: "2026-08-22", start: "15:45", title: "Present — The Cybersecurity Incident", type: "tour", fixed: true,
+      address: "Garnet 214 & 215, Singapore EXPO Meeting Rooms, 1 Expo Drive, Singapore 486150",
+      note: "Your talk 3:45–4:15 PM (30 min) in “CyberSecurity for Your Radiology Dept and Hospital” (3:45–5:15 PM) · Track AOCR-SGCR 3.",
+      headsup: ["Arrive 20 min early to prep", "👔 Business formal"] },
+    { date: "2026-08-22", start: "19:00", title: "Gala Dinner — Pan Pacific Singapore", type: "meal", fixed: true,
+      address: "Pacific Ball Room, Level 1, Pan Pacific Singapore, 7 Raffles Boulevard, Singapore 039595",
+      note: "Gala Dinner · 7:00 PM–10:00 PM · cocktail reception from 6:30 PM. Entry by invitation/ticket only.",
+      fromHotel: "Shuttle from the JEN Orchardgateway lobby at 6:30 PM (last bus 6:45 PM); returns 9:45 PM (last 10:00 PM).",
+      headsup: ["👔 Business formal", "Bring your invitation / ticket", "Hotel shuttle 6:30 PM"] },
+
+    /* ---------------------------- Sun, Aug 23 — Congress Day 3 · fly home ---------------------------- */
+    { date: "2026-08-23", start: "13:00", title: "Present — Planning for Disaster", type: "tour", fixed: true,
+      address: "Garnet 214 & 215, Singapore EXPO Meeting Rooms, 1 Expo Drive, Singapore 486150",
+      note: "Your talk 1:00–1:15 PM (15 min) in “Thriving with AI or The Opposite? From LLMs and VLMs to Agentic AI” (11:45 AM–1:15 PM) · Track AOCR-SGCR 3.",
+      headsup: ["Arrive 20 min early to prep", "👔 Business casual"] },
+    { date: "2026-08-23", start: "13:15", title: "Closing Ceremony", type: "tour", fixed: true,
+      address: "Garnet 218 & 219, Singapore EXPO Meeting Rooms, 1 Expo Drive, Singapore 486150",
+      note: "Closing Ceremony · 1:15–1:45 PM · AOCR-SGCR 1 Track.",
+      headsup: ["👔 Business casual"] },
+    { date: "2026-08-23", start: null, title: "Check out — JEN Orchardgateway", type: "sight", fixed: false,
+      note: "Late-night flight tonight — store your bags at the hotel after checkout if needed." },
+    { date: "2026-08-23", start: "22:00", title: "Depart Singapore — SIN → Seoul", type: "flight", fixed: true,
+      note: "Singapore (SIN) → Seoul-Incheon (ICN) · Korean Air · DL 7820 · arrives 5:35 AM on Aug 24.",
+      booking: { label: "Status", value: "Confirmed", source: "Delta app" } },
+
+    /* ---------------------------- Mon, Aug 24 — home ---------------------------- */
+    { date: "2026-08-24", start: "10:15", title: "Seoul → Detroit — ICN", type: "flight", fixed: true,
+      note: "Seoul-Incheon (ICN) → Detroit (DTW) · Delta · DL 158 · arrives 10:30 AM.",
+      booking: { label: "Status", value: "Confirmed", source: "Delta app" } },
+    { date: "2026-08-24", start: "12:27", title: "Detroit → Cincinnati — home", type: "flight", fixed: true,
+      note: "Detroit (DTW) → Cincinnati (CVG) · Endeavor Air / Delta Connection · DL 5257 · arrives 1:42 PM.",
+      booking: { label: "Status", value: "Confirmed", source: "Delta app" } },
+  ],
+},
+
+{
   id: "rome-florence-2026",
   name: "Andiamo",
   subtitle: "Rome & Florence",
