@@ -827,7 +827,7 @@
         const hasFixed = evs.some(e=>e.fixed && e.start && e.type!=='meal');
         const summary = evs.filter(e=>e.fixed && e.start).sort(sortFixed).map(e=>e.title.split(' — ')[0].split(' (')[0]).slice(0,3).join(' · ') || 'Open day';
         const dots = (hasFixed?'<span class="dot" style="background:'+accent+'"></span>':'')+(hasBook?'<span class="dot" style="background:var(--gold)"></span>':'');
-        const card = $('<button class="daycard" style="border-left:4px solid '+accent+'"><div class="dn" style="color:'+accent+'">'+(dayIndex(d.date)+1)+'<small>'+dow(d.date)+'</small></div><div><p class="dt">'+esc(d.title)+'</p><p class="dm">'+esc(summary)+'</p><div class="dots">'+dots+'</div></div><div class="chev">›</div></button>');
+        const card = $('<button class="daycard" style="border-left:4px solid '+accent+'"><div class="dn" style="color:'+accent+'">'+asDate(d.date).getDate()+'<small>'+dow(d.date)+'</small></div><div><p class="dt">'+esc(d.title)+'</p><p class="dm">'+esc(summary)+'</p><div class="dots">'+dots+'</div></div><div class="chev">›</div></button>');
         card.addEventListener('click', ()=>{ location.hash='#day/'+d.date; });
         host.appendChild(card);
       });
