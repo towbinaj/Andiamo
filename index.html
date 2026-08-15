@@ -468,22 +468,38 @@
   }
 
   // ---- weather + sunrise/sunset (Open-Meteo, no key; cached for offline) ----
-  const CITY_COORD = { Rome:{lat:41.9028,lon:12.4964}, Florence:{lat:43.7696,lon:11.2558} };
+  const CITY_COORD = {
+    Rome:{lat:41.9028,lon:12.4964}, Florence:{lat:43.7696,lon:11.2558},
+    Singapore:{lat:1.3521,lon:103.8198},
+  };
   let WX = null;
   try { WX = JSON.parse(localStorage.getItem('andiamo-wx') || 'null'); } catch(e){}
   async function fetchWeather(){
+    // fetch each trip's cities over that trip's own dates, in the city's local
+    // timezone. One city's failure (e.g. a past trip out of forecast range)
+    // must not wipe out the others, so each is fetched independently.
+    const jobs = [];
+    TRIPS.forEach(t => {
+      Array.from(new Set((t.legs||[]).map(l=>l.city))).forEach(name => {
+        const c = CITY_COORD[name]; if (!c) return;
+        jobs.push({ name, c, start:t.startDate, end:t.endDate });
+      });
+    });
     const city = {};
-    for (const name of Object.keys(CITY_COORD)){
-      const c = CITY_COORD[name];
-      const url = 'https://api.open-meteo.com/v1/forecast?latitude='+c.lat+'&longitude='+c.lon+
-        '&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=Europe%2FRome&temperature_unit=fahrenheit&start_date='+TRIP.startDate+'&end_date='+TRIP.endDate;
-      const r = await fetch(url); if(!r.ok) throw new Error('wx'); const j = await r.json();
-      const days = {};
-      (j.daily.time||[]).forEach((d,i)=>{ days[d] = { code:j.daily.weather_code[i], hi:Math.round(j.daily.temperature_2m_max[i]), lo:Math.round(j.daily.temperature_2m_min[i]), sr:j.daily.sunrise[i], ss:j.daily.sunset[i] }; });
-      city[name] = days;
+    for (const j of jobs){
+      try {
+        const url = 'https://api.open-meteo.com/v1/forecast?latitude='+j.c.lat+'&longitude='+j.c.lon+
+          '&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=auto&temperature_unit=fahrenheit&start_date='+j.start+'&end_date='+j.end;
+        const r = await fetch(url); if(!r.ok) continue; const jr = await r.json();
+        const days = city[j.name] || {};
+        (jr.daily.time||[]).forEach((d,i)=>{ days[d] = { code:jr.daily.weather_code[i], hi:Math.round(jr.daily.temperature_2m_max[i]), lo:Math.round(jr.daily.temperature_2m_min[i]), sr:jr.daily.sunrise[i], ss:jr.daily.sunset[i] }; });
+        city[j.name] = days;
+      } catch(e){ /* skip this city, keep the rest */ }
     }
-    WX = { at: new Date().toISOString(), city };
-    try { localStorage.setItem('andiamo-wx', JSON.stringify(WX)); } catch(e){}
+    if (Object.keys(city).length){
+      WX = { at: new Date().toISOString(), city };
+      try { localStorage.setItem('andiamo-wx', JSON.stringify(WX)); } catch(e){}
+    }
   }
   const wxFor = (iso) => { if(!WX||!WX.city) return null; const c = WX.city[cityForDate(iso)]; return (c && c[iso]) || null; };
   function wxDesc(code){
@@ -820,7 +836,15 @@
 
     TRIP.legs.forEach((leg, li)=>{
       const accent = leg.city==='Florence' ? 'var(--flor)' : 'var(--lapis)';
-      host.appendChild($('<div style="margin-top:14px"><div class="leg-head"><h3 class="leg-city" style="color:'+accent+'">'+esc(leg.city)+'</h3><span class="leg-dates">'+MO[asDate(leg.start).getMonth()]+' '+asDate(leg.start).getDate()+'–'+asDate(leg.end).getDate()+'</span></div><p class="leg-hotel">🏨 '+esc(leg.hotelName)+'</p></div>'));
+      const hq = encodeURIComponent(leg.hotelAddress||'');
+      const hotelActs = (leg.hotelAddress||leg.hotelWebsite||leg.hotelPhone)
+        ? '<div class="actions">'+
+            (leg.hotelAddress ? iconBtn('https://www.google.com/maps/search/?api=1&query='+hq, 'Directions', 'pin') : '')+
+            (leg.hotelWebsite ? iconBtn(leg.hotelWebsite, 'Website', 'globe') : '')+
+            (leg.hotelPhone ? iconBtn('tel:'+leg.hotelPhone.replace(/[^+\d]/g,''), 'Call', 'phone') : '')+
+          '</div>'
+        : '';
+      host.appendChild($('<div style="margin-top:14px"><div class="leg-head"><h3 class="leg-city" style="color:'+accent+'">'+esc(leg.city)+'</h3><span class="leg-dates">'+MO[asDate(leg.start).getMonth()]+' '+asDate(leg.start).getDate()+'–'+asDate(leg.end).getDate()+'</span></div><p class="leg-hotel">🏨 '+esc(leg.hotelName)+'</p>'+hotelActs+'</div>'));
       TRIP.days.filter(d=> d.date>=leg.start && d.date<(li<TRIP.legs.length-1?TRIP.legs[li+1].start:'9999') ).forEach(d=>{
         const evs = eventsOn(d.date);
         const hasBook = evs.some(e=>e.booking);
@@ -859,7 +883,7 @@
     else nav.appendChild($('<span class="spacer"></span>'));
     host.appendChild(nav);
 
-    host.appendChild($('<p class="eyebrow" style="color:'+cityAccent(iso)+'">'+esc(cityForDate(iso))+' · Day '+(dayIndex(iso)+1)+' of '+TRIP.days.length+'</p>'));
+    host.appendChild($('<p class="eyebrow" style="color:'+cityAccent(iso)+'">'+esc(cityForDate(iso))+'</p>'));
     host.appendChild(dayHeadRow(iso));
     host.appendChild($('<p class="sub">'+esc(dayTitle(iso))+'</p>'));
     setOccasionBg(iso);
