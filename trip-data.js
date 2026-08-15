@@ -63,6 +63,7 @@ const TRIPS = [
       hotelName: "JEN Singapore Orchardgateway by Shangri-La",
       hotelAddress: "277 Orchard Road, Singapore 238858",
       hotelWebsite: "https://www.shangri-la.com/en/singapore/jen-orchardgateway/",
+      hotelPhone: "+65 6708 8888",
     },
   ],
 
