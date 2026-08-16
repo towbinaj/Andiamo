@@ -12,6 +12,8 @@ out.txt
 CONFIRMATIONS-private.md
 encrypt.html
 secrets.test.js
+merge-secrets.cjs
+secrets.enc.js.bak
 
 # ...but DO publish the generated app icons (derived from favicon.jpg)
 !favicon.ico
