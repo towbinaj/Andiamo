@@ -46,5 +46,14 @@
     "type": "sight",
     "fixed": false,
     "custom": true
+  },
+  {
+    "id": "c43",
+    "date": "2026-08-19",
+    "start": null,
+    "title": "Lau pa sat",
+    "type": "meal",
+    "fixed": false,
+    "custom": true
   }
 ]
