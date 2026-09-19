@@ -78,6 +78,11 @@ your device, and nobody can read the codes without it.
    codes then appear on each booking in **Today** and **Days** (just for that
    session). **Lock** hides them again.
 
+**Adding codes later** (without retyping the old ones): use `secrets-merge.html` — pick your
+current `secrets.enc.js`, type the passphrase, edit the codes box, and it decrypts, merges
+and re-encrypts in the browser, then downloads a replacement. Same git-ignored, local-only
+deal as `encrypt.html`.
+
 To change the passphrase later, re-run `encrypt.html` and replace `secrets.enc.js`.
 Your plaintext codes always stay in `CONFIRMATIONS-private.md` (git-ignored) as a backup.
 
