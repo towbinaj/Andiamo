@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Merge Confirmation Codes</title>
+<style>
+  :root{
+    --bg:#f4f1ea; --surface:#fffdf8; --ink:#1c1a17; --muted:#6b645a;
+    --hairline:#e0d9cc; --lapis:#2f5d7c; --gold:#b08a3e; --bad:#9b3b2f; --good:#3f6b45;
+  }
+  :root:not([data-theme="light"]) { }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#171512; --surface:#211e1a; --ink:#ede8df; --muted:#a49b8d;
+      --hairline:#332e27; --lapis:#79a8c7; --gold:#d6ad5e; --bad:#e08a7c; --good:#8ec296;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#171512; --surface:#211e1a; --ink:#ede8df; --muted:#a49b8d;
+    --hairline:#332e27; --lapis:#79a8c7; --gold:#d6ad5e; --bad:#e08a7c; --good:#8ec296;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.55 ui-serif,Georgia,"Times New Roman",serif;padding:0 16px 64px}
+  .wrap{max-width:660px;margin:0 auto}
+  h1{font-size:26px;margin:32px 0 6px;letter-spacing:-.01em}
+  .sub{color:var(--muted);margin:0 0 26px;font-size:15px}
+  .card{background:var(--surface);border:1px solid var(--hairline);border-radius:12px;
+    padding:18px 16px;margin:0 0 16px}
+  .step{font:600 11.5px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--lapis);margin:0 0 10px}
+  label{display:block;font-size:14px;color:var(--muted);margin:0 0 6px}
+  input[type=password],input[type=file],textarea{
+    width:100%;background:var(--bg);color:var(--ink);border:1px solid var(--hairline);
+    border-radius:8px;padding:10px 11px;font:15px ui-sans-serif,system-ui,sans-serif}
+  textarea{min-height:140px;font:13.5px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;resize:vertical}
+  button{background:var(--lapis);color:#fff;border:0;border-radius:9px;padding:13px 18px;
+    font:600 15px ui-sans-serif,system-ui,sans-serif;cursor:pointer;width:100%;margin-top:4px}
+  button:disabled{opacity:.5;cursor:default}
+  .note{font-size:13.5px;color:var(--muted);margin:10px 0 0}
+  .out{margin-top:14px;font:14px ui-sans-serif,system-ui,sans-serif;white-space:pre-wrap}
+  .ok{color:var(--good)} .err{color:var(--bad)}
+  ul.keys{margin:10px 0 0;padding-left:18px;font:14px ui-sans-serif,system-ui,sans-serif}
+  ul.keys li{margin:2px 0}
+  .tag{color:var(--gold);font-size:12px;margin-left:6px}
+  .warn{border-left:3px solid var(--gold);padding-left:12px;margin:14px 0 0;
+    font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Merge confirmation codes</h1>
+  <p class="sub">Adds confirmation codes to your existing encrypted set and writes a new
+  <code>secrets.enc.js</code>. Everything happens in this page — the passphrase and the
+  codes never leave your computer, and nothing is sent anywhere. This copy ships with the
+  repo and holds no codes of its own, so it is safe to publish; type them in below.</p>
+
+  <div class="card">
+    <p class="step">1 — Your current secrets file</p>
+    <label>Pick <code>secrets.enc.js</code> from the Andiamo folder</label>
+    <input type="file" id="file" accept=".js">
+    <p class="note" id="fileNote">Needed so the Italy and Singapore codes survive the merge.
+    Without it you'd overwrite them.</p>
+  </div>
+
+  <div class="card">
+    <p class="step">2 — Family passphrase</p>
+    <label>The same one you unlock the app with</label>
+    <input type="password" id="pass" autocomplete="off" spellcheck="false">
+    <p class="note">Used to decrypt what's there and re-encrypt the merged set.</p>
+  </div>
+
+  <div class="card">
+    <p class="step">3 — Codes to add</p>
+    <label>Edit freely — key on the left, what the app will show on the right</label>
+    <textarea id="add" spellcheck="false"></textarea>
+    <p class="note">These keys match the <code>codeKey</code> fields already in
+    <code>trip-data.js</code>, so they'll appear on the right cards once merged.</p>
+  </div>
+
+  <div class="card">
+    <button id="go">Merge &amp; download secrets.enc.js</button>
+    <div class="out" id="out"></div>
+  </div>
+
+  <p class="warn">Afterwards: replace <code>secrets.enc.js</code> in the Andiamo folder with the
+  downloaded file, then commit and push. Only ciphertext gets published. If you save a copy
+  of this page with the codes typed in, name it <code>secrets-merge.html</code> — that name is
+  git-ignored, so it can't be committed by accident.</p>
+</div>
+
+<script>
+// Keys only — this copy lives in the repo, so it carries no codes.
+// Fill in the values; blank ones are skipped.
+const PRESET = {
+  "greeceflights": "",
+  "seajetsmilos":  "",
+  "seajetscrete":  ""
+};
+const ITER = 250000, HASH = "SHA-256";
+const $ = (id) => document.getElementById(id);
+$('add').value = JSON.stringify(PRESET, null, 2);
+
+const b64e = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
+const b64d = (s) => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+
+async function deriveKey(pass, salt, usage){
+  const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2', salt, iterations:ITER, hash:HASH},
+    km, {name:'AES-GCM', length:256}, false, usage);
+}
+
+// secrets.enc.js is a JS file: a comment, then window.SECRETS = { ... };
+function parseSecrets(text){
+  const m = text.match(/window\.SECRETS\s*=\s*(\{[\s\S]*?\})\s*;?\s*$/);
+  if (!m) throw new Error("that file doesn't look like secrets.enc.js");
+  return JSON.parse(m[1]);
+}
+
+async function decryptExisting(text, pass){
+  const s = parseSecrets(text);
+  const key = await deriveKey(pass, b64d(s.salt), ['decrypt']);
+  let pt;
+  try {
+    pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64d(s.iv)}, key, b64d(s.ct));
+  } catch(e){
+    throw new Error("wrong passphrase — the existing file wouldn't decrypt");
+  }
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+
+async function encrypt(obj, pass){
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv   = crypto.getRandomValues(new Uint8Array(12));
+  const key  = await deriveKey(pass, salt, ['encrypt']);
+  const ct   = await crypto.subtle.encrypt({name:'AES-GCM', iv},
+    key, new TextEncoder().encode(JSON.stringify(obj)));
+  return {v:1, kdf:"PBKDF2", hash:HASH, iter:ITER,
+    salt:b64e(salt), iv:b64e(iv), ct:b64e(ct)};
+}
+
+const readFile = (f) => new Promise((res, rej) => {
+  const r = new FileReader();
+  r.onload = () => res(r.result);
+  r.onerror = () => rej(new Error("couldn't read that file"));
+  r.readAsText(f);
+});
+
+$('go').addEventListener('click', async () => {
+  const out = $('out');
+  out.className = 'out'; out.textContent = 'Working…';
+  $('go').disabled = true;
+  try {
+    const pass = $('pass').value;
+    if (!pass) throw new Error("enter the family passphrase");
+
+    let additions;
+    try { additions = JSON.parse($('add').value); }
+    catch(e){ throw new Error("the codes box isn't valid JSON — check the quotes and commas"); }
+
+    let merged = {}, existingCount = 0;
+    const f = $('file').files[0];
+    if (f) {
+      merged = await decryptExisting(await readFile(f), pass);
+      existingCount = Object.keys(merged).length;
+    }
+
+    const added = [], replaced = [], blank = [];
+    for (const [k, v] of Object.entries(additions)) {
+      if (!String(v).trim()) { blank.push(k); continue; }   // nothing typed in yet
+      (k in merged ? replaced : added).push(k);
+      merged[k] = v;
+    }
+    if (!added.length && !replaced.length)
+      throw new Error("no codes to add — fill in the values in the codes box");
+
+    const enc = await encrypt(merged, pass);
+    const body = "/* Encrypted confirmation codes - safe to publish (ciphertext only). */\n"
+               + "window.SECRETS = " + JSON.stringify(enc) + ";\n";
+    const url = URL.createObjectURL(new Blob([body], {type:'application/javascript'}));
+    const a = document.createElement('a');
+    a.href = url; a.download = 'secrets.enc.js';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+
+    out.className = 'out ok';
+    out.textContent = (f
+      ? `Decrypted ${existingCount} existing code${existingCount===1?'':'s'}, `
+      : `No existing file given — starting fresh, `)
+      + `added ${added.length}, replaced ${replaced.length}`
+      + (blank.length ? `, skipped ${blank.length} left blank. ` : `. `)
+      + `Downloaded secrets.enc.js with ${Object.keys(merged).length} codes in total:`;
+    const ul = document.createElement('ul');
+    ul.className = 'keys';
+    for (const k of Object.keys(merged).sort()){
+      const li = document.createElement('li');
+      li.textContent = k;
+      if (added.includes(k))    { const s=document.createElement('span'); s.className='tag'; s.textContent='new'; li.appendChild(s); }
+      if (replaced.includes(k)) { const s=document.createElement('span'); s.className='tag'; s.textContent='replaced'; li.appendChild(s); }
+      ul.appendChild(li);
+    }
+    out.appendChild(ul);
+    if (!f) {
+      const w = document.createElement('p');
+      w.className = 'warn';
+      w.textContent = "You didn't pick an existing secrets.enc.js, so this file has only the codes above. "
+                    + "Publishing it would drop the Italy and Singapore ones.";
+      out.appendChild(w);
+    }
+  } catch (e) {
+    out.className = 'out err';
+    out.textContent = e.message || String(e);
+  } finally {
+    $('go').disabled = false;
+  }
+});
+</script>
+</body>
+</html>

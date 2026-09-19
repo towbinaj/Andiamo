@@ -10,6 +10,7 @@ in light and dark mode, and offline once loaded.
 |------|------------|
 | `index.html` | The app (all the code + styling). You rarely touch this. |
 | `trip-data.js` | **Your data** — travelers, days, bookings. Edit this to change anything. |
+| `merge-codes.html` | Adds confirmation codes to `secrets.enc.js`, in your browser. |
 | `sw.js` | Service worker for offline support. |
 | `manifest.webmanifest` | Lets you "Add to Home Screen" as an app. |
 
@@ -78,10 +79,11 @@ your device, and nobody can read the codes without it.
    codes then appear on each booking in **Today** and **Days** (just for that
    session). **Lock** hides them again.
 
-**Adding codes later** (without retyping the old ones): use `secrets-merge.html` — pick your
-current `secrets.enc.js`, type the passphrase, edit the codes box, and it decrypts, merges
-and re-encrypts in the browser, then downloads a replacement. Same git-ignored, local-only
-deal as `encrypt.html`.
+**Adding codes later** (without retyping the old ones): open `merge-codes.html` — it's in
+this repo, so it's on every machine. Pick your current `secrets.enc.js`, type the
+passphrase, fill in the codes box, and it decrypts, merges and re-encrypts in the browser,
+then downloads a replacement to commit. It holds no codes itself, and nothing leaves the
+page. If you save a filled-in copy, name it `secrets-merge.html` — that name is git-ignored.
 
 To change the passphrase later, re-run `encrypt.html` and replace `secrets.enc.js`.
 Your plaintext codes always stay in `CONFIRMATIONS-private.md` (git-ignored) as a backup.
