@@ -155,6 +155,7 @@ const TRIPS = [
       address: "Avocado Restaurant, Imerovigli, Santorini 84700",
       website: "https://www.avocadosantorini.gr/",
       note: "Traditional Greek with seafood, meat and a real vegetarian list, a few minutes' walk in Imerovigli. It sits just off the caldera and the tables have no view — which is exactly why the sunset comes first from Kapari. Better to take the view for free from the hotel and pick dinner on the food. Open to the end of October, till midnight.",
+      booking: { label: "Table", value: "Requested by email", source: "awaiting reply" },
       headsup: ["No view from the tables — sunset first"] },
 
     /* ---------------------------- Mon, Oct 5 — Santorini ---------------------------- */
@@ -199,6 +200,7 @@ const TRIPS = [
     { date: "2026-10-05", start: null, title: "Dinner — Parea Tavern", type: "meal", fixed: false,
       address: "Parea Tavern, Fira, Santorini 84700",
       note: "Traditional Greek on a rooftop over the town — no caldera, which is the point when you've had caldera all day and taken the sunset with a drink already. Honest prices, and the moussaka is what people come back for. Rizes Gastro Taverna is the alternative if you'd rather the view came with the meal: three levels on the cliff, properly good, though the service reviews are uneven and you'll be tired by then. But see Metaxi Mas below before booking either.",
+      booking: { label: "Table", value: "Not booked — decide Parea or Metaxi Mas first", source: "to arrange" },
       headsup: ["Book it — small and popular"] },
     { date: "2026-10-05", start: null, title: "Instead — Metaxi Mas, Exo Gonia", type: "meal", fixed: false, optional: true,
       address: "Metaxi Mas, Exo Gonia, Santorini 84700",
@@ -258,6 +260,7 @@ const TRIPS = [
       address: "Yialos, Pollonia, Milos 84800",
       website: "https://yialos-milos.gr/",
       note: "The most ambitious kitchen in Pollonia and the village's occasion dinner — seafood-forward, raw preparations, a wine list beyond the usual. Twenty years on this waterfront, a short walk from Phos. Eight o'clock leaves nearly three hours after the boat docks at 17:10: car at 17:30, Pollonia by 18:00, checked in and showered with time to spare — and enough slack that an hour's delay on the ferry still doesn't touch it. If it ever did, they serve till midnight, so a phone call moves the table rather than losing it.",
+      booking: { label: "Table", value: "Requested by email", source: "awaiting reply" },
       headsup: ["Two hours fifty of slack after the ferry"] },
 
     /* ---------------------------- Wed, Oct 7 — Milos ---------------------------- */
@@ -298,6 +301,7 @@ const TRIPS = [
     { date: "2026-10-07", start: "19:30", title: "Dinner — O! Hamos!, Adamas", type: "meal", fixed: true, qty: 2,
       address: "O! Hamos!, Papikinou Beach, Adamas, Milos 84801",
       note: "Akrotiri being shut, the goat moves here — and the geography improves, because Klima sits just below Tripiti and Adamas is fifteen minutes away, not thirty. A family farm taverna with hand-written menus: wild goat in lemon-mustard sauce, chickpeas in a clay pot, pitarakia, cheese from their own goats. No reservations — you give your name at the door and wait on the beach across the road. Reported waits, all high season: 20 minutes arriving 19:15, an hour and ten at 19:30 on a Monday, an hour or more from 20:00 on. Before about 18:30 nobody waits at all. October should be kinder than any of those numbers, but nobody has written down by how much — so treat 19:30 as a table by 20:30 with a drink first, not a table at 19:30.",
+      booking: { label: "Table", value: "Walk-in only — no reservations taken", source: "name at the door" },
       headsup: ["No bookings — name at the door", "Reckon on a wait unless you're there by 18:30", "Check it's open in October"] },
     { date: "2026-10-07", start: null, title: "If O! Hamos! is hopeless — Adamas", type: "meal", fixed: false, optional: true,
       address: "Adamas, Milos 84801",
@@ -347,6 +351,7 @@ const TRIPS = [
     { date: "2026-10-08", start: "20:30", title: "Dinner — Ippokampos", type: "meal", fixed: true, qty: 2,
       address: "Ippokampos, Mitsotaki 3, Heraklion 71202, Crete",
       note: "Seafood mezedes by the waterfront, long a Heraklion institution and the easy answer after six hours of ferries. Half eight leaves three hours after the boat docks at 17:25, which covers a late arrival and checking in without hurrying.",
+      booking: { label: "Table", value: "Not booked yet", source: "to arrange" },
       headsup: ["Three hours of slack after the ferry"] },
 
     /* ---------------------------- Fri, Oct 9 — Heraklion & Knossos ---------------------------- */
@@ -386,6 +391,7 @@ const TRIPS = [
     { date: "2026-10-09", start: "20:30", title: "Dinner — Peskesi", type: "meal", fixed: true, qty: 2,
       address: "Peskesi, Kapetan Charalampi 6-8, Heraklion 71202, Crete",
       note: "Heraklion's celebrated one: Cretan farm-to-table in a restored Venetian mansion, reviving old island dishes with produce from their own 120-acre farm. Reservations are recommended and it books out, so this is the one to secure first of all of them. Half eight gives you the hour and a half between the conference closing at 17:00 and sitting down.",
+      booking: { label: "Table", value: "Not booked yet — book this one first", source: "to arrange" },
       headsup: ["Book this one first"] },
 
     /* ---------------------------- Sat, Oct 10 — Crete ---------------------------- */
@@ -426,6 +432,7 @@ const TRIPS = [
     { date: "2026-10-10", start: "20:00", title: "Last dinner — Pagopoieion", type: "meal", fixed: true, qty: 2,
       address: "Pagopoieion, Agios Titos Square, Heraklion 71202, Crete",
       note: "A 1950s ice factory on Agios Titos Square turned into a restaurant that puts on art and music — the right character for a last night, and two minutes from the hotel. Eight o'clock, since the meeting only finishes at 17:30 and the flight is at 11:00 tomorrow.",
+      booking: { label: "Table", value: "Not booked yet", source: "to arrange" },
       headsup: ["Last night — bags packed first"] },
 
     /* ---------------------------- Sun, Oct 11 — departure ---------------------------- */
