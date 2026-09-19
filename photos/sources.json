@@ -1,0 +1,30 @@
+{
+  "gr-cover": {
+    "article": "Fira",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/e/e9/Santorini_Fira3_tango7174.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+  },
+  "gr-crete": {
+    "article": "Balos",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Imeri_Gramvousa.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
+  },
+  "gr-departure": {
+    "article": "Morosini Fountain",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/%CE%9B%CE%B9%CE%BF%CE%BD%CF%84%CE%AC%CF%81%CE%B9%CE%B1_%CE%97%CF%81%CE%AC%CE%BA%CE%BB%CE%B5%CE%B9%CE%BF_9259.jpg/1920px-%CE%9B%CE%B9%CE%BF%CE%BD%CF%84%CE%AC%CF%81%CE%B9%CE%B1_%CE%97%CF%81%CE%AC%CE%BA%CE%BB%CE%B5%CE%B9%CE%BF_9259.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+  },
+  "gr-flight": {
+    "article": "Akrotiri (prehistoric city)",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/Ancient_Akrotiri.jpeg/1920px-Ancient_Akrotiri.jpeg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+  },
+  "gr-heraklion": {
+    "article": "Koules Fortress",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/Venetian_Fortress_of_Koules.jpg/1920px-Venetian_Fortress_of_Koules.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+  },
+  "gr-imerovigli": {
+    "article": "Skaros",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Skaros_Rock.jpg/1920px-Skaros_Rock.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+  },
+  "gr-knossos": {
+    "article": "Bull-Leaping Fresco",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/Knossos_bull_leaping_fresco.jpg/1920px-Knossos_bull_leaping_fresco.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
+  }
+}
