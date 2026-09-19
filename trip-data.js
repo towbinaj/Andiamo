@@ -186,7 +186,8 @@ const TRIPS = [
       note: "Built into the cliff above Athinios with a terrace straight out over the caldera — the drive back north passes it. Assyrtiko is the grape worth tasting, grown in baskets on the ground against the wind. Book a tasting ahead in October; hours shorten as the season ends.",
       headsup: ["Book the tasting ahead", "Someone has to drive"] },
     { date: "2026-10-05", start: null, title: "Back to Imerovigli for sunset", type: "transit", fixed: false,
-      note: "About 25 minutes north. Keep the car overnight — parking at Kapari, then drive it down to Fira in the morning and hand it back there." },
+      note: "About 25 minutes north. Keep the car overnight, then drive it down to Fira in the morning and hand it back there. Ask Kapari where to leave it — reports conflict on whether the hotel has parking of its own, and Imerovigli is tight. There's public parking by the village square either way, a short walk from the rooms.",
+      headsup: ["Confirm overnight parking with the hotel"] },
     { date: "2026-10-05", start: null, title: "Dinner in Imerovigli", type: "meal", fixed: false,
       note: "Second night, and the one worth booking a caldera-view table for. No reservation yet." },
 
