@@ -50,7 +50,7 @@ const TRIPS = [
   id: "greece-2026",
   name: "Greece",
   subtitle: "Santorini · Milos · Crete",
-  cover: "photos/gr-cover.jpg",
+  cover: "photos/gr-oia.jpg",
   partySize: 2,
   startDate: "2026-10-03",
   endDate: "2026-10-11",
@@ -87,7 +87,7 @@ const TRIPS = [
 
   // A short title for each calendar day.
   days: [
-    { date: "2026-10-03", title: "Fly to Greece",                  photo: "photos/gr-flight.jpg",     highlight: "Santorini" },
+    { date: "2026-10-03", title: "Fly to Greece",                  photo: "photos/gr-fira.jpg",       highlight: "Fira" },
     { date: "2026-10-04", title: "Arrive Santorini · Imerovigli", photo: "photos/gr-imerovigli.jpg", highlight: "Imerovigli" },
     { date: "2026-10-05", title: "Full day on Santorini",         photo: "photos/gr-oia.jpg",        highlight: "Oia" },
     { date: "2026-10-06", title: "Santorini → Milos",              photo: "photos/gr-milos.jpg",      highlight: "Milos" },

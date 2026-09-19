@@ -40,8 +40,8 @@ what Wikipedia's lead image for a *place* usually is.
 
 | Where | Caption | Candidate articles, in order |
 |-------|---------|------------------------------|
-| Cover | — | Fira · Santorini caldera · Oia |
-| Oct 3 | Santorini | Nea Kameni · Santorini caldera · Akrotiri |
+| Cover | — | reuses the Oct 5 Oia photo |
+| Oct 3 | Fira | Fira · Imerovigli |
 | Oct 4 | Imerovigli | Skaros · Imerovigli |
 | Oct 5 | Oia | Oia, Greece |
 | Oct 6 | Milos | Klima · Plaka · Milos |

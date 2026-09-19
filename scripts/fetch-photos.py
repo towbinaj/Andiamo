@@ -68,8 +68,8 @@ PHOTOS = {
 
     # ---- Greece, Oct 2026 ----
     # Landmarks first, the island or city last as a backstop.
-    "gr-cover":          ["Fira", "Santorini caldera", "Oia, Greece"],
-    "gr-flight":         ["Nea Kameni", "Santorini caldera", "Akrotiri (prehistoric city)"],
+    # The trip cover reuses gr-oia, so there is no gr-cover of its own.
+    "gr-fira":           ["Fira", "Imerovigli"],
     "gr-imerovigli":     ["Skaros", "Imerovigli"],
     "gr-oia":            "Oia, Greece",
     "gr-milos":          ["Klima, Milos", "Plaka, Milos", "Milos"],
