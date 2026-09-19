@@ -471,6 +471,8 @@
   const CITY_COORD = {
     Rome:{lat:41.9028,lon:12.4964}, Florence:{lat:43.7696,lon:11.2558},
     Singapore:{lat:1.3521,lon:103.8198},
+    Santorini:{lat:36.4167,lon:25.4333}, Milos:{lat:36.7213,lon:24.4361},
+    Heraklion:{lat:35.3387,lon:25.1442},
   };
   let WX = null;
   try { WX = JSON.parse(localStorage.getItem('andiamo-wx') || 'null'); } catch(e){}
@@ -834,7 +836,7 @@
 
     // arrival bookend
     const arr = TRIP.events.find(e=>e.type==='flight' && e.date===TRIP.startDate);
-    if (arr) host.appendChild($('<div class="bookend"><span>✈ '+esc(arr.title)+' · '+fmtDate(arr.date)+' · '+esc(fmtTime(arr.start))+'</span></div>'));
+    if (arr) host.appendChild($('<div class="bookend"><span>✈ '+esc(arr.title)+' · '+fmtDate(arr.date)+(arr.start?' · '+esc(fmtTime(arr.start)):'')+'</span></div>'));
 
     TRIP.legs.forEach((leg, li)=>{
       const accent = leg.city==='Florence' ? 'var(--flor)' : 'var(--lapis)';
@@ -860,7 +862,7 @@
     });
 
     const dep = TRIP.events.find(e=>e.type==='flight' && e.date===TRIP.endDate);
-    if (dep) host.appendChild($('<div class="bookend"><span>✈ '+esc(dep.title)+' · '+fmtDate(dep.date)+' · '+esc(fmtTime(dep.start))+'</span></div>'));
+    if (dep) host.appendChild($('<div class="bookend"><span>✈ '+esc(dep.title)+' · '+fmtDate(dep.date)+(dep.start?' · '+esc(fmtTime(dep.start)):'')+'</span></div>'));
 
     // confirmation codes for this trip's bookings (only if an encrypted set is present)
     if (window.SECRETS){
