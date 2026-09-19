@@ -191,8 +191,8 @@ const TRIPS = [
       headsup: ["Confirm the office's evening hours"] },
     { date: "2026-10-05", start: null, title: "Rim path back to Imerovigli", type: "sight", fixed: false,
       address: "Imerovigli, Santorini",
-      note: "Half an hour north along the caldera, walking into the sunset — the same path as Monday morning, in the opposite light. It climbs, and it'll be the third walk of a long day, so a taxi up is about €12 and no shame in it.",
-      headsup: ["Uphill — taxi if the legs are done"] },
+      note: "Half an hour north along the caldera, walking into the sunset. This is the built-up stretch — paved walkway and steps the whole way, past hotels, cafés and churches, lit by whatever they're spilling. Nothing like the wild unlit section beyond Imerovigli that Monday morning uses. Leaving Fira by about 6:30 puts you home before the sun goes, and a phone torch covers the steps if the winery runs long.",
+      headsup: ["Uphill — taxi if the legs are done", "Leave Fira by 6:30 for daylight"] },
     { date: "2026-10-05", start: null, title: "Dinner in Imerovigli", type: "meal", fixed: false,
       note: "Second night, and the one worth booking a caldera-view table for. No reservation yet." },
 
