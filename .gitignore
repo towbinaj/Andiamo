@@ -28,6 +28,10 @@ secrets.enc.js.bak
 !photos/
 !photos/*.jpg
 
+# ...and the EuSoMII programme: public conference material (sessions, speakers,
+# institutions), no codes or contact details. Everything else under *.pdf stays out.
+!docs/eusomii-2026-program.pdf
+
 # Local tooling
 .claude/
 scratchpad/
