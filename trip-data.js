@@ -301,8 +301,8 @@ const TRIPS = [
       headsup: ["No bookings — arrive early, name at the door", "Check it's open in October"] },
     { date: "2026-10-07", start: null, title: "Or book Armenaki instead", type: "meal", fixed: false, optional: true,
       address: "Armenaki, Pollonia, Milos 84800",
-      note: "The bookable alternative, and the one to take if a queue after that day sounds like no fun at all: called the best fish tavern on Milos — seabass tartare, seafood risotto — five minutes from Phos in Pollonia. It's a third seafood meal in two days, which is the only thing against it.",
-      headsup: ["Takes reservations, unlike O! Hamos!"] },
+      note: "The bookable alternative — on the beachfront five minutes from Phos, run by Adonis, who is a sommelier, and called the best fish tavern on Milos: grilled octopus, cuttlefish, shrimp pasta. It is always busy, so it does need booking. Two things against it though: it's a third seafood meal in two days, and the recurring complaint is slow service — an hour for appetisers, three hours at the table for two courses. A reservation buys you the table, not the pace, which is the opposite of what you want after eleven hours on the road.",
+      headsup: ["Book ahead — always busy", "Known for slow service"] },
 
     /* ---------------------------- Thu, Oct 8 — Milos → Santorini → Heraklion ---------------------------- */
     { date: "2026-10-08", start: "07:30", title: "Sarakiniko at sunrise", type: "sight", fixed: true, optional: true,
