@@ -108,9 +108,9 @@ const TRIPS = [
 
   events: [
     /* ---------------------------- Sat, Oct 3 — outbound ---------------------------- */
-    { date: "2026-10-03", start: null, title: "Before you fly — International Driving Permits", type: "ticket", fixed: false,
-      note: "Both rental cars need one. Greek island agencies are strict about it — several state plainly that no permit means no car — and driving without one risks a fine on the spot. AAA issues them over the counter in the US for about $20 with two passport photos; they can't be got once you've left, and they're not valid without your actual licence alongside.",
-      headsup: ["Do this before leaving home", "Both drivers, if you'll both drive"] },
+    { date: "2026-10-03", start: null, title: "Driving documents for the two rentals", type: "ticket", fixed: false,
+      note: "A US licence is enough. Greek law stopped requiring an International Driving Permit from US, Canadian, UK and Australian licence holders staying under six months — Law 4850/2021, article 25 §3, in force since 5 November 2021. Bring the physical licence, passports, and a credit card in the primary driver's name. The one thing that can still demand a permit is a rental company's own terms, so check those when you book Milos and Santorini rather than buying one on spec.",
+      headsup: ["Physical licence, not a photo", "Card in the main driver's name"] },
     { date: "2026-10-03", start: "11:40", title: "Cincinnati → New York — CVG ► JFK", type: "flight", fixed: true,
       note: "Delta 5096, operated by Endeavor Air · Delta Comfort · fare class SU · arrives JFK 1:45 PM. From the Delta itinerary.",
       booking: { label: "Status", value: "Ticketed · seats open", source: "Delta app" }, codeKey: "greeceflights",
@@ -175,7 +175,7 @@ const TRIPS = [
       address: "Oia, Santorini 84702",
       note: "Rent from an agency with offices in both Oia and Fira, and this day has no backtracking in it: you finish the walk in Oia, pick the car up there, and drive south. Book it for pick-up in Oia on the 5th and drop-off in Fira on the morning of the 6th, when you're going there anyway for the museum. Free hotel delivery is the fallback if one office won't do both.",
       booking: { label: "Rental car", value: "Not booked yet", source: "to arrange" },
-      headsup: ["Book Oia pick-up, Fira drop-off", "International Driving Permit required"] },
+      headsup: ["Book Oia pick-up, Fira drop-off", "Check the agency's own document terms"] },
     { date: "2026-10-05", start: "14:15", title: "Akrotiri — the buried Minoan city", type: "ticket", fixed: true,
       address: "Akrotiri Archaeological Site, Santorini 84700",
       note: "Forty minutes from Oia, the length of the island. A Bronze Age town buried by the eruption and dug out under a modern roof: streets, drains, two- and three-storey houses still standing. Open daily 8:00–18:30 in the first half of October, so there's no rush. Allow an hour and a half.",
@@ -221,7 +221,7 @@ const TRIPS = [
       address: "Adamantas, Milos 84801",
       note: "Book it for 5:30 PM — the boat docks at 5:10 and that leaves room to get off with the bags. Give the agency the vessel and arrival time so they wait if the ferry runs late, and check the desk is staffed that late. Returning at 10:30 on Thursday makes it about 41 hours, which bills as two days; booking a little either side of these times costs nothing, so pad rather than cut it fine. Island-based agencies worth emailing direct: Giourgas Rent a Car (family firm by Adamas port, free port pick-up, open year-round), Milos Rent a Car / Matha, rentacar-milos.gr and milosrentcar.gr.",
       booking: { label: "Rental car", value: "Not booked yet", source: "to arrange" },
-      headsup: ["The one thing left to book", "Tell them the ferry you're on", "International Driving Permit required"] },
+      headsup: ["The one thing left to book", "Tell them the ferry you're on", "Check the agency's own document terms"] },
     { date: "2026-10-06", start: null, title: "Drive Adamantas → Pollonia", type: "transit", fixed: false,
       address: "Pollonia, Milos 84800",
       note: "~15–20 minutes across the island." },
