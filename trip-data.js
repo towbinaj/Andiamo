@@ -50,6 +50,7 @@ const TRIPS = [
   id: "greece-2026",
   name: "Greece",
   subtitle: "Santorini · Milos · Crete",
+  cover: "photos/gr-cover.jpg",
   partySize: 2,
   startDate: "2026-10-03",
   endDate: "2026-10-11",
@@ -87,13 +88,13 @@ const TRIPS = [
   // A short title for each calendar day.
   days: [
     { date: "2026-10-03", title: "Fly to Greece" },
-    { date: "2026-10-04", title: "Arrive Santorini · Imerovigli" },
-    { date: "2026-10-05", title: "Full day on Santorini" },
-    { date: "2026-10-06", title: "Santorini → Milos" },
-    { date: "2026-10-07", title: "Milos by car" },
-    { date: "2026-10-08", title: "Milos → Santorini → Heraklion" },
-    { date: "2026-10-09", title: "Heraklion & Knossos" },
-    { date: "2026-10-10", title: "Crete — day open" },
+    { date: "2026-10-04", title: "Arrive Santorini · Imerovigli", photo: "photos/gr-imerovigli.jpg", highlight: "Imerovigli" },
+    { date: "2026-10-05", title: "Full day on Santorini",         photo: "photos/gr-oia.jpg",        highlight: "Oia" },
+    { date: "2026-10-06", title: "Santorini → Milos",              photo: "photos/gr-milos.jpg",      highlight: "Milos" },
+    { date: "2026-10-07", title: "Milos by car",                   photo: "photos/gr-sarakiniko.jpg", highlight: "Sarakiniko" },
+    { date: "2026-10-08", title: "Milos → Santorini → Heraklion",  photo: "photos/gr-heraklion.jpg",  highlight: "Heraklion" },
+    { date: "2026-10-09", title: "Heraklion & Knossos",            photo: "photos/gr-knossos.jpg",    highlight: "The Palace of Knossos" },
+    { date: "2026-10-10", title: "Crete — day open",               photo: "photos/gr-crete.jpg",      highlight: "Crete" },
     { date: "2026-10-11", title: "Departure" },
   ],
 

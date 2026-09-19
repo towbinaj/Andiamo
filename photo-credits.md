@@ -16,9 +16,9 @@ lead images (resized and optimized for the app). Source articles:
 
 ## Singapore trip photos
 
-Fetched by `scripts/fetch-sg-photos.py` from the same Wikipedia lead-image
-source. Run that script on a machine with internet access to populate
-`photos/sg-*.jpg` (the app references them and hides gracefully until they exist).
+Fetched by `scripts/fetch-photos.py` from the same Wikipedia lead-image source.
+Run that script on a machine with internet access to populate the files (the app
+references them and hides gracefully until they exist).
 
 | Where | Photo | Source article |
 |-------|-------|----------------|
@@ -29,6 +29,23 @@ source. Run that script on a machine with internet access to populate
 | Aug 21 | Singapore Flyer | en.wikipedia.org/wiki/Singapore_Flyer |
 | Aug 22 | Marina Bay Sands | en.wikipedia.org/wiki/Marina_Bay_Sands |
 | Aug 23 | Jewel Changi Airport | en.wikipedia.org/wiki/Jewel_Changi_Airport |
+
+## Greece trip photos
+
+Not downloaded yet — run `python3 scripts/fetch-photos.py gr` on a machine with
+internet access to populate `photos/gr-*.jpg`. To swap one out, change the
+article in the script's `PHOTOS` map, delete that file, and re-run.
+
+| Where | Photo | Source article |
+|-------|-------|----------------|
+| Cover | Santorini | en.wikipedia.org/wiki/Santorini |
+| Oct 4 | Imerovigli | en.wikipedia.org/wiki/Imerovigli |
+| Oct 5 | Oia | en.wikipedia.org/wiki/Oia,_Greece |
+| Oct 6 | Milos | en.wikipedia.org/wiki/Milos |
+| Oct 7 | Sarakiniko | en.wikipedia.org/wiki/Sarakiniko_Beach |
+| Oct 8 | Heraklion | en.wikipedia.org/wiki/Heraklion |
+| Oct 9 | The Palace of Knossos | en.wikipedia.org/wiki/Knossos |
+| Oct 10 | Crete | en.wikipedia.org/wiki/Crete |
 
 Images remain under their original Wikimedia Commons licenses (mostly CC BY-SA /
 public domain). See each Commons file page for the specific license and author.
