@@ -172,7 +172,7 @@ const TRIPS = [
       headsup: ["Check in online 48 h before", "Passport or ID needed to board"] },
     { date: "2026-10-06", start: "17:30", title: "Pick up the rental car — Adamantas", type: "transit", fixed: true,
       address: "Adamantas, Milos 84801",
-      note: "Book it for 5:30 PM — the boat docks at 5:10 and that leaves room to get off with the bags. Give the agency the vessel and arrival time so they wait if the ferry runs late, and check the desk is staffed that late. Returning at 10:30 on Thursday makes it about 41 hours, which bills as two days; booking a little either side of these times costs nothing, so pad rather than cut it fine.",
+      note: "Book it for 5:30 PM — the boat docks at 5:10 and that leaves room to get off with the bags. Give the agency the vessel and arrival time so they wait if the ferry runs late, and check the desk is staffed that late. Returning at 10:30 on Thursday makes it about 41 hours, which bills as two days; booking a little either side of these times costs nothing, so pad rather than cut it fine. Island-based agencies worth emailing direct: Giourgas Rent a Car (family firm by Adamas port, free port pick-up, open year-round), Milos Rent a Car / Matha, rentacar-milos.gr and milosrentcar.gr.",
       booking: { label: "Rental car", value: "Not booked yet", source: "to arrange" },
       headsup: ["The one thing left to book", "Tell them the ferry you're on"] },
     { date: "2026-10-06", start: null, title: "Drive Adamantas → Pollonia", type: "transit", fixed: false,
