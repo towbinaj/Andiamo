@@ -299,10 +299,10 @@ const TRIPS = [
       address: "O! Hamos!, Papikinou Beach, Adamas, Milos 84801",
       note: "Akrotiri being shut, the goat moves here — and the geography improves, because Klima sits just below Tripiti and Adamas is fifteen minutes away, not thirty. A family farm taverna with hand-written menus: wild goat in lemon-mustard sauce, chickpeas in a clay pot, pitarakia, cheese from their own goats. No reservations — you give your name at the door and wait on the beach across the road. Reported waits, all high season: 20 minutes arriving 19:15, an hour and ten at 19:30 on a Monday, an hour or more from 20:00 on. Before about 18:30 nobody waits at all. October should be kinder than any of those numbers, but nobody has written down by how much — so treat 19:30 as a table by 20:30 with a drink first, not a table at 19:30.",
       headsup: ["No bookings — name at the door", "Reckon on a wait unless you're there by 18:30", "Check it's open in October"] },
-    { date: "2026-10-07", start: null, title: "Or book Armenaki instead", type: "meal", fixed: false, optional: true,
-      address: "Armenaki, Pollonia, Milos 84800",
-      note: "The bookable alternative — on the beachfront five minutes from Phos, run by Adonis, who is a sommelier, and called the best fish tavern on Milos: grilled octopus, cuttlefish, shrimp pasta. It is always busy, so it does need booking. Two things against it though: it's a third seafood meal in two days, and the recurring complaint is slow service — an hour for appetisers, three hours at the table for two courses. A reservation buys you the table, not the pace, which is the opposite of what you want after eleven hours on the road.",
-      headsup: ["Book ahead — always busy", "Known for slow service"] },
+    { date: "2026-10-07", start: null, title: "If O! Hamos! is hopeless — Adamas", type: "meal", fixed: false, optional: true,
+      address: "Adamas, Milos 84801",
+      note: "Ask for the quote when you give your name. Under about forty-five minutes, stay and drink it on the beach. Longer than that and the port is five minutes back up the road, with a whole waterfront of tavernas: Flisvos and Mikros Apoplous on the harbour, Barko a street back. Adamas splits into the waterfront row, where you pay for the bay in front of you, and a scruffier inland tier of grill houses one or two streets behind, which is where the food is better value. You lose the goat, which is the whole reason for coming out here — so it's a fallback, not a plan.",
+      headsup: ["Five minutes from the queue", "Pollonia and Armenaki are 20 min the other way"] },
 
     /* ---------------------------- Thu, Oct 8 — Milos → Santorini → Heraklion ---------------------------- */
     { date: "2026-10-08", start: "07:30", title: "Sarakiniko at sunrise", type: "sight", fixed: true, optional: true,
