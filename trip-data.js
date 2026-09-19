@@ -254,11 +254,11 @@ const TRIPS = [
       note: "Superior Room. Booked through Chase Travel with Ultimate Rewards — 39,516 points for $498.55 of value. Nonrefundable.",
       booking: { label: "Booking", value: "Confirmed", source: "Chase Travel" },
       headsup: ["Nonrefundable"] },
-    { date: "2026-10-06", start: null, title: "Dinner — Yialos", type: "meal", fixed: false,
+    { date: "2026-10-06", start: "20:00", title: "Dinner — Yialos", type: "meal", fixed: true, qty: 2,
       address: "Yialos, Pollonia, Milos 84800",
       website: "https://yialos-milos.gr/",
-      note: "The most ambitious kitchen in Pollonia and the village's occasion dinner — seafood-forward, raw preparations, a wine list beyond the usual. Twenty years on this waterfront, a short walk from Phos. Book 8:00 or 8:30 rather than earlier: it serves till midnight, so a late table absorbs a ferry that runs behind without costing you the reservation.",
-      headsup: ["Book 8:00–8:30 — protects against a late ferry"] },
+      note: "The most ambitious kitchen in Pollonia and the village's occasion dinner — seafood-forward, raw preparations, a wine list beyond the usual. Twenty years on this waterfront, a short walk from Phos. Eight o'clock leaves nearly three hours after the boat docks at 17:10: car at 17:30, Pollonia by 18:00, checked in and showered with time to spare — and enough slack that an hour's delay on the ferry still doesn't touch it. If it ever did, they serve till midnight, so a phone call moves the table rather than losing it.",
+      headsup: ["Two hours fifty of slack after the ferry"] },
 
     /* ---------------------------- Wed, Oct 7 — Milos ---------------------------- */
     { date: "2026-10-07", start: "08:30", title: "Phylakopi", type: "sight", fixed: true,
