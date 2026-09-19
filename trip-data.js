@@ -272,8 +272,8 @@ const TRIPS = [
       note: "The white volcanic moonscape, and the most photographed landscape in the Aegean. Wear shoes with grip — the rock is smooth — and walk out to the left-hand side where the inlet cuts in. An hour, easily." },
     { date: "2026-10-07", start: "13:00", title: "Lunch — Medusa, Mandrakia", type: "meal", fixed: true,
       address: "Medusa, Mandrakia, Milos 84800",
-      note: "Mandrakia is a fishing hamlet of syrmata — the garage-doored boathouses cut into the rock, painted whatever colour the fishermen had — and Medusa sits right over the water beside them, known for seafood and octopus. It was already a stop on this loop, so eating here turns a fifteen-minute look into the meal of the day. Open from noon. No need to book in October, but the tables actually over the water are few — a call that morning secures one, and you'll be twenty minutes away at Sarakiniko anyway.",
-      headsup: ["Call in the morning for a waterside table"] },
+      note: "Mandrakia is a fishing hamlet of syrmata — the garage-doored boathouses cut into the rock, painted whatever colour the fishermen had — and Medusa sits right over the water beside them, known for seafood and octopus. It was already a stop on this loop, so eating here turns a fifteen-minute look into the meal of the day. Open from noon, and a walk-in in October. The tables right over the water are few, so arriving either side of one o'clock beats arriving at it.",
+      headsup: ["Walk in — go early or late, not at 1:00 sharp"] },
     { date: "2026-10-07", start: null, title: "Firopotamos", type: "sight", fixed: false,
       address: "Firopotamos, Milos 84800",
       note: "The same idea as Mandrakia but prettier: white houses, a small church, turquoise water in a sheltered cove. The road in is narrow and steep." },
@@ -341,9 +341,10 @@ const TRIPS = [
     { date: "2026-10-08", start: null, title: "EuSoMII/BRACCO AI Contest", type: "tour", fixed: false, optional: true,
       address: "Aquila Atlantis Hotel, 2 Ygias Street, Heraklion 71202, Crete", website: "https://www.eusomii-annualmeeting2026.com/",
       note: "The free pre-meeting event, same venue, today. The ferry doesn't dock until 5:25 PM, so you'd catch the very end at best — worth a look if it's still running when you check in." },
-    { date: "2026-10-08", start: null, title: "Dinner in the old town", type: "meal", fixed: false,
-      address: "Old Town, Heraklion 71202, Crete",
-      note: "Six hours of ferries is enough of a day — walk up into the pedestrian lanes behind Lion Square and take whatever looks right. The backstreet ouzeri are where the city actually eats; the places facing the main tourist run are not. Save the booking for tomorrow." },
+    { date: "2026-10-08", start: "20:30", title: "Dinner — Ippokampos", type: "meal", fixed: true, qty: 2,
+      address: "Ippokampos, Mitsotaki 3, Heraklion 71202, Crete",
+      note: "Seafood mezedes by the waterfront, long a Heraklion institution and the easy answer after six hours of ferries. Half eight leaves three hours after the boat docks at 17:25, which covers a late arrival and checking in without hurrying.",
+      headsup: ["Three hours of slack after the ferry"] },
 
     /* ---------------------------- Fri, Oct 9 — Heraklion & Knossos ---------------------------- */
     { date: "2026-10-09", start: null, title: "EuSoMII — full programme", type: "tour", fixed: false,
@@ -379,10 +380,10 @@ const TRIPS = [
       website: "https://heraklionmuseum.gr/en/visit-us/",
       note: "Skip Scientific Session 1 and run it into the lunch hour — that's 11:40 to 14:00, and the museum is a ten-minute walk. It closes at 17:00 from October, so the end of the conference day is too late; this window or nothing. Everything Knossos gave up is in here: the bull-leaping fresco, the snake goddesses, the Phaistos disc. Two hours does it properly.",
       headsup: ["Closes 17:00 — can't be done after sessions", "€25 combined ticket covers Knossos too, 3 days"] },
-    { date: "2026-10-09", start: null, title: "Dinner — Peskesi", type: "meal", fixed: false,
+    { date: "2026-10-09", start: "20:30", title: "Dinner — Peskesi", type: "meal", fixed: true, qty: 2,
       address: "Peskesi, Kapetan Charalampi 6-8, Heraklion 71202, Crete",
-      note: "Heraklion's celebrated one: Cretan farm-to-table in a Venetian mansion, reviving old island dishes with produce from their own farm. It books out, so reserve before you leave Milos rather than on the day.",
-      headsup: ["Book well ahead"] },
+      note: "Heraklion's celebrated one: Cretan farm-to-table in a restored Venetian mansion, reviving old island dishes with produce from their own 120-acre farm. Reservations are recommended and it books out, so this is the one to secure first of all of them. Half eight gives you the hour and a half between the conference closing at 17:00 and sitting down.",
+      headsup: ["Book this one first"] },
 
     /* ---------------------------- Sat, Oct 10 — Crete ---------------------------- */
     { date: "2026-10-10", start: null, title: "EuSoMII — full programme", type: "tour", fixed: false,
@@ -419,9 +420,10 @@ const TRIPS = [
       note: "To 17:30, the last session of the meeting. Camila Gonzalez on safe integration of radiology AI, Daniel Truhn on LLMs and agentic AI, Marius Linguraru on AI for every child." },
     { date: "2026-10-10", start: null, title: "Slip out for the old town", type: "sight", fixed: false, optional: true,
       note: "The programme runs to 17:30, so a big Crete afternoon isn't on unless you skip the back half. If you'd rather see something, the old town and the Venetian harbour are minutes away and fit between sessions." },
-    { date: "2026-10-10", start: null, title: "Last dinner in Heraklion", type: "meal", fixed: false,
-      address: "Old Town, Heraklion 71202, Crete",
-      note: "The meeting finishes at 17:30 and the flight is at 11:00 tomorrow, so keep it close and unhurried — the lanes around the market, or a meze place with local wine. Paralia by the market is the daily-Cretan institution if you want a name." },
+    { date: "2026-10-10", start: "20:00", title: "Last dinner — Pagopoieion", type: "meal", fixed: true, qty: 2,
+      address: "Pagopoieion, Agios Titos Square, Heraklion 71202, Crete",
+      note: "A 1950s ice factory on Agios Titos Square turned into a restaurant that puts on art and music — the right character for a last night, and two minutes from the hotel. Eight o'clock, since the meeting only finishes at 17:30 and the flight is at 11:00 tomorrow.",
+      headsup: ["Last night — bags packed first"] },
 
     /* ---------------------------- Sun, Oct 11 — departure ---------------------------- */
     { date: "2026-10-11", start: null, title: "Breakfast, then check out", type: "meal", fixed: false,
