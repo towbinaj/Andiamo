@@ -32,9 +32,11 @@ references them and hides gracefully until they exist).
 
 ## Greece trip photos
 
-Not downloaded yet — run `python3 scripts/fetch-photos.py gr` on a machine with
-internet access to populate `photos/gr-*.jpg`. To swap one out, change the
-article in the script's `PHOTOS` map, delete that file, and re-run.
+Not downloaded yet. Either run `python3 scripts/fetch-photos.py gr` on a machine
+with internet access, or trigger **Actions → Fetch trip photos** on GitHub with
+the set `gr` — same script, run on a GitHub runner, committed for you. To swap
+one out, change the article in the script's `PHOTOS` map, delete that file, and
+run it again.
 
 | Where | Photo | Source article |
 |-------|-------|----------------|

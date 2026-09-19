@@ -1,0 +1,96 @@
+name: Fetch trip photos
+
+# Runs scripts/fetch-photos.py on a GitHub runner — which, unlike a Claude
+# cloud session, can reach Wikipedia — and commits whatever it downloads.
+# Start it from the Actions tab (or the GitHub mobile app): pick this
+# workflow, tap "Run workflow", choose the branch and the set.
+
+on:
+  workflow_dispatch:
+    inputs:
+      set:
+        description: 'Photo set: gr (Greece), sg (Singapore), or blank for every missing photo'
+        required: false
+        default: 'gr'
+      force:
+        description: 'Re-download photos that are already present'
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: write      # commit the photos back to the branch
+  actions: write       # ask deploy.yml to publish afterwards
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The script skips photos already on disk, so a re-run only retries
+      # what's missing. Inputs go through the environment rather than into
+      # the command line, so nothing typed in the form reaches the shell.
+      - name: Fetch the photos
+        id: fetch
+        env:
+          PHOTO_SET: ${{ inputs.set }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          args=()
+          if [ -n "$PHOTO_SET" ]; then args+=("$PHOTO_SET"); fi
+          if [ "$FORCE" = "true" ]; then args+=(--force); fi
+          if python3 scripts/fetch-photos.py "${args[@]}"; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit any new photos
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add photos
+          if git diff --cached --quiet; then
+            echo "Nothing new to commit."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "Add trip photos (fetch-photos.py)"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # A push made with GITHUB_TOKEN doesn't set off deploy.yml on its own,
+      # so ask for the deploy explicitly. Only from the default branch —
+      # Pages publishes the whole checkout, and a feature branch isn't live yet.
+      - name: Publish to GitHub Pages
+        if: >-
+          steps.commit.outputs.changed == 'true' &&
+          github.ref_name == github.event.repository.default_branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --ref "$GITHUB_REF_NAME"
+
+      - name: Report what happened
+        run: |
+          {
+            echo "### Trip photos"
+            echo
+            if [ "${{ steps.commit.outputs.changed }}" = "true" ]; then
+              echo "Committed to \`${GITHUB_REF_NAME}\`:"
+              echo
+              git show --stat --oneline HEAD | tail -n +2
+            else
+              echo "No new files — everything asked for was already in \`photos/\`."
+            fi
+            if [ "${{ steps.fetch.outputs.ok }}" != "true" ]; then
+              echo
+              echo "⚠️ Some photos failed to download — see the **Fetch the photos** step."
+              echo "Re-running retries only the ones still missing."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail if any photo could not be fetched
+        if: steps.fetch.outputs.ok != 'true'
+        run: exit 1

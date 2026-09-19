@@ -30,6 +30,11 @@ Pushing to `main` auto-deploys (~1 min). No build step, no server.
 pre-filled GitHub issue you submit with your GitHub login. Nothing is installed
 and no token is stored.
 
+Day photos work the same way: **Actions → Fetch trip photos → Run workflow**
+(in the browser or the GitHub mobile app) downloads them from Wikipedia on
+GitHub's runners, commits them, and redeploys. Pick the set — `gr` for Greece,
+`sg` for Singapore — or leave it blank for every photo still missing.
+
 **Not in the repo — back these up separately** (kept off GitHub on purpose, since
 they contain plaintext codes or original tickets). You only need them to
 *re-encrypt* codes/tickets or change the passphrase from another machine:
