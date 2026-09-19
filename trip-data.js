@@ -152,7 +152,8 @@ const TRIPS = [
       address: "Imerovigli, Santorini",
       note: "Imerovigli faces the caldera head-on, so Oia isn't necessary — the hotel terrace is the view. Sunset is just after 7; the day card shows the exact time once the forecast loads." },
     { date: "2026-10-04", start: null, title: "Dinner in Imerovigli", type: "meal", fixed: false,
-      note: "No reservation yet — worth booking a caldera-view table once the day firms up." },
+      note: "Your one dinner up on the rim — Tuesday's is in Fira — so this is the caldera-view table worth booking. A few minutes from the room, which after the flight is the point.",
+      headsup: ["Book the caldera-view table"] },
 
     /* ---------------------------- Mon, Oct 5 — Santorini ---------------------------- */
     { date: "2026-10-05", start: "08:00", title: "Breakfast at Kapari", type: "meal", fixed: true,
@@ -189,12 +190,17 @@ const TRIPS = [
       address: "Fira, Santorini 84700",
       note: "Twenty minutes north from the winery, and handing it back the same evening means the overnight parking question never arises — which is worth more than the convenience of keeping it, given nobody can tell you whether Kapari has a space. Check the Fira office's evening hours when you book; the bigger agencies run late or take a key drop.",
       headsup: ["Confirm the office's evening hours"] },
-    { date: "2026-10-05", start: null, title: "Rim path back to Imerovigli", type: "sight", fixed: false,
+    { date: "2026-10-05", start: null, title: "Sunset from Fira", type: "sight", fixed: false,
+      address: "Fira, Santorini 84700",
+      note: "The car's gone, so the evening is yours where you're standing. Fira faces the same caldera — find a terrace on the rim with a drink about half an hour before the sun goes, just after 7." },
+    { date: "2026-10-05", start: null, title: "Dinner in Fira", type: "meal", fixed: false,
+      address: "Fira, Santorini 84700",
+      note: "The one night you're in the island's town rather than above it, and the only reason you get it is that the car came back here. Far more choice than Imerovigli, and livelier. Worth booking a caldera-view table — October takes the edge off, but the rim tables still go.",
+      headsup: ["Book the caldera-view table"] },
+    { date: "2026-10-05", start: null, title: "Back up to Imerovigli", type: "transit", fixed: false,
       address: "Imerovigli, Santorini",
-      note: "Half an hour north along the caldera, walking into the sunset. This is the built-up stretch — paved walkway and steps the whole way, past hotels, cafés and churches, lit by whatever they're spilling. Nothing like the wild unlit section beyond Imerovigli that Monday morning uses. Leaving Fira by about 6:30 puts you home before the sun goes, and a phone torch covers the steps if the winery runs long.",
-      headsup: ["Uphill — taxi if the legs are done", "Leave Fira by 6:30 for daylight"] },
-    { date: "2026-10-05", start: null, title: "Dinner in Imerovigli", type: "meal", fixed: false,
-      note: "Second night, and the one worth booking a caldera-view table for. No reservation yet." },
+      note: "Half an hour north on the rim path, or €12 in a taxi. This is the built-up stretch — paved walkway and steps past hotels, cafés and churches, with their light on it — not the wild unlit section beyond Imerovigli that the morning walk uses, so after dinner is fine with a phone torch. It does climb though, and it'll be the third walk of a long day: no shame in the taxi, and Fira is where they all are.",
+      headsup: ["Torch for the steps", "Uphill — taxi if the legs are done"] },
 
     /* ---------------------------- Tue, Oct 6 — Santorini → Milos ---------------------------- */
     { date: "2026-10-06", start: null, title: "Breakfast at Kapari", type: "meal", fixed: false,
