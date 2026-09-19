@@ -32,22 +32,29 @@ references them and hides gracefully until they exist).
 
 ## Greece trip photos
 
-Not downloaded yet. Either run `python3 scripts/fetch-photos.py gr` on a machine
-with internet access, or trigger **Actions → Fetch trip photos** on GitHub with
-the set `gr` — same script, run on a GitHub runner, committed for you. To swap
-one out, change the article in the script's `PHOTOS` map, delete that file, and
-run it again.
+Fetched by `scripts/fetch-photos.py` (or **Actions → Fetch trip photos**, set
+`gr`). Each day lists several candidate articles, tried in order — a specific
+landmark first, the island or city as a backstop — and the script throws out
+maps, satellite views, infobox montages and portrait-shaped images, which is
+what Wikipedia's lead image for a *place* usually is.
 
-| Where | Photo | Source article |
-|-------|-------|----------------|
-| Cover | Santorini | en.wikipedia.org/wiki/Santorini |
-| Oct 4 | Imerovigli | en.wikipedia.org/wiki/Imerovigli |
-| Oct 5 | Oia | en.wikipedia.org/wiki/Oia,_Greece |
-| Oct 6 | Milos | en.wikipedia.org/wiki/Milos |
-| Oct 7 | Sarakiniko | en.wikipedia.org/wiki/Sarakiniko_Beach |
-| Oct 8 | Heraklion | en.wikipedia.org/wiki/Heraklion |
-| Oct 9 | The Palace of Knossos | en.wikipedia.org/wiki/Knossos |
-| Oct 10 | Crete | en.wikipedia.org/wiki/Crete |
+| Where | Caption | Candidate articles, in order |
+|-------|---------|------------------------------|
+| Cover | — | Fira · Santorini caldera · Oia |
+| Oct 3 | Santorini | Nea Kameni · Santorini caldera · Akrotiri |
+| Oct 4 | Imerovigli | Skaros · Imerovigli |
+| Oct 5 | Oia | Oia, Greece |
+| Oct 6 | Milos | Klima · Plaka · Milos |
+| Oct 7 | Sarakiniko | Sarakiniko Beach |
+| Oct 8 | Heraklion | Koules Fortress · Heraklion |
+| Oct 9 | Knossos | Palace of Knossos · Bull-Leaping Fresco · Minoan civilization |
+| Oct 10 | Crete | Balos · Elafonisi · Samaria Gorge |
+| Oct 11 | Heraklion | Morosini Fountain · Koules Fortress |
+
+Captions name the place rather than the exact subject, so they stay accurate
+whichever candidate wins. `photos/sources.json` records the article and file
+each photo actually came from. To swap one: change its candidates, delete that
+file from `photos/`, and run it again.
 
 Images remain under their original Wikimedia Commons licenses (mostly CC BY-SA /
 public domain). See each Commons file page for the specific license and author.
