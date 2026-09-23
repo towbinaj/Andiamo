@@ -151,11 +151,11 @@ const TRIPS = [
     { date: "2026-10-04", start: null, title: "Sunset from the caldera", type: "sight", fixed: false,
       address: "Imerovigli, Santorini",
       note: "Imerovigli faces the caldera head-on, so Oia isn't necessary — the hotel terrace is the view. Sunset is just after 7; the day card shows the exact time once the forecast loads." },
-    { date: "2026-10-04", start: "19:30", title: "Dinner — Avocado", type: "meal", fixed: true,
+    { date: "2026-10-04", start: "19:30", title: "Dinner — Avocado", type: "meal", fixed: true, qty: 2,
       address: "Avocado Restaurant, Imerovigli, Santorini 84700",
       website: "https://www.avocadosantorini.gr/",
       note: "Traditional Greek with seafood, meat and a real vegetarian list, a few minutes' walk in Imerovigli. It sits just off the caldera and the tables have no view — which is exactly why the sunset comes first from Kapari. Better to take the view for free from the hotel and pick dinner on the food. Open to the end of October, till midnight.",
-      booking: { label: "Table", value: "Requested by email", source: "awaiting reply" },
+      booking: { label: "Table", value: "Confirmed · 7:30 PM", source: "restaurant email" },
       headsup: ["No view from the tables — sunset first"] },
 
     /* ---------------------------- Mon, Oct 5 — Santorini ---------------------------- */
