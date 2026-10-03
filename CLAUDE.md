@@ -128,9 +128,8 @@ Open:
   the Argyros tasting. Takes no advance bookings; call Sunday 4 for Monday,
   mention no legumes. Parea (Fira) is the backup. Car back to Fira by 22:30.
 - **Tue 6, Yialos** — requested by e-mail 3 Oct, no reply. Chase by phone.
-- **Sat 10, Peskesi** — not booked. The online form will not confirm two at
-  20:00; e-mail reservations@peskesicrete.gr or call +30 281 028 8887. Backups
-  with real credentials are on the Oct 10 fallback card.
+- **Sat 10, Peskesi** — **booked**, 21:00 for two (confirmed 3 Oct). The
+  fallback card was removed. Remind them about no legumes at the table.
 - **Wed 7, O! Hamos!** — takes no reservations ever. One call worth making:
   confirm they are open on the 7th, since Milos tavernas close for the season
   around the end of October and they do not publish the date.
