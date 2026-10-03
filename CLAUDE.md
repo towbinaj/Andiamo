@@ -114,8 +114,8 @@ Open:
 - **Wed 7, O! Hamos!** — takes no reservations ever. One call worth making:
   confirm they are open on the 7th, since Milos tavernas close for the season
   around the end of October and they do not publish the date.
-- **hh.gr** — the Knossos 08:00 slot (Fri 9 — moved off the lecture morning) and the Heraklion museum ticket, two
-  separate purchases.
+- **hh.gr** — Knossos is **booked** (Fri 9, 08:00–09:00 window, 2 adults; code under `codeKey: "knossos"`). Still to buy: the Heraklion museum ticket, a
+  separate purchase.
 - **Knossos photo** — `photos/gr-knossos.jpg` is referenced but not yet fetched.
   Run the photo workflow with input `gr`.
 
