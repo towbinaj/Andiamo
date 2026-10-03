@@ -112,9 +112,9 @@ Avocado (Sun 4), the three EuSoMII invitations (VIP dinner, Global Lunch,
 Faculty dinner).
 
 Open:
-- **Mon 5 dinner** — Parea or Metaxi Mas undecided. Metaxi Mas takes no advance
-  bookings; call from the island, Sunday for Monday. The car runs to 22:30
-  precisely so the inland option stays possible.
+- **Mon 5 dinner** — **Metaxi Mas** (Exo Gonia), chosen 3 Oct: five minutes from
+  the 17:00 Argyros tasting. Takes no advance bookings; call Sunday 4 for Monday,
+  mention no legumes. Parea (Fira) is the backup. Car back to Fira by 22:30.
 - **Tue 6, Yialos** — requested by e-mail 3 Oct, no reply. Chase by phone.
 - **Sat 10, Peskesi** — not booked. The online form will not confirm two at
   20:00; e-mail reservations@peskesicrete.gr or call +30 281 028 8887. Backups
