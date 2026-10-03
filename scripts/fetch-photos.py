@@ -138,9 +138,42 @@ def lead_image(title):
     return None
 
 
+def article_images(title):
+    """(url, width, height) of every photo in an article body, best first.
+
+    The fallback when the lead image is a map or diagram. Files named after
+    the article come first, then the rest; only JPEGs, since PNGs and SVGs
+    in an article are almost always plans and charts."""
+    q = urllib.parse.urlencode({
+        "action": "query", "format": "json", "redirects": "1",
+        "generator": "images", "gimlimit": "50",
+        "prop": "imageinfo", "iiprop": "url|size", "iiurlwidth": str(WIDTH),
+        "titles": title,
+    })
+    data = json.loads(get(API + "?" + q))
+    key = title.split(",")[0].split()[-1].lower()
+    found = []
+    for _, page in data.get("query", {}).get("pages", {}).items():
+        name = page.get("title", "")
+        info = (page.get("imageinfo") or [{}])[0]
+        url = info.get("thumburl") or info.get("url")
+        if not url or not re.search(r"\.jpe?g$", name, re.I):
+            continue
+        found.append((key not in name.lower(), name,
+                      url, info.get("thumbwidth") or info.get("width", 0),
+                      info.get("thumbheight") or info.get("height", 0)))
+    return [(u, w, h) for _, _, u, w, h in sorted(found)]
+
+
+def filename(url):
+    """The file's own name from a Commons URL, for the log."""
+    path = urllib.parse.unquote(urllib.parse.urlparse(url).path)
+    return path.rstrip("/").split("/")[-1]
+
+
 def unusable(url, w, h):
     """Why this image is a poor hero, or None if it looks like a real photo."""
-    if REJECT.search(urllib.parse.unquote(url)):
+    if REJECT.search(filename(url)):
         return "looks like a map, diagram, or montage"
     if w and h and w / h < MIN_ASPECT:
         return f"too tall for a wide hero ({w}×{h})"
@@ -159,9 +192,16 @@ def choose(candidates):
         url, w, h = found
         why = unusable(url, w, h)
         if why:
-            print(f"      '{title}' — {why}; trying the next one")
+            print(f"      '{title}' — {why} ({filename(url)}); trying the next one")
             continue
         return title, url
+    # No article led with a photograph — look further into each one.
+    for title in candidates:
+        time.sleep(PAUSE)
+        for url, w, h in article_images(title):
+            if not unusable(url, w, h):
+                print(f"      '{title}' — using {filename(url)} from the article body")
+                return title, url
     return None, None
 
 
