@@ -47,8 +47,8 @@ what Wikipedia's lead image for a *place* usually is.
 | Oct 6 | Milos | Klima · Plaka · Milos |
 | Oct 7 | Sarakiniko | Sarakiniko Beach |
 | Oct 8 | Heraklion | Koules Fortress · Heraklion |
-| Oct 9 | Knossos | Palace of Knossos · Bull-Leaping Fresco · Minoan civilization |
-| Oct 10 | Crete | Balos · Elafonisi · Samaria Gorge |
+| Oct 9 | Archaeological Museum | Bull-Leaping Fresco · Heraklion Archaeological Museum |
+| Oct 10 | Knossos | Knossos · Palace of Knossos · Minoan civilization |
 | Oct 11 | Heraklion | Morosini Fountain · Koules Fortress |
 
 Captions name the place rather than the exact subject, so they stay accurate

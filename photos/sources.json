@@ -1,8 +1,4 @@
 {
-  "gr-crete": {
-    "article": "Balos",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Imeri_Gramvousa.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled"
-  },
   "gr-departure": {
     "article": "Morosini Fountain",
     "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/%CE%9B%CE%B9%CE%BF%CE%BD%CF%84%CE%AC%CF%81%CE%B9%CE%B1_%CE%97%CF%81%CE%AC%CE%BA%CE%BB%CE%B5%CE%B9%CE%BF_9259.jpg/1920px-%CE%9B%CE%B9%CE%BF%CE%BD%CF%84%CE%AC%CF%81%CE%B9%CE%B1_%CE%97%CF%81%CE%AC%CE%BA%CE%BB%CE%B5%CE%B9%CE%BF_9259.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
@@ -19,7 +15,7 @@
     "article": "Skaros",
     "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Skaros_Rock.jpg/1920px-Skaros_Rock.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
   },
-  "gr-knossos": {
+  "gr-museum": {
     "article": "Bull-Leaping Fresco",
     "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/Knossos_bull_leaping_fresco.jpg/1920px-Knossos_bull_leaping_fresco.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail"
   }

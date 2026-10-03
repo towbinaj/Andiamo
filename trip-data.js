@@ -93,8 +93,8 @@ const TRIPS = [
     { date: "2026-10-06", title: "Santorini → Milos",              photo: "photos/gr-milos.jpg",      highlight: "Milos" },
     { date: "2026-10-07", title: "Milos by car",                   photo: "photos/gr-sarakiniko.jpg", highlight: "Sarakiniko" },
     { date: "2026-10-08", title: "Milos → Santorini → Heraklion",  photo: "photos/gr-heraklion.jpg",  highlight: "Heraklion" },
-    { date: "2026-10-09", title: "EuSoMII — Day 1",                 photo: "photos/gr-knossos.jpg",    highlight: "Knossos" },
-    { date: "2026-10-10", title: "EuSoMII — Day 2 · your lecture",  photo: "photos/gr-crete.jpg",      highlight: "Crete" },
+    { date: "2026-10-09", title: "EuSoMII — Day 1",                 photo: "photos/gr-museum.jpg",     highlight: "Archaeological Museum" },
+    { date: "2026-10-10", title: "EuSoMII — Day 2 · your lecture",  photo: "photos/gr-knossos.jpg",    highlight: "Knossos" },
     { date: "2026-10-11", title: "Departure",                      photo: "photos/gr-departure.jpg",  highlight: "Heraklion" },
   ],
 
@@ -261,8 +261,8 @@ const TRIPS = [
       address: "Yialos, Pollonia, Milos 84800",
       website: "https://yialos-milos.gr/",
       note: "The most ambitious kitchen in Pollonia and the village's occasion dinner — seafood-forward, raw preparations, a wine list beyond the usual. Twenty years on this waterfront, a short walk from Phos. Eight o'clock leaves nearly three hours after the boat docks at 17:10: car at 17:30, Pollonia by 18:00, checked in and showered with time to spare — and enough slack that an hour's delay on the ferry still doesn't touch it. If it ever did, they serve till midnight, so a phone call moves the table rather than losing it.",
-      booking: { label: "Table", value: "Requested by email", source: "awaiting reply" },
-      headsup: ["Two hours fifty of slack after the ferry"] },
+      booking: { label: "Table", value: "Requested 3 Oct — awaiting reply", source: "chase by phone Monday" },
+      headsup: ["No reply yet — call from Santorini on Monday", "Two hours fifty of slack after the ferry"] },
 
     /* ---------------------------- Wed, Oct 7 — Milos ---------------------------- */
     { date: "2026-10-07", start: "08:30", title: "Phylakopi", type: "sight", fixed: true,

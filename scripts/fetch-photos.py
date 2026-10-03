@@ -75,8 +75,8 @@ PHOTOS = {
     "gr-milos":          ["Klima, Milos", "Plaka, Milos", "Milos"],
     "gr-sarakiniko":     "Sarakiniko Beach",
     "gr-heraklion":      ["Koules Fortress", "Heraklion"],
-    "gr-knossos":        ["Palace of Knossos", "Bull-Leaping Fresco", "Minoan civilization"],
-    "gr-crete":          ["Balos", "Elafonisi", "Samaria Gorge"],
+    "gr-museum":         ["Bull-Leaping Fresco", "Heraklion Archaeological Museum"],
+    "gr-knossos":        ["Knossos", "Palace of Knossos", "Minoan civilization"],
     "gr-departure":      ["Morosini Fountain", "Koules Fortress"],
 }
 
