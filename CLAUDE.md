@@ -135,12 +135,12 @@ Open:
 - **Wed 7, O! Hamos!** — takes no reservations ever. One call worth making:
   confirm they are open on the 7th, since Milos tavernas close for the season
   around the end of October and they do not publish the date.
-- **hh.gr** — Knossos is **booked** (Fri 9, 08:00–09:00 window, 2 adults; code
-  under `codeKey: "knossos"`). Still to buy, all timed hour blocks: Museum of
-  Prehistoric Thera (Sun 4, 14:30), Akrotiri (Mon 5, 14:30), Catacombs of Milos
-  (Wed 7, **09:30** — Wednesday reordered 3 Oct to start with the catacombs,
-  theatre, Archaeological Museum of Milos and Plaka), Heraklion museum (Fri 9, 10:00–11:00 block, straight from Knossos). The purchase flow has been
-  throwing errors for the user.
+- **hh.gr** — **booked** (2 adults each, codeKey + pdf named as shown): Knossos
+  (Fri 9, 08:00–09:00, `knossos`), Museum of Prehistoric Thera (Sun 4, 14:30–15:30,
+  `theramuseum`), Akrotiri (Mon 5, 14:30–15:30, `akrotiri`), Catacombs of Milos
+  (Wed 7, 09:30–10:30, `catacombs`). Still to buy: Heraklion museum (Fri 9,
+  10:00–11:00) and, if hh.gr sells it, the Archaeological Museum of Milos (Wed 7,
+  10:30). Two earlier orders on 3 Oct failed (hh.gr support confirmed; holds lapse).
 - **Estate Argyros** (Mon 5) — **booked**: Welcome tour, 17:00, 45 min, two
   one-person reservations. Replaced Venetsanos, which is **closed Mondays**.
 - **Knossos photo** — fetched, but it is the bull-leaping fresco replica, the
