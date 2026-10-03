@@ -84,6 +84,8 @@ Markers go stale fast in this file.
   Awards and the Χρυσοί Σκούφοι (Golden Caps).
 - **Akrotiri (Santorini)** is 08:30–15:30 on **Mondays and Thursdays**, last
   admission about 15:00 — not the 08:00–18:30 of other days. Timed entry.
+- **Museum of Prehistoric Thera (Fira)** is **closed Tuesdays**; 08:30–15:30,
+  timed entry on hh.gr. Booked into Sun 4 for that reason.
 - **Catacombs of Milos** are 08:30–15:30, last visit 15:10, closed Tuesdays.
   Timed entry via `hh.gr` is required (user-confirmed; also for the Museum of
   Prehistoric Thera) — travel blogs saying
