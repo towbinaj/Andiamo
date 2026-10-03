@@ -127,7 +127,7 @@ Open:
   Prehistoric Thera (Sun 4, 14:30), Akrotiri (Mon 5, 14:30), Catacombs of Milos
   (Wed 7, 14:30), Heraklion museum (Fri 9, 10:00). The purchase flow has been
   throwing errors for the user.
-- **Estate Argyros tasting** (Mon 5, 16:00, "Taste the real Santorini", 75 min,
+- **Estate Argyros tasting** (Mon 5, 17:00 — slots are 16:00 or 17:00, "Taste the real Santorini", 75 min,
   €40 pp) — not booked. Replaced Venetsanos, which is **closed Mondays**.
 - **Knossos photo** — fetched, but it is the bull-leaping fresco replica, the
   same subject as `gr-museum.jpg`. Worth swapping for a view of the palace.
