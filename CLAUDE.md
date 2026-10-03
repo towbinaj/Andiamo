@@ -85,6 +85,9 @@ Markers go stale fast in this file.
 - **Akrotiri (Santorini)** is 08:30–15:30 on **Mondays and Thursdays**, last
   admission about 15:00 — not the 08:00–18:30 of other days. Timed entry.
 - **Catacombs of Milos** are 08:30–15:30, last visit 15:10, closed Tuesdays.
+  Timed entry via `hh.gr` is required (user-confirmed) — travel blogs saying
+  "pay at the door" are out of date. hh.gr blocks are one hour; at sites
+  opening 08:30 (Akrotiri, Catacombs) they start on the half hour.
 - **Knossos** is timed entry via `hh.gr` only, and the €25 combined
   Knossos-and-museum ticket was **discontinued for 2026** — two €20 tickets.
 - **Knossos** is open 08:00–18:30 to 15 Oct (last entry 18:15); confirmed by the user on hh.gr.
