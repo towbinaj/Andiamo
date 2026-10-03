@@ -435,9 +435,10 @@ const TRIPS = [
       note: "The programme runs to 17:30, so a big Crete afternoon isn't on unless you skip the back half. If you'd rather see something, the old town and the Venetian harbour are minutes away and fit between sessions." },
     { date: "2026-10-10", start: "20:00", title: "Last dinner — Peskesi", type: "meal", fixed: true, qty: 2,
       address: "Peskesi, Kapetan Charalampi 6-8, Heraklion 71202, Crete",
-      note: "With the society taking Thursday and Friday, Saturday is the only evening of your own in Heraklion. Peskesi is Michelin Guide listed but not starred — no restaurant in Heraklion is — and the case for it is different anyway: the mansion of Captain Polyxingis restored, produce from their own farm at Harasso, and a kitchen reviving rare Cretan legumes, wild greens and slow lamb. Named Best Organic Restaurant in Europe in 2025. It's the most Cretan meal available rather than the most decorated one. Book it, since it fills. Eight o'clock, as the meeting runs to 17:30 and the flight is at 11:00. Pagopoieion, a 1950s ice factory on Agios Titos Square, is the alternative.",
-      booking: { label: "Table", value: "Not booked yet — your only free night", source: "to arrange" },
-      headsup: ["The one dinner to book", "Bags packed first"] },
+      phone: "+30 281 028 8887",
+      note: "The online form won't confirm two at 20:00 and points you at the restaurant — try 19:30 or 20:30 first, then call. From Greece it's a local call and they answer from about midday, so Sunday or Monday afternoon from Santorini is easier than trying from home. With the society taking Thursday and Friday, Saturday is the only evening of your own in Heraklion. Peskesi is Michelin Guide listed but not starred — no restaurant in Heraklion is — and the case for it is different anyway: the mansion of Captain Polyxingis restored, produce from their own farm at Harasso, and a kitchen reviving rare Cretan legumes, wild greens and slow lamb. Named Best Organic Restaurant in Europe in 2025. It's the most Cretan meal available rather than the most decorated one. Book it, since it fills. Eight o'clock, as the meeting runs to 17:30 and the flight is at 11:00. Pagopoieion, a 1950s ice factory on Agios Titos Square, is the alternative.",
+      booking: { label: "Table", value: "Online form won't confirm — call them", source: "+30 281 028 8887" },
+      headsup: ["Try 19:30 or 20:30 online first", "Then call — easier once you're in Greece"] },
 
     /* ---------------------------- Sun, Oct 11 — departure ---------------------------- */
     { date: "2026-10-11", start: null, title: "Breakfast, then check out", type: "meal", fixed: false,
