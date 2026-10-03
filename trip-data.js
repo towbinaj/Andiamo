@@ -351,9 +351,9 @@ const TRIPS = [
       note: "The free pre-meeting event, same venue, today. The ferry doesn't dock until 5:25 PM, so you'd catch the very end at best — worth a look if it's still running when you check in." },
     { date: "2026-10-08", start: "20:30", title: "EuSoMII VIP Dinner — En Plo", type: "meal", fixed: true, qty: 2,
       address: "En Plo, Aegeou & Spanaki, Heraklion 71307, Crete", phone: "+30 281 033 3338",
-      note: "By invitation from EuSoMII, on the night you arrive. A shuttle van is laid on — the meeting point and departure time come separately, so chase those when you RSVP, or tell them you'll make your own way. Either way the timing works: the boat docks at 17:25 and you'd be checked in by about 18:15.",
-      booking: { label: "Invitation", value: "RSVP was due 23 September", source: "info@eusomii.org" },
-      headsup: ["RSVP overdue — reply today", "Ask about the shuttle meeting point"] },
+      note: "By invitation from EuSoMII, on the night you arrive, and you're confirmed. A shuttle van is laid on — the meeting point and departure time come separately, so watch for that email. Either way the timing works: the boat docks at 17:25 and you'd be checked in by about 18:15.",
+      booking: { label: "Invitation", value: "RSVP sent — confirmed", source: "info@eusomii.org" },
+      headsup: ["Watch for the shuttle meeting point"] },
 
     /* ---------------------------- Fri, Oct 9 — Heraklion & Knossos ---------------------------- */
     { date: "2026-10-09", start: null, title: "EuSoMII — full programme", type: "tour", fixed: false,
@@ -377,9 +377,8 @@ const TRIPS = [
       note: "To 13:00. EIBIR funding update, the COMFORT platform, and short papers on lung cancer detection, pancreatic tumour visibility and more. Chairs: Matthias Dietzel, Konstantina Giouroukou. This is the session the museum costs you — short papers rather than a keynote, which is why it's the one to trade." },
     { date: "2026-10-09", start: "13:00", title: "Private Global Lunch — Ariadne", type: "meal", fixed: true, qty: 2,
       address: "Ariadne Restaurant, Aquila Atlantis Hotel, 2 Ygias Street, Heraklion 71202, Crete",
-      note: "EuSoMII's private Global Lunch, by invitation, in the hotel's own restaurant — so no commute, and the people worth meeting are all in one room. It runs to 14:00, straight into Florence Doo's keynote. The invitation asked for a reply by 30 September, which has passed, so if you haven't answered, write to info@eusomii.org today rather than turning up unannounced.",
-      booking: { label: "Invitation", value: "RSVP was due 30 September", source: "info@eusomii.org" },
-      headsup: ["RSVP overdue — reply today"] },
+      note: "EuSoMII's private Global Lunch, by invitation and confirmed, in the hotel's own restaurant — so no commute, and the people worth meeting are all in one room. It runs to 14:00, straight into Florence Doo's keynote. It also caps the museum visit that morning, so leave the Archaeological Museum by 12:45.",
+      booking: { label: "Invitation", value: "RSVP sent — confirmed", source: "info@eusomii.org" } },
     { date: "2026-10-09", start: "14:00", title: "Keynote I — Florence Doo", type: "tour", fixed: true,
       address: "Aquila Atlantis Hotel, 2 Ygias Street, Heraklion 71202, Crete",
       note: "To 15:30. “Sustainable Intelligence: Can Radiology AI be Green, Global, and Generational?”, then a 45-minute roundtable with Merel Huisman, Florence Doo, Susan Shelmerdine, Kevin Groot Lipman and Ali Tejani." },
@@ -395,8 +394,8 @@ const TRIPS = [
       address: "Parasties, Chandakos & Sofokli Venizelou Avenue 81, Heraklion, Crete", phone: "+30 2810 22 5009",
       website: "https://parastiescrete.gr/",
       note: "The faculty dinner, the night before your lecture, and walking distance from the hotel — so no shuttle to coordinate. This is the room where the people in your session will be, which makes it worth more than any restaurant booking it displaces.",
-      booking: { label: "Invitation", value: "RSVP was due 23 September", source: "info@eusomii.org" },
-      headsup: ["RSVP overdue — reply today", "Walk from the hotel"] },
+      booking: { label: "Invitation", value: "RSVP sent — confirmed", source: "info@eusomii.org" },
+      headsup: ["Walk from the hotel"] },
 
     /* ---------------------------- Sat, Oct 10 — Crete ---------------------------- */
     { date: "2026-10-10", start: null, title: "EuSoMII — full programme", type: "tour", fixed: false,
