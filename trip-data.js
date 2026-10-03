@@ -280,7 +280,7 @@ const TRIPS = [
       headsup: ["Walk in — go early or late, not at 1:00 sharp"] },
     { date: "2026-10-07", start: null, title: "Firopotamos", type: "sight", fixed: false,
       address: "Firopotamos, Milos 84800",
-      note: "The same idea as Mandrakia but prettier: white houses, a small church, turquoise water in a sheltered cove. The road in is narrow and steep." },
+      note: "The same idea as Mandrakia but prettier: white houses, a small church, turquoise water in a sheltered cove. The road in is narrow and steep. Do this one before lunch, not after — it is only five minutes past Mandrakia, so loop out to it and come back. Done that way the lunch has an hour and a half and the catacombs are still comfortable; left until after lunch it turns Medusa into fifty minutes and the drive to Tripiti into a clock-watch." },
     { date: "2026-10-07", start: null, title: "Roman theatre & the Venus site", type: "sight", fixed: false,
       address: "Ancient Theatre of Milos, Tripiti, Milos 84800",
       note: "A marble theatre looking out over the gulf, a few minutes' walk from the catacombs, and just above it the field where a farmer turned up the Venus de Milo in 1820. A plaque marks the spot; the statue is in Paris." },
