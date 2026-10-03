@@ -87,6 +87,10 @@ passphrase, fill in the codes box, and it decrypts, merges and re-encrypts in th
 then downloads a replacement to commit. It holds no codes itself, and nothing leaves the
 page. If you save a filled-in copy, name it `secrets-merge.html` — that name is git-ignored.
 
+**Adding a ticket PDF:** open `encrypt-ticket.html` on the live site, give it the event's
+`pdf` name (e.g. `knossos`), the PDF and the passphrase, and commit the downloaded
+`tickets/<name>.enc`. Only ciphertext is published.
+
 To change the passphrase later, re-run `encrypt.html` and replace `secrets.enc.js`.
 Your plaintext codes always stay in `CONFIRMATIONS-private.md` (git-ignored) as a backup.
 

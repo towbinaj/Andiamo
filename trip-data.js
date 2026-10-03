@@ -379,7 +379,7 @@ const TRIPS = [
     { date: "2026-10-09", start: "08:00", title: "Palace of Knossos", type: "ticket", fixed: true,
       address: "Knossos Archaeological Site, Heraklion 71409",
       note: "The Minoan palace. At 8:00 it's nearly empty. Start with the throne room; Evans's reconstructions make it legible.",
-      booking: { label: "Tickets", value: "Booked · 2 adults · enter 08:00–09:00", source: "hh.gr e-ticket" }, codeKey: "knossos",
+      booking: { label: "Tickets", value: "Booked · 2 adults · enter 08:00–09:00", source: "hh.gr e-ticket" }, codeKey: "knossos", pdf: "knossos",
       headsup: ["Entry window 08:00–09:00", "Tickets on phone or printed", "€20 each — no combined ticket in 2026", "Leave by 10:15 — museum at 11:40"] },
     { date: "2026-10-09", start: "08:00", title: "Registration", type: "ticket", fixed: true,
       address: "Aquila Atlantis Hotel, 2 Ygias Street, Heraklion 71202, Crete",

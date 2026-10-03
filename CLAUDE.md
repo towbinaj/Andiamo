@@ -11,6 +11,7 @@ live in it: Italy (Aug 2026), Singapore (Aug 2026), Greece (Oct 2026).
 | `index.html` | The whole app — markup, styles, logic. Rarely touched. |
 | `secrets.enc.js` | Booking references, AES-GCM encrypted. Ciphertext only; safe to publish. |
 | `merge-codes.html` | Adds codes to `secrets.enc.js` in the browser. Committed **codeless**. |
+| `encrypt-ticket.html` | Encrypts a ticket PDF to `tickets/<name>.enc` (opened by an event's `pdf` field). Checks the passphrase against `secrets.enc.js`. Codeless. |
 | `scripts/fetch-photos.py` | Pulls hero photos from Wikipedia lead images. |
 | `photos/sources.json` | Which article and file each photo came from. |
 | `docs/` | Published PDFs (conference programme, etc.). |

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Encrypt a Ticket</title>
+<style>
+  :root{
+    --bg:#f4f1ea; --surface:#fffdf8; --ink:#1c1a17; --muted:#6b645a;
+    --hairline:#e0d9cc; --lapis:#2f5d7c; --gold:#b08a3e; --bad:#9b3b2f; --good:#3f6b45;
+  }
+  :root:not([data-theme="light"]) { }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#171512; --surface:#211e1a; --ink:#ede8df; --muted:#a49b8d;
+      --hairline:#332e27; --lapis:#79a8c7; --gold:#d6ad5e; --bad:#e08a7c; --good:#8ec296;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#171512; --surface:#211e1a; --ink:#ede8df; --muted:#a49b8d;
+    --hairline:#332e27; --lapis:#79a8c7; --gold:#d6ad5e; --bad:#e08a7c; --good:#8ec296;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.55 ui-serif,Georgia,"Times New Roman",serif;padding:0 16px 64px}
+  .wrap{max-width:660px;margin:0 auto}
+  h1{font-size:26px;margin:32px 0 6px;letter-spacing:-.01em}
+  .sub{color:var(--muted);margin:0 0 26px;font-size:15px}
+  .card{background:var(--surface);border:1px solid var(--hairline);border-radius:12px;
+    padding:18px 16px;margin:0 0 16px}
+  .step{font:600 11.5px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--lapis);margin:0 0 10px}
+  label{display:block;font-size:14px;color:var(--muted);margin:0 0 6px}
+  input[type=password],input[type=file],textarea{
+    width:100%;background:var(--bg);color:var(--ink);border:1px solid var(--hairline);
+    border-radius:8px;padding:10px 11px;font:15px ui-sans-serif,system-ui,sans-serif}
+  textarea{min-height:140px;font:13.5px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;resize:vertical}
+  button{background:var(--lapis);color:#fff;border:0;border-radius:9px;padding:13px 18px;
+    font:600 15px ui-sans-serif,system-ui,sans-serif;cursor:pointer;width:100%;margin-top:4px}
+  button:disabled{opacity:.5;cursor:default}
+  .note{font-size:13.5px;color:var(--muted);margin:10px 0 0}
+  .out{margin-top:14px;font:14px ui-sans-serif,system-ui,sans-serif;white-space:pre-wrap}
+  .ok{color:var(--good)} .err{color:var(--bad)}
+  ul.keys{margin:10px 0 0;padding-left:18px;font:14px ui-sans-serif,system-ui,sans-serif}
+  ul.keys li{margin:2px 0}
+  .tag{color:var(--gold);font-size:12px;margin-left:6px}
+  .warn{border-left:3px solid var(--gold);padding-left:12px;margin:14px 0 0;
+    font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Encrypt a ticket</h1>
+  <p class="sub">Turns a ticket PDF into an encrypted <code>tickets/&lt;name&gt;.enc</code> that the
+  app opens after you unlock codes. Everything happens in this page — the PDF and passphrase
+  never leave your device. This page holds no tickets or codes, so it is safe to publish.</p>
+
+  <div class="card">
+    <p class="step">1 — Ticket name</p>
+    <label for="key">Must match the event's <code>pdf</code> field in trip-data.js</label>
+    <input id="key" type="text" value="knossos" autocomplete="off" spellcheck="false"
+      style="width:100%;background:var(--bg);color:var(--ink);border:1px solid var(--hairline);border-radius:8px;padding:10px 11px;font:15px ui-monospace,Menlo,monospace">
+  </div>
+
+  <div class="card">
+    <p class="step">2 — The ticket PDF</p>
+    <label for="pdf">Pick the PDF from the booking e-mail</label>
+    <input id="pdf" type="file" accept="application/pdf,.pdf">
+  </div>
+
+  <div class="card">
+    <p class="step">3 — Family passphrase</p>
+    <label for="pass">The same one you unlock the app with</label>
+    <input id="pass" type="password" autocomplete="off" spellcheck="false">
+    <p class="note">Checked against the published <code>secrets.enc.js</code> first, so a typo
+    can't produce a ticket the app won't open.</p>
+  </div>
+
+  <div class="card">
+    <button id="go">Encrypt &amp; download</button>
+    <div class="out" id="out"></div>
+  </div>
+
+  <p class="warn">Afterwards: send the downloaded <code>.enc</code> file to Claude, or put it in the
+  <code>tickets/</code> folder and push. Only ciphertext gets published.</p>
+</div>
+
+<script>
+const ITER = 250000, HASH = "SHA-256";
+const $ = (id) => document.getElementById(id);
+const b64d = (s) => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+
+async function deriveKey(pass, salt, usage){
+  const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2', salt, iterations:ITER, hash:HASH},
+    km, {name:'AES-GCM', length:256}, false, usage);
+}
+
+// true = passphrase opens secrets.enc.js; null = couldn't check (opened from disk)
+async function passphraseOK(pass){
+  let text;
+  try { const r = await fetch('secrets.enc.js', {cache:'no-store'}); if (!r.ok) return null; text = await r.text(); }
+  catch(e){ return null; }
+  const m = text.match(/window\.SECRETS\s*=\s*(\{[\s\S]*?\})\s*;?\s*$/); if (!m) return null;
+  const s = JSON.parse(m[1]);
+  const key = await deriveKey(pass, b64d(s.salt), ['decrypt']);
+  try { await crypto.subtle.decrypt({name:'AES-GCM', iv:b64d(s.iv)}, key, b64d(s.ct)); return true; }
+  catch(e){ return false; }
+}
+
+$('go').addEventListener('click', async () => {
+  const out = $('out'); out.className = 'out'; out.textContent = 'Working…'; $('go').disabled = true;
+  try {
+    const name = $('key').value.trim().toLowerCase();
+    if (!/^[a-z0-9-]+$/.test(name)) throw new Error("ticket name: lowercase letters, digits and dashes only");
+    const f = $('pdf').files[0]; if (!f) throw new Error("pick the ticket PDF");
+    const pass = $('pass').value; if (!pass) throw new Error("enter the family passphrase");
+    const ok = await passphraseOK(pass);
+    if (ok === false) throw new Error("wrong passphrase — it doesn't open the app's codes");
+
+    const pt = new Uint8Array(await f.arrayBuffer());
+    if (String.fromCharCode(...pt.slice(0,4)) !== '%PDF') throw new Error("that file isn't a PDF");
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const iv   = crypto.getRandomValues(new Uint8Array(12));
+    const key  = await deriveKey(pass, salt, ['encrypt']);
+    const ct   = new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM', iv}, key, pt));
+    const blob = new Blob([salt, iv, ct], {type:'application/octet-stream'});   // [16 salt][12 iv][ciphertext]
+
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name + '.enc';
+    document.body.appendChild(a); a.click(); a.remove();
+    out.className = 'out ok';
+    out.textContent = 'Downloaded ' + name + '.enc (' + Math.round(blob.size/1024) + ' KB).' +
+      (ok === null ? '\nPassphrase not checked — open this page from the live site to check it.' : '\nPassphrase checked against the app.');
+  } catch(e){
+    out.className = 'out err'; out.textContent = e.message;
+  } finally { $('go').disabled = false; }
+});
+</script>
+</body>
+</html>
