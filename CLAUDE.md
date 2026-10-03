@@ -81,6 +81,8 @@ Markers go stale fast in this file.
   the UI once it is on the default branch.
 - A push made with `GITHUB_TOKEN` does not trigger other workflows, which is why
   the photo workflow calls `gh workflow run deploy.yml` explicitly.
+- **Never create Gmail drafts.** Write e-mails as plain text in the chat for
+  the user to copy and send themselves.
 - No Outlook/Hotmail connector. Gmail and Drive are connected. Bookings that
   arrive in Hotmail have to be forwarded to Gmail to be readable.
 
