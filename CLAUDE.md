@@ -139,8 +139,8 @@ Open:
   (Fri 9, 08:00–09:00, `knossos`), Museum of Prehistoric Thera (Sun 4, 14:30–15:30,
   `theramuseum`), Akrotiri (Mon 5, 14:30–15:30, `akrotiri`), Catacombs of Milos
   (Wed 7, 09:30–10:30, `catacombs`). Still to buy: Heraklion museum (Fri 9,
-  10:00–11:00) and, if hh.gr sells it, the Archaeological Museum of Milos (Wed 7,
-  10:30). Two earlier orders on 3 Oct failed (hh.gr support confirmed; holds lapse).
+  10:00–11:00) The Archaeological Museum of Milos (Wed 7, 10:30) is
+  pay-at-the-door (~€5); hh.gr purchase kept failing, so don't chase it online. Two earlier orders on 3 Oct failed (hh.gr support confirmed; holds lapse).
 - **Estate Argyros** (Mon 5) — **booked**: Welcome tour, 17:00, 45 min, two
   one-person reservations. Replaced Venetsanos, which is **closed Mondays**.
 - **Knossos photo** — fetched, but it is the bull-leaping fresco replica, the
