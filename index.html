@@ -621,10 +621,15 @@
   const eventsOn = (iso) => allEvents().filter(e=>effDate(e)===iso);
   const locOf = (e) => e.address || (e.meet && e.meet.address) || '';   // a real street location, if any
   // lead the map query with the place NAME so the pin is labelled (not just an address that can geocode to a bank)
-  const mapURL = (e) => 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(e.title + ', ' + (locOf(e) || cityForDate(e.date)));
+  // trips whose titles are descriptive ("Dinner — X") set mapByAddress and lead each address with the place name
+  const tripOf = (iso) => (typeof TRIPS!=='undefined' && TRIPS.find(t=> iso>=t.startDate && iso<=t.endDate)) || TRIP;
+  const placeQ = (e) => (tripOf(e.date).mapByAddress && locOf(e)) ? locOf(e) : (e.title + ', ' + (locOf(e) || cityForDate(e.date)));
+  const mapURL = (e) => 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(placeQ(e));
+  // a day can set travel: "driving" (car days); everything else routes on foot
+  const modeFor = (iso) => ((tripOf(iso).days||[]).find(d=>d.date===iso)||{}).travel || 'walking';
   // the hotel/leg an event falls under, and walking directions from that hotel to the event
   const legForDate = (iso) => { let leg=TRIP.legs[0]; for(const l of TRIP.legs){ if(iso>=l.start) leg=l; } return leg; };
-  const hotelDirURL = (leg, e) => 'https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(leg.hotelAddress)+'&destination='+encodeURIComponent(e.title+', '+locOf(e))+'&travelmode=walking';
+  const hotelDirURL = (leg, e) => 'https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(leg.hotelAddress)+'&destination='+encodeURIComponent(placeQ(e))+'&travelmode='+modeFor(e.date);
 
   const sortFixed = (a,b) => (a.start||'').localeCompare(b.start||'');
 
@@ -744,9 +749,9 @@
   };
   const rsReads = (e) => RSREAD[e.title] || [];
 
-  const dirURL = (pts) => {   // one Google Maps walking-directions URL through the given labelled stops
+  const dirURL = (pts, mode) => {   // one Google Maps walking-directions URL through the given labelled stops
     const enc = encodeURIComponent;
-    let u = 'https://www.google.com/maps/dir/?api=1&origin='+enc(pts[0])+'&destination='+enc(pts[pts.length-1])+'&travelmode=walking';
+    let u = 'https://www.google.com/maps/dir/?api=1&origin='+enc(pts[0])+'&destination='+enc(pts[pts.length-1])+'&travelmode='+(mode||'walking');
     const mid = pts.slice(1,-1); if (mid.length) u += '&waypoints='+mid.map(enc).join('|');
     return u;
   };
@@ -759,12 +764,13 @@
     const timed = evs.filter(e=>e.fixed&&e.start&&e.type!=='meal').sort(sortFixed);
     const flex  = evs.filter(e=>!(e.fixed&&e.start));
     const meals = evs.filter(e=>e.type==='meal'&&e.fixed&&e.start).sort(sortFixed);
-    const pts = timed.concat(flex, meals).map(e => e.title + ', ' + locOf(e));
+    // trips mapped by address keep their curated array order and leave out optional/backup stops
+    const pts = (tripOf(iso).mapByAddress ? evs.filter(e=>!e.optional) : timed.concat(flex, meals)).map(placeQ);
     if (pts.length < 2) return [];
     const MAX = 10, parts = [];
     if (pts.length <= MAX) parts.push(pts);
     else for (let i=0; i<pts.length-1; i += MAX-1) parts.push(pts.slice(i, i+MAX));
-    return parts.map(dirURL);
+    return parts.map(p => dirURL(p, modeFor(iso)));
   }
 
   // ---- render one event ----

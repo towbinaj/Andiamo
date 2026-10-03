@@ -37,6 +37,11 @@ is one of `flight · transit · tour · ticket · sight · meal · treat · cafe
 - **Wikipedia links** come from the `WIKI` map in `index.html`, keyed by the
   event's **exact title**. Renaming an event silently drops its link — update
   the map too. `fromHotel` on a meal shows how to get there from the hotel.
+- **Greece maps by address** (`mapByAddress: true` on the trip): every map
+  link searches the `address` alone, so each address must **lead with the place
+  name** ("Medusa, Mandrakia, Milos"), not just a village. Day routes use the
+  array order and skip `optional` stops. A day with `travel: "driving"` routes
+  by car (Mon 5, Wed 7); all other days walk.
 - **Keep notes short** — one or two lines, like the Italy trip (~70 chars avg).
   Put must-dos in `headsup`, not in the note. Greece was trimmed from ~300
   chars avg on 3 Oct; don't let it grow back.
