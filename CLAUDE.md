@@ -87,6 +87,7 @@ Markers go stale fast in this file.
 - **Catacombs of Milos** are 08:30–15:30, last visit 15:10, closed Tuesdays.
 - **Knossos** is timed entry via `hh.gr` only, and the €25 combined
   Knossos-and-museum ticket was **discontinued for 2026** — two €20 tickets.
+- **Knossos** is open 08:00–18:30 to 15 Oct (last entry 18:15); confirmed by the user on hh.gr.
 - **Heraklion Archaeological Museum** closes 17:00 from October.
 - Verify opening hours and awards against a primary source before writing them
   into a note. Several claims in this file replaced earlier wrong ones.
