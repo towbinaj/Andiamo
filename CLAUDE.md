@@ -85,7 +85,7 @@ Markers go stale fast in this file.
 - **Akrotiri (Santorini)** is 08:30–15:30 on **Mondays and Thursdays**, last
   admission about 15:00 — not the 08:00–18:30 of other days. Timed entry.
 - **Catacombs of Milos** are 08:30–15:30, last visit 15:10, closed Tuesdays.
-- **Knossos** is timed entry via `hhticket.gr` only, and the €25 combined
+- **Knossos** is timed entry via `hh.gr` only, and the €25 combined
   Knossos-and-museum ticket was **discontinued for 2026** — two €20 tickets.
 - **Heraklion Archaeological Museum** closes 17:00 from October.
 - Verify opening hours and awards against a primary source before writing them
@@ -113,7 +113,7 @@ Open:
 - **Wed 7, O! Hamos!** — takes no reservations ever. One call worth making:
   confirm they are open on the 7th, since Milos tavernas close for the season
   around the end of October and they do not publish the date.
-- **hhticket.gr** — the Knossos 08:00 slot and the Heraklion museum ticket, two
+- **hh.gr** — the Knossos 08:00 slot and the Heraklion museum ticket, two
   separate purchases.
 - **Knossos photo** — `photos/gr-knossos.jpg` is referenced but not yet fetched.
   Run the photo workflow with input `gr`.
