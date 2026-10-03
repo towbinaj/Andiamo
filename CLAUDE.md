@@ -113,7 +113,7 @@ Faculty dinner).
 
 Open:
 - **Mon 5 dinner** — **Metaxi Mas** (Exo Gonia), chosen 3 Oct: five minutes from
-  the 17:00 Argyros tasting. Takes no advance bookings; call Sunday 4 for Monday,
+  the Argyros tasting. Takes no advance bookings; call Sunday 4 for Monday,
   mention no legumes. Parea (Fira) is the backup. Car back to Fira by 22:30.
 - **Tue 6, Yialos** — requested by e-mail 3 Oct, no reply. Chase by phone.
 - **Sat 10, Peskesi** — not booked. The online form will not confirm two at
@@ -127,8 +127,8 @@ Open:
   Prehistoric Thera (Sun 4, 14:30), Akrotiri (Mon 5, 14:30), Catacombs of Milos
   (Wed 7, 14:30), Heraklion museum (Fri 9, 10:00). The purchase flow has been
   throwing errors for the user.
-- **Estate Argyros tasting** (Mon 5, 17:00 — slots are 16:00 or 17:00, "Taste the real Santorini", 75 min,
-  €40 pp) — not booked. Replaced Venetsanos, which is **closed Mondays**.
+- **Estate Argyros** (Mon 5) — **booked**: Welcome tour, 17:00, 45 min, two
+  one-person reservations. Replaced Venetsanos, which is **closed Mondays**.
 - **Knossos photo** — fetched, but it is the bull-leaping fresco replica, the
   same subject as `gr-museum.jpg`. Worth swapping for a view of the palace.
 
