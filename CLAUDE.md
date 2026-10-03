@@ -91,6 +91,8 @@ Markers go stale fast in this file.
   Prehistoric Thera) — travel blogs saying
   "pay at the door" are out of date. hh.gr blocks are one hour; at sites
   opening 08:30 (Akrotiri, Catacombs, Museum of Prehistoric Thera) they start on the half hour.
+- **Phylakopi (Milos)** opens **Saturdays and Sundays only**, 08:30–15:30, €5;
+  not sold on hh.gr. Closed for the whole Milos stay (Tue 6–Thu 8).
 - **Knossos** is timed entry via `hh.gr` only, and the €25 combined
   Knossos-and-museum ticket was **discontinued for 2026** — two €20 tickets.
 - **Knossos** is open 08:00–18:30 to 15 Oct (last entry 18:15); confirmed by the user on hh.gr.
@@ -120,10 +122,14 @@ Open:
 - **Wed 7, O! Hamos!** — takes no reservations ever. One call worth making:
   confirm they are open on the 7th, since Milos tavernas close for the season
   around the end of October and they do not publish the date.
-- **hh.gr** — Knossos is **booked** (Fri 9, 08:00–09:00 window, 2 adults; code under `codeKey: "knossos"`). Still to buy: the Heraklion museum ticket, a
-  separate purchase.
-- **Knossos photo** — `photos/gr-knossos.jpg` is referenced but not yet fetched.
-  Run the photo workflow with input `gr`.
+- **hh.gr** — Knossos is **booked** (Fri 9, 08:00–09:00 window, 2 adults; code
+  under `codeKey: "knossos"`). Still to buy, all timed hour blocks: Museum of
+  Prehistoric Thera (Sun 4, 14:30), Akrotiri (Mon 5, 14:30), Catacombs of Milos
+  (Wed 7, 14:30), Heraklion museum (Fri 9, 10:00). The purchase flow has been
+  throwing errors for the user.
+- **Venetsanos tasting** (Mon 5) — not booked; ask for 16:00 to follow Akrotiri.
+- **Knossos photo** — fetched, but it is the bull-leaping fresco replica, the
+  same subject as `gr-museum.jpg`. Worth swapping for a view of the palace.
 
 One dietary note that belongs on every restaurant request: **one traveller
 cannot eat legumes** — beans, lentils, chickpeas, fava. It matters most at

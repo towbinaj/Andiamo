@@ -269,8 +269,8 @@ const TRIPS = [
     /* ---------------------------- Wed, Oct 7 — Milos ---------------------------- */
     { date: "2026-10-07", start: "08:30", title: "Phylakopi", type: "sight", fixed: true, optional: true,
       address: "Phylakopi, Milos 84800",
-      note: "Five minutes out of Pollonia: a Bronze Age town on the cliff edge, older than Knossos and slowly falling into the sea. Twenty minutes is enough, and it sets up the day — Milos was mining obsidian and trading it across the Aegean while everywhere else was still getting started. Caution: it isn't on hh.gr, travel listings give its days as Tuesday, Saturday and Sunday only, and visitors report it shut for lack of staff — so on a Wednesday expect a locked gate. It's five minutes from the hotel, so look in anyway and see the cliff-edge walls from outside; its finds, including the Lady of Phylakopi, are in the Archaeological Museum in Plaka.",
-      headsup: ["Probably closed Wednesday — not on hh.gr", "Five-minute detour; look from the gate", "The finds are in the Plaka museum"] },
+      note: "Five minutes out of Pollonia: a Bronze Age town on the cliff edge, older than Knossos and slowly falling into the sea. Twenty minutes is enough, and it sets up the day — Milos was mining obsidian and trading it across the Aegean while everywhere else was still getting started. But it opens on Saturdays and Sundays only (8:30–3:30), so it's shut the whole time you're on Milos. It's five minutes from the hotel, so the cliff-edge walls can still be seen from outside the fence if you're passing; its finds, including the Lady of Phylakopi, are in the Archaeological Museum in Plaka.",
+      headsup: ["Closed — open Sat & Sun only", "Outside view only, if passing", "The finds are in the Plaka museum"] },
     { date: "2026-10-07", start: null, title: "Papafragas caves", type: "sight", fixed: false,
       address: "Papafragas, Milos 84800",
       note: "A sea-filled slot canyon cut into white rock, viewed from the path above. Ten minutes, no swimming required — the descent to the water is a scramble and not the point." },
