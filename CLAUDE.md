@@ -34,6 +34,12 @@ is one of `flight · transit · tour · ticket · sight · meal · treat · cafe
 - A missing photo removes itself via an `error` handler, so referencing a file
   that is not committed yet degrades to a text card rather than breaking.
 - `codeFor()` returns null for an absent key, so an unused `codeKey` is harmless.
+- **Wikipedia links** come from the `WIKI` map in `index.html`, keyed by the
+  event's **exact title**. Renaming an event silently drops its link — update
+  the map too. `fromHotel` on a meal shows how to get there from the hotel.
+- **Keep notes short** — one or two lines, like the Italy trip (~70 chars avg).
+  Put must-dos in `headsup`, not in the note. Greece was trimmed from ~300
+  chars avg on 3 Oct; don't let it grow back.
 
 ## Verifying a change — always do this before committing
 
