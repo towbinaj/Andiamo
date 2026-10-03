@@ -1,6 +1,8 @@
-# Andiamo — Italy trip app
+# Andiamo — trip app
 
-A small, self-contained itinerary app for the Rome & Florence trip (Aug 1–8, 2026).
+A small, self-contained itinerary app. Three trips live in it: Greece
+(Oct 3–11, 2026), Italy (Rome & Florence, Aug 1–8, 2026) and Singapore
+(Aug 2026). Editing `trip-data.js` is how you change any of them.
 Plain HTML/CSS/JS — no build step, no server needed. Works on phone and desktop,
 in light and dark mode, and offline once loaded.
 
