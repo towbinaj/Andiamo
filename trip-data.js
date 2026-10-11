@@ -479,6 +479,11 @@ const TRIPS = [
       note: "Delta 5801 (Republic) · Comfort · home 11:30 PM.",
       booking: { label: "Status", value: "Ticketed · seats open", source: "Delta app" }, codeKey: "greeceflights",
       headsup: ["4 hr in Boston — clear customs there"] },
+    { date: "2026-10-11", start: "20:00", title: "Dinner — Esthio", type: "meal", fixed: true,
+      address: "Esthio, Dimitrakopoulou 7, Koukaki, Athens", phone: "+30 21 3045 2865",
+      note: "Stranded night in Athens. Balkan-Greek cooking in Koukaki; Michelin Plate 2025.",
+      booking: { label: "Table", value: "Confirmed · 20:00 · 2 people", source: "E-mail" }, codeKey: "esthio",
+      headsup: ["No legumes — tell them when you order", "Last airport metro ~23:30 — check the board"] },
   ],
 },
 
